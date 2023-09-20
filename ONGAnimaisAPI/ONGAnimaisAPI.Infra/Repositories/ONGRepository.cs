@@ -1,5 +1,5 @@
 ﻿using ONGAnimaisAPI.Domain.Entities;
-using ONGAnimaisAPI.Domain.Interfaces;
+using ONGAnimaisAPI.Domain.Interfaces.Repository;
 
 namespace ONGAnimaisAPI.Infra.Repositories
 {

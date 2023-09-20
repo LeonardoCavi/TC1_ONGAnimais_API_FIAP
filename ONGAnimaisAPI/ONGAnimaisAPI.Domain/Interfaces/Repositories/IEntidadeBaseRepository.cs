@@ -1,6 +1,6 @@
 ﻿using ONGAnimaisAPI.Domain.Entities;
 
-namespace ONGAnimaisAPI.Domain.Interfaces
+namespace ONGAnimaisAPI.Domain.Interfaces.Repository
 {
     public interface IEntidadeBaseRepository<TEntidade> where TEntidade : EntidadeBase
     {
@@ -8,6 +8,6 @@ namespace ONGAnimaisAPI.Domain.Interfaces
         Task<TEntidade> Obter(int id);
         Task<ICollection<TEntidade>> ObterTodos();
         Task Atualizar(TEntidade entidade);
-        Task Excluir(int id);
+        Task Excluir(TEntidade entidade);
     }
 }

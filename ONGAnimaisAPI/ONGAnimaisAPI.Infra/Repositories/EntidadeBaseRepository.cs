@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ONGAnimaisAPI.Domain.Entities;
-using ONGAnimaisAPI.Domain.Interfaces;
+using ONGAnimaisAPI.Domain.Interfaces.Repository;
 
 namespace ONGAnimaisAPI.Infra.Repositories
 {
@@ -21,9 +21,9 @@ namespace ONGAnimaisAPI.Infra.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task Excluir(int id)
+        public async Task Excluir(TEntidade entidade)
         {
-            _context.Remove(await Obter(id));
+            _context.Remove(entidade);
             await _context.SaveChangesAsync();
         }
 
