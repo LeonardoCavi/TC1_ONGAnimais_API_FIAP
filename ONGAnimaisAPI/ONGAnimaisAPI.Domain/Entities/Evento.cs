@@ -8,6 +8,6 @@ namespace ONGAnimaisAPI.Domain.Entities
         public string Descricao { get; set; }
         public Endereco Endereco { get; set; }
         public DateTime Data { get; set; }
-        public ONG ONG { get; set; }
+        //public ONG ONG { get; set; }
     }
 }

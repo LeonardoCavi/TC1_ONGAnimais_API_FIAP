@@ -10,6 +10,8 @@ namespace ONGAnimaisAPI.Application.Interfaces
 
         Task<ICollection<ObtemONGViewModel>> ObterTodasONG();
 
+        Task<ObtemONGEventosViewModel> ObterONGEventos(int id);
+
         Task AtualizarONG(AtualizaONGViewModel ong);
 
         Task ExcluirONG(int id);

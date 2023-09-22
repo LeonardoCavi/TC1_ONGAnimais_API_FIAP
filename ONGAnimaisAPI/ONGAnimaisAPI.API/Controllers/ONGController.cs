@@ -66,6 +66,34 @@ namespace ONGAnimaisAPI.API.Controllers
             }
         }
 
+        [Route("obter-ong-eventos/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> ObterONGEventos(int id)
+        {
+            try
+            {
+                if (id <= 0)
+                {
+                    return BadRequest("Identificador da ONG inválido. Tente novamente!");
+                }
+
+                var ong = await _application.ObterONGEventos(id);
+
+                if (ong != null)
+                {
+                    return Ok(ong);
+                }
+                else
+                {
+                    return NotFound("ONG não encontrada!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "ERRO => " + ex.Message);
+            }
+        }
+
         [Route("inserir-ong")]
         [HttpPost]
         public async Task<IActionResult> InserirONG(InsereONGViewModel ong)

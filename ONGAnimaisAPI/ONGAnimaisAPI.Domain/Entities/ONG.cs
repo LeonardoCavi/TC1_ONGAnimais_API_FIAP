@@ -11,7 +11,6 @@ namespace ONGAnimaisAPI.Domain.Entities
         public Endereco Endereco { get; set; }
         public List<Telefone> Telefones { get; set; }
         public List<Contato> Contatos { get; set; }
-        
-        //public List<Evento> Eventos { get; set; }
+        public List<Evento> Eventos { get; set; }
     }
 }

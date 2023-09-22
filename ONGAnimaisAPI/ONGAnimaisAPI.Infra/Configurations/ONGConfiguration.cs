@@ -26,8 +26,21 @@ namespace ONGAnimaisAPI.Infra.Configurations
                 enderecoBuilder.Property(e => e.Cidade).HasColumnType("VARCHAR(150)").IsRequired();
                 enderecoBuilder.Property(e => e.UF).HasColumnType("VARCHAR(2)").IsRequired();
             });
-            builder.OwnsMany(o => o.Telefones);
-            builder.OwnsMany(o => o.Contatos);
+            builder.OwnsMany(o => o.Telefones, telefoneBuilder =>
+            {
+                telefoneBuilder.ToTable("OngTelefone");
+                telefoneBuilder.Property(t => t.DDD).HasColumnType("VARCHAR(2)").IsRequired();
+                telefoneBuilder.Property(t => t.Numero).HasColumnType("VARCHAR(9)").IsRequired();
+                telefoneBuilder.Property(t => t.Tipo).HasConversion<string>()
+                    .HasColumnType("VARCHAR(10)").IsRequired();
+            });
+            builder.OwnsMany(o => o.Contatos, contatoBuilder =>
+            {
+                contatoBuilder.ToTable("OngContato");
+                contatoBuilder.Property(c => c.Descricao).HasColumnType("VARCHAR(100)").IsRequired();
+                contatoBuilder.Property(c => c.URL).HasColumnType("VARCHAR(500)").IsRequired();
+            });
+            builder.HasMany(o => o.Eventos);
         }
     }
 }

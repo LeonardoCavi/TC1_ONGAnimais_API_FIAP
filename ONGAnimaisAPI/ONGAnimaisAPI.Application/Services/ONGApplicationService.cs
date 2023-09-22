@@ -41,6 +41,12 @@ namespace ONGAnimaisAPI.Application.Services
             return _mapper.Map<ObtemONGViewModel>(ong);
         }
 
+        public async Task<ObtemONGEventosViewModel> ObterONGEventos(int id)
+        {
+            var ongevento = await _service.ObterONGEventos(id);
+            return _mapper.Map<ObtemONGEventosViewModel>(ongevento);
+        }
+
         public async Task<ICollection<ObtemONGViewModel>> ObterTodasONG()
         {
             var ongs = await _service.ObterTodasONG();

@@ -14,7 +14,7 @@ namespace ONGAnimaisAPI.API.Mappings
 
             CreateMap<ONG, ObtemONGViewModel>();
 
-            CreateMap<List<ONG>, List<ObtemONGViewModel>>();
+            CreateMap<ONG, ObtemONGEventosViewModel>();
         }
     }
 }
