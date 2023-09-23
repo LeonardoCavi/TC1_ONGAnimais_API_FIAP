@@ -12,13 +12,14 @@ namespace ONGAnimaisAPI.Infra
         }
 
         public DbSet<ONG> ONGs { get; set; }
-        //public DbSet<Evento> Eventos { get; set; }
+        public DbSet<Evento> Eventos { get; set; }
         //public DbSet<Usuario> Usuarios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new ONGConfiguration());
+            modelBuilder.ApplyConfiguration(new EventoConfiguration());
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ONGAnimaisAPI.Infra;
 
@@ -11,9 +12,11 @@ using ONGAnimaisAPI.Infra;
 namespace ONGAnimaisAPI.Infra.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230922010151_ConfigControllerONGEventos")]
+    partial class ConfigControllerONGEventos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,12 +44,12 @@ namespace ONGAnimaisAPI.Infra.Migrations
                         .IsRequired()
                         .HasColumnType("VARCHAR(100)");
 
-                    b.Property<int>("OngId")
+                    b.Property<int?>("ONGId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OngId");
+                    b.HasIndex("ONGId");
 
                     b.ToTable("Eventos", (string)null);
                 });
@@ -84,9 +87,7 @@ namespace ONGAnimaisAPI.Infra.Migrations
                 {
                     b.HasOne("ONGAnimaisAPI.Domain.Entities.ONG", null)
                         .WithMany("Eventos")
-                        .HasForeignKey("OngId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ONGId");
 
                     b.OwnsOne("ONGAnimaisAPI.Domain.Entities.ValueObjects.Endereco", "Endereco", b1 =>
                         {
@@ -113,6 +114,7 @@ namespace ONGAnimaisAPI.Infra.Migrations
                                 .HasColumnType("VARCHAR(150)");
 
                             b1.Property<string>("Numero")
+                                .IsRequired()
                                 .HasColumnType("VARCHAR(20)");
 
                             b1.Property<string>("UF")

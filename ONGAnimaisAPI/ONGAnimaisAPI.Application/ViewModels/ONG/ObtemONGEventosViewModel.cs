@@ -1,9 +1,9 @@
 ﻿using ONGAnimaisAPI.Domain.Entities.ValueObjects;
-using ONGAnimaisAPI.Domain.Entities;
+
 
 namespace ONGAnimaisAPI.Application.ViewModels.ONG
 {
-    public class ObtemONGViewModel
+    public class ObtemONGEventosViewModel
     {
         public string Nome { get; set; }
         public string Descricao { get; set; }
@@ -12,5 +12,6 @@ namespace ONGAnimaisAPI.Application.ViewModels.ONG
         public Endereco Endereco { get; set; }
         public List<Telefone> Telefones { get; set; }
         public List<Contato> Contatos { get; set; }
+        public List<Domain.Entities.Evento> Eventos { get; set; }
     }
 }
