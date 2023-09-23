@@ -19,35 +19,56 @@ namespace ONGAnimaisAPI.Domain.Services
         #region [Evento]
         public async Task AtualizarEvento(Evento evento)
         {
-            var eventoDB = await _eRepository.Obter(evento.Id);
-            if (eventoDB != null)
+            var ongDB = await ObterONG(evento.Id);
+            if(ongDB != null)
             {
-                eventoDB.Nome = evento.Nome;
-                eventoDB.Descricao = evento.Descricao;
-                eventoDB.Endereco = evento.Endereco;
-                eventoDB.Data = evento.Data;
+                var eventoDB = await _eRepository.Obter(evento.Id);
+                if (eventoDB != null)
+                {
+                    eventoDB.Nome = evento.Nome;
+                    eventoDB.Descricao = evento.Descricao;
+                    eventoDB.Endereco = evento.Endereco;
+                    eventoDB.Data = evento.Data;
 
-                await _eRepository.Atualizar(eventoDB);
+                    await _eRepository.Atualizar(eventoDB);
+                }
             }
         }
 
-        public async Task ExcluirEvento(int id)
+        public async Task ExcluirEvento(int ongId, int id)
         {
-            var evento = await _eRepository.Obter(id);
-            if (evento != null)
+            var ongDB = await ObterONG(ongId);
+
+            if (ongDB != null)
             {
-                await _eRepository.Excluir(evento);
+                var evento = await _eRepository.Obter(id);
+                if (evento != null)
+                {
+                    await _eRepository.Excluir(evento);
+                }
             }
         }
 
         public async Task InserirEvento(Evento evento)
         {
-            await _eRepository.Inserir(evento);
+            var ongDB = await ObterONG(evento.OngId);
+
+            if (ongDB != null)
+            {
+                await _eRepository.Inserir(evento);
+            }
         }
 
-        public async Task<Evento> ObterEvento(int id)
+        public async Task<Evento> ObterEvento(int ongId, int id)
         {
-            return await _eRepository.Obter(id);
+            var ongDB = await ObterONG(ongId);
+
+            if(ongDB != null)
+            {
+                return await _eRepository.Obter(id);
+            }
+
+            return null;
         }
 
         public async Task<ICollection<Evento>> ObterTodosEventos()

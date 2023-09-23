@@ -22,13 +22,13 @@ namespace ONGAnimaisAPI.Domain.Interfaces.Services
         #region Evento
         Task InserirEvento(Evento evento);
 
-        Task<Evento> ObterEvento(int id);
+        Task<Evento> ObterEvento(int ongId, int id);
 
         Task<ICollection<Evento>> ObterTodosEventos();
 
         Task AtualizarEvento(Evento evento);
 
-        Task ExcluirEvento(int id);
+        Task ExcluirEvento(int ongId, int id);
         #endregion
     }
 }

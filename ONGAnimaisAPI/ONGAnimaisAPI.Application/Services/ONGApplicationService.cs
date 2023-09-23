@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ONGAnimaisAPI.Application.Interfaces;
+using ONGAnimaisAPI.Application.ViewModels.Evento;
 using ONGAnimaisAPI.Application.ViewModels.ONG;
 using ONGAnimaisAPI.Domain.Entities;
 using ONGAnimaisAPI.Domain.Interfaces.Services;
@@ -18,6 +19,7 @@ namespace ONGAnimaisAPI.Application.Services
             this._mapper = mapper;
         }
 
+        #region [ONG]
         public async Task AtualizarONG(AtualizaONGViewModel ong)
         {
             var ongMap = _mapper.Map<ONG>(ong);
@@ -28,7 +30,6 @@ namespace ONGAnimaisAPI.Application.Services
         {
             await _service.ExcluirONG(id);
         }
-
         public async Task InserirONG(InsereONGViewModel ong)
         {
             var ongMap = _mapper.Map<ONG>(ong);
@@ -51,6 +52,34 @@ namespace ONGAnimaisAPI.Application.Services
         {
             var ongs = await _service.ObterTodasONG();
             return _mapper.Map<List<ObtemONGViewModel>>(ongs);
+        }
+        #endregion
+
+        public async Task InserirEvento(int ongId, InsereEventoViewModel evento)
+        {
+            var eventoMap = _mapper.Map<Evento>(evento);
+            eventoMap.OngId = ongId;
+
+            await _service.InserirEvento(eventoMap);
+        }
+
+        public async Task AtualizarEvento(int ongId, AtualizaEventoViewModel evento)
+        {
+            var eventoMap = _mapper.Map<Evento>(evento);
+            eventoMap.OngId = ongId;
+
+            await _service.AtualizarEvento(eventoMap);
+        }
+
+        public async Task<ObtemEventoViewModel> ObterEvento(int ongId, int id)
+        {
+            var evento = await _service.ObterEvento(ongId, id);
+            return _mapper.Map<ObtemEventoViewModel>(evento);
+        }
+
+        public async Task ExcluirEvento(int ongId, int id)
+        {
+            await _service.ExcluirEvento(ongId, id);
         }
     }
 }

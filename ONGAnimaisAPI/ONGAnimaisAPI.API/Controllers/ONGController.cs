@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ONGAnimaisAPI.Application.Interfaces;
+using ONGAnimaisAPI.Application.ViewModels.Evento;
 using ONGAnimaisAPI.Application.ViewModels.ONG;
+using ONGAnimaisAPI.Domain.Entities;
 
 namespace ONGAnimaisAPI.API.Controllers
 {
@@ -15,6 +17,7 @@ namespace ONGAnimaisAPI.API.Controllers
             this._application = application;
         }
 
+        #region [ONG]
         [Route("obter-ong/{id}")]
         [HttpGet]
         public async Task<IActionResult> ObterONG(int id)
@@ -138,7 +141,7 @@ namespace ONGAnimaisAPI.API.Controllers
             }
         }
 
-        [Route("excluir-ong")]
+        [Route("excluir-ong/{id}")]
         [HttpDelete]
         public async Task<IActionResult> ExcluirONG(int id)
         {
@@ -157,5 +160,112 @@ namespace ONGAnimaisAPI.API.Controllers
                 return StatusCode(500, "ERRO => " + ex.Message);
             }
         }
+        #endregion
+
+        #region [Evento]
+        [Route("{ongId}/obter-evento/{id}")]
+        [HttpGet]
+        public async Task<IActionResult> ObterEvento(int ongId, int id)
+        {
+            try
+            {
+                if (ongId <= 0)
+                {
+                    return BadRequest("Identificador da ONG inválido. Tente novamente!");
+                }
+
+                if (id <= 0)
+                {
+                    return BadRequest("Identificador do Evento inválido. Tente novamente!");
+                }
+
+                var evento = await _application.ObterEvento(ongId, id);
+
+                if (evento != null)
+                {
+                    return Ok(evento);
+                }
+                else
+                {
+                    return NotFound("Evento não encontrado!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "ERRO => " + ex.Message);
+            }
+        }
+
+        [Route("{ongId}/inserir-evento")]
+        [HttpPost]
+        public async Task<IActionResult> InserirEvento(int ongId, InsereEventoViewModel evento)
+        {
+            try
+            {
+                if (ongId <= 0)
+                {
+                    return BadRequest("Identificador da ONG inválido. Tente novamente!");
+                }
+
+                if (evento == null)
+                {
+                    return BadRequest("Dados do Evento incorretos!");
+                }
+
+                await _application.InserirEvento(ongId, evento);
+                return Created("", evento);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "ERRO => " + ex.Message);
+            }
+        }
+
+        [Route("{ongId}/atualizar-evento")]
+        [HttpPut]
+        public async Task<IActionResult> AtualizarEvento(int ongId, AtualizaEventoViewModel evento)
+        {
+            try
+            {
+                if (ongId <= 0)
+                {
+                    return BadRequest("Identificador da ONG inválido. Tente novamente!");
+                }
+
+                if (evento == null)
+                {
+                    return BadRequest("Dados do Evento incorretos!");
+                }
+
+                await _application.AtualizarEvento(ongId, evento);
+                return Created("", evento);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "ERRO => " + ex.Message);
+            }
+        }
+
+
+        [Route("{ongId}/excluir-evento/{id}")]
+        [HttpDelete]
+        public async Task<IActionResult> ExcluirEvento(int ongId, int id)
+        {
+            try
+            {
+                if (id <= 0)
+                {
+                    return BadRequest("Identificador da ONG inválido. Tente novamente!");
+                }
+
+                await _application.ExcluirEvento(ongId, id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "ERRO => " + ex.Message);
+            }
+        }
+        #endregion
     }
 }

@@ -1,5 +1,5 @@
-﻿using ONGAnimaisAPI.Domain.Entities;
-using ONGAnimaisAPI.Domain.Entities.ValueObjects;
+﻿using ONGAnimaisAPI.Domain.Entities.ValueObjects;
+
 
 namespace ONGAnimaisAPI.Application.ViewModels.ONG
 {
@@ -12,6 +12,6 @@ namespace ONGAnimaisAPI.Application.ViewModels.ONG
         public Endereco Endereco { get; set; }
         public List<Telefone> Telefones { get; set; }
         public List<Contato> Contatos { get; set; }
-        public List<Evento> Eventos { get; set; }
+        public List<Domain.Entities.Evento> Eventos { get; set; }
     }
 }

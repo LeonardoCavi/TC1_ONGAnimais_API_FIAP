@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ONGAnimaisAPI.Application.ViewModels.Evento;
 using ONGAnimaisAPI.Application.ViewModels.ONG;
 using ONGAnimaisAPI.Domain.Entities;
 
@@ -15,6 +16,12 @@ namespace ONGAnimaisAPI.API.Mappings
             CreateMap<ONG, ObtemONGViewModel>();
 
             CreateMap<ONG, ObtemONGEventosViewModel>();
+
+            CreateMap<InsereEventoViewModel, Evento>();
+
+            CreateMap<AtualizaEventoViewModel, Evento>();
+
+            CreateMap<Evento, ObtemEventoViewModel>();
         }
     }
 }
