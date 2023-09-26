@@ -10,6 +10,7 @@ namespace ONGAnimaisAPI.API.Configurations
             var mapper = new MapperConfiguration(config =>
             {
                 config.AddProfile(new ONGProfile());
+                config.AddProfile(new UsuarioProfile());
             });
 
             return mapper;

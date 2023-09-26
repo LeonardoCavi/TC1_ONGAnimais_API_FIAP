@@ -18,9 +18,11 @@ namespace ONGAnimaisAPI.API.Configurations
 
             //Services
             services.AddScoped<IONGService, ONGService>();
+            services.AddScoped<IUsuarioService, UsuarioService>();
 
             //Application Services
             services.AddScoped<IONGApplicationService, ONGApplicationService>();
+            services.AddScoped<IUsuarioApplicationService, UsuarioApplicationService>();
         }
     }
 }
