@@ -10,6 +10,8 @@ namespace ONGAnimaisAPI.Infra.Repositories
         {
         }
 
+        #region [Usuario]
+
         public async Task<Usuario> ObterUsuarioEventos(int id)
         {
             return await _dBSet.Include(u => u.EventosSeguidos)
@@ -21,5 +23,8 @@ namespace ONGAnimaisAPI.Infra.Repositories
            return await _dBSet.Include(u => u.ONGsSeguidas)
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
+
+        #endregion
+
     }
 }

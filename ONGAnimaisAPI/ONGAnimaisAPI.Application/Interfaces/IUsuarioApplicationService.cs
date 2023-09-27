@@ -6,6 +6,7 @@ namespace ONGAnimaisAPI.Application.Interfaces
 {
     public interface IUsuarioApplicationService
     {
+        #region [Usuario]
         Task InserirUsuario(InsereUsuarioViewModel usuario);
 
         Task<ObtemUsuarioViewModel> ObterUsuario(int id);
@@ -19,5 +20,23 @@ namespace ONGAnimaisAPI.Application.Interfaces
         Task AtualizarUsuario(AtualizaUsuarioViewModel usuario);
 
         Task ExcluirUsuario(int id);
+
+        #endregion
+
+        #region [Evento]
+
+        Task SeguirEvento(int eventoId, int id);
+
+        Task DesseguirEvento(int eventoId, int id);
+
+        #endregion
+
+        #region [ONG]
+
+        Task SeguirONG(int ongId, int id);
+
+        Task DesseguirONG(int ongId, int id);
+
+        #endregion
     }
 }

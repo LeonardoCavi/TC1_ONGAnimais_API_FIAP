@@ -19,6 +19,8 @@ namespace ONGAnimaisAPI.Application.Services
             this._mapper = mapper;
         }
 
+        #region [Usuario]
+
         public async Task AtualizarUsuario(AtualizaUsuarioViewModel usuario)
         {
             var usuarioMap = _mapper.Map<Usuario>(usuario);
@@ -59,5 +61,35 @@ namespace ONGAnimaisAPI.Application.Services
             var usuarioong = await _service.ObterUsuarioONGs(id);
             return _mapper.Map<ObtemUsuarioONGsViewModel>(usuarioong);
         }
+
+        #endregion
+
+        #region [Evento]
+
+        public async Task SeguirEvento(int eventoId, int id)
+        {
+            await _service.SeguirEvento(eventoId, id);
+        }
+
+        public async Task DesseguirEvento(int eventoId, int id)
+        {
+            await _service.DesseguirEvento(eventoId, id);
+        }
+
+        #endregion
+
+        #region [ONG]
+
+        public async Task SeguirONG(int ongId, int id)
+        {
+            await _service.SeguirONG(ongId, id);
+        }
+
+        public async Task DesseguirONG(int ongId, int id)
+        {
+            await _service.DesseguirONG(ongId, id);
+        }
+
+        #endregion
     }
 }

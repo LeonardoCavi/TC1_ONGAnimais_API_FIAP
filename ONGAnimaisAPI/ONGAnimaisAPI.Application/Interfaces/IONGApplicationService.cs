@@ -6,6 +6,7 @@ namespace ONGAnimaisAPI.Application.Interfaces
 {
     public interface IONGApplicationService
     {
+        #region [ONG]
         Task InserirONG(InsereONGViewModel ong);
 
         Task<ObtemONGViewModel> ObterONG(int id);
@@ -18,9 +19,18 @@ namespace ONGAnimaisAPI.Application.Interfaces
 
         Task ExcluirONG(int id);
 
+        #endregion
+
+        #region [Evento]
+
         Task InserirEvento(int ongId, InsereEventoViewModel evento);
+
         Task AtualizarEvento(int ongId, AtualizaEventoViewModel evento);
+
         Task<ObtemEventoViewModel> ObterEvento(int ongId, int id);
+
         Task ExcluirEvento(int ongId, int id);
+
+        #endregion 
     }
 }

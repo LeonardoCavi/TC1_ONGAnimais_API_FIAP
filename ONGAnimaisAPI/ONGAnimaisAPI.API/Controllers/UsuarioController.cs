@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ONGAnimaisAPI.Application.Interfaces;
+using ONGAnimaisAPI.Application.ViewModels.Evento;
 using ONGAnimaisAPI.Application.ViewModels.ONG;
 using ONGAnimaisAPI.Application.ViewModels.Usuario;
 using ONGAnimaisAPI.Domain.Entities;
+using System.Security.Cryptography;
 
 namespace ONGAnimaisAPI.API.Controllers
 {
@@ -16,6 +18,8 @@ namespace ONGAnimaisAPI.API.Controllers
         {
             this._application = application;
         }
+
+        #region [Usuario]
 
         [Route("obter-usuario/{id}")]
         [HttpGet]
@@ -188,5 +192,115 @@ namespace ONGAnimaisAPI.API.Controllers
                 return StatusCode(500, "ERRO => " + ex.Message);
             }
         }
+
+        #endregion
+
+        #region [Evento]
+
+        [Route("{usuarioId}/seguir-evento")]
+        [HttpPost]
+        public async Task<IActionResult> SeguirEvento(int eventoId, int usuarioId)
+        {
+            try
+            {
+                if (usuarioId <= 0)
+                {
+                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
+                }
+
+                if (eventoId <= 0)
+                {
+                    return BadRequest("Identificador do Evento inválido. Tente novamente!");
+                }
+
+                await _application.SeguirEvento(eventoId, usuarioId);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "ERRO => " + ex.Message);
+            }
+        }
+
+        [Route("{usuarioId}/desseguir-evento")]
+        [HttpDelete]
+        public async Task<IActionResult> DesseguirEvento(int eventoId, int usuarioId)
+        {
+            try
+            {
+                if (usuarioId <= 0)
+                {
+                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
+                }
+
+                if (eventoId <= 0)
+                {
+                    return BadRequest("Identificador do Evento inválido. Tente novamente!");
+                }
+
+                await _application.DesseguirEvento(eventoId, usuarioId);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "ERRO => " + ex.Message);
+            }
+        }
+
+        #endregion
+
+        #region [ONG]
+
+        [Route("{usuarioId}/seguir-ong")]
+        [HttpPost]
+        public async Task<IActionResult> SeguirONG(int ongId, int usuarioId)
+        {
+            try
+            {
+                if (usuarioId <= 0)
+                {
+                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
+                }
+
+                if (ongId <= 0)
+                {
+                    return BadRequest("Identificador da ONG inválido. Tente novamente!");
+                }
+
+                await _application.SeguirONG(ongId, usuarioId);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "ERRO => " + ex.Message);
+            }
+        }
+
+        [Route("{usuarioId}/desseguir-ong")]
+        [HttpDelete]
+        public async Task<IActionResult> DesseguirONG(int ongId, int usuarioId)
+        {
+            try
+            {
+                if (usuarioId <= 0)
+                {
+                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
+                }
+
+                if (ongId <= 0)
+                {
+                    return BadRequest("Identificador da ONG inválido. Tente novamente!");
+                }
+
+                await _application.DesseguirONG(ongId, usuarioId);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "ERRO => " + ex.Message);
+            }
+        }
+
+        #endregion
     }
 }
