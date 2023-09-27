@@ -20,6 +20,7 @@ namespace ONGAnimaisAPI.Application.Services
         }
 
         #region [ONG]
+
         public async Task AtualizarONG(AtualizaONGViewModel ong)
         {
             var ongMap = _mapper.Map<ONG>(ong);
@@ -30,6 +31,7 @@ namespace ONGAnimaisAPI.Application.Services
         {
             await _service.ExcluirONG(id);
         }
+
         public async Task InserirONG(InsereONGViewModel ong)
         {
             var ongMap = _mapper.Map<ONG>(ong);
@@ -53,7 +55,10 @@ namespace ONGAnimaisAPI.Application.Services
             var ongs = await _service.ObterTodasONG();
             return _mapper.Map<List<ObtemONGViewModel>>(ongs);
         }
-        #endregion
+
+        #endregion [ONG]
+
+        #region [Usuario]
 
         public async Task InserirEvento(int ongId, InsereEventoViewModel evento)
         {
@@ -81,5 +86,7 @@ namespace ONGAnimaisAPI.Application.Services
         {
             await _service.ExcluirEvento(ongId, id);
         }
+
+        #endregion [Usuario]
     }
 }

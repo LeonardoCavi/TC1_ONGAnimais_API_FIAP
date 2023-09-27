@@ -13,7 +13,6 @@ namespace ONGAnimaisAPI.Infra.Configurations
             builder.Property(e => e.Nome).HasColumnType("VARCHAR(100)").IsRequired();
             builder.Property(e => e.Descricao).HasColumnType("VARCHAR(150)").IsRequired();
             builder.Property(e => e.Data).HasColumnType("DATETIME2").IsRequired();
-
             builder.OwnsOne(e => e.Endereco, enderecoBuilder =>
             {
                 enderecoBuilder.ToTable("EventoEndereco");

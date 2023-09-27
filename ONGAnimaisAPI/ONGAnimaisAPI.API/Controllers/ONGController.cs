@@ -255,6 +255,10 @@ namespace ONGAnimaisAPI.API.Controllers
             {
                 if (id <= 0)
                 {
+                    return BadRequest("Identificador do Evento inválido. Tente novamente!");
+                }
+                if (ongId <= 0)
+                {
                     return BadRequest("Identificador da ONG inválido. Tente novamente!");
                 }
 
