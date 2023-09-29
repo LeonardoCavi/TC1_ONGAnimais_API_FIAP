@@ -1,19 +1,25 @@
 ﻿using AutoMapper;
 using ONGAnimaisAPI.Application.Interfaces;
+using ONGAnimaisAPI.Application.Validations.Usuario;
 using ONGAnimaisAPI.Application.ViewModels.ONG;
 using ONGAnimaisAPI.Application.ViewModels.Usuario;
+using ONGAnimaisAPI.Domain.Abstracts;
 using ONGAnimaisAPI.Domain.Entities;
+using ONGAnimaisAPI.Domain.Interfaces.Notifications;
 using ONGAnimaisAPI.Domain.Interfaces.Services;
+using ONGAnimaisAPI.Domain.Notifications;
 
 namespace ONGAnimaisAPI.Application.Services
 {
-    public class UsuarioApplicationService : IUsuarioApplicationService
+    public class UsuarioApplicationService : NotificadorContext, IUsuarioApplicationService
     {
         private readonly IUsuarioService _service;
         private readonly IMapper _mapper;
 
         public UsuarioApplicationService(IUsuarioService service,
-                                         IMapper mapper)
+                                         IMapper mapper,
+                                         INotificador notificador)
+            : base(notificador)
         {
             this._service = service;
             this._mapper = mapper;
@@ -34,8 +40,13 @@ namespace ONGAnimaisAPI.Application.Services
 
         public async Task InserirUsuario(InsereUsuarioViewModel usuario)
         {
-            var usuarioMap = _mapper.Map<Usuario>(usuario);
-            await _service.InserirUsuario(usuarioMap);
+            ExecutarValidacao(new InsereUsuarioValidation(), usuario);
+
+            if (!_notificador.TemNotificacao())
+            {
+                var usuarioMap = _mapper.Map<Usuario>(usuario);
+                await _service.InserirUsuario(usuarioMap);
+            }
         }
 
         public async Task<ICollection<ObtemUsuarioViewModel>> ObterTodosUsuarios()
@@ -46,8 +57,18 @@ namespace ONGAnimaisAPI.Application.Services
 
         public async Task<ObtemUsuarioViewModel> ObterUsuario(int id)
         {
-            var usuario = await _service.ObterUsuario(id);
-            return _mapper.Map<ObtemUsuarioViewModel>(usuario);
+            if(id > 0)
+            {
+                var usuario = await _service.ObterUsuario(id);
+
+                if (_notificador.TemNotificacao())
+                    return null;
+
+                return _mapper.Map<ObtemUsuarioViewModel>(usuario);
+            }
+
+            Notificar("Id: o id é inválido", TipoNotificacao.BadRequest);
+            return null;
         }
 
         public async Task<ObtemUsuarioEventosViewModel> ObterUsuarioEventos(int id)

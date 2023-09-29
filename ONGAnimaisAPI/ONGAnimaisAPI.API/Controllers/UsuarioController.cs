@@ -4,6 +4,8 @@ using ONGAnimaisAPI.Application.ViewModels.Evento;
 using ONGAnimaisAPI.Application.ViewModels.ONG;
 using ONGAnimaisAPI.Application.ViewModels.Usuario;
 using ONGAnimaisAPI.Domain.Entities;
+using ONGAnimaisAPI.Domain.Interfaces.Notifications;
+using ONGAnimaisAPI.Domain.Notifications;
 using System.Security.Cryptography;
 
 namespace ONGAnimaisAPI.API.Controllers
@@ -13,10 +15,11 @@ namespace ONGAnimaisAPI.API.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly IUsuarioApplicationService _application;
-
-        public UsuarioController(IUsuarioApplicationService application)
+        private readonly INotificador _notificador;
+        public UsuarioController(IUsuarioApplicationService application, INotificador notificador)
         {
             this._application = application;
+            this._notificador = notificador;
         }
 
         #region [Usuario]
@@ -27,20 +30,23 @@ namespace ONGAnimaisAPI.API.Controllers
         {
             try
             {
-                if (id <= 0)
-                {
-                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
-                }
-
                 var usuario = await _application.ObterUsuario(id);
 
-                if (usuario != null)
+                if (!_notificador.TemNotificacao())
                 {
                     return Ok(usuario);
                 }
                 else
                 {
-                    return NotFound("Usuário não encontrada!");
+                    var notificacoes = _notificador.ObterNotificacoes();
+                    var notificacoesRetorno = new { erros = string.Join(", ", notificacoes.Select(x => x.Mensagem)) };
+
+                    if (notificacoes.Any(x => x.Tipo == TipoNotificacao.BadRequest))
+                        return BadRequest(notificacoesRetorno);
+                    if(notificacoes.Any(x => x.Tipo == TipoNotificacao.NotFound))
+                        return NotFound(notificacoesRetorno);
+
+                    return StatusCode(500, notificacoesRetorno);
                 }
             }
             catch (Exception ex)
@@ -134,12 +140,21 @@ namespace ONGAnimaisAPI.API.Controllers
         {
             try
             {
-                if (usuario == null)
+                await _application.InserirUsuario(usuario);
+
+                if (_notificador.TemNotificacao())
                 {
-                    return BadRequest("Dados do Usuário incorretos!");
+                    var notificacoes = _notificador.ObterNotificacoes();
+                    var notificacoesRetorno = new { erros = notificacoes.Select(x => x.Mensagem) };
+
+                    if (notificacoes.Any(x => x.Tipo == TipoNotificacao.BadRequest))
+                        return BadRequest(notificacoesRetorno);
+                    if (notificacoes.Any(x => x.Tipo == TipoNotificacao.NotFound))
+                        return NotFound(notificacoesRetorno);
+
+                    return StatusCode(500, notificacoesRetorno);
                 }
 
-                await _application.InserirUsuario(usuario);
                 return Created("", usuario);
             }
             catch (Exception ex)

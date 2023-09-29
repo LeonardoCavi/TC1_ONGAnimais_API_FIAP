@@ -1,10 +1,13 @@
-﻿using ONGAnimaisAPI.Domain.Entities;
+﻿using ONGAnimaisAPI.Domain.Abstracts;
+using ONGAnimaisAPI.Domain.Entities;
+using ONGAnimaisAPI.Domain.Interfaces.Notifications;
 using ONGAnimaisAPI.Domain.Interfaces.Repository;
 using ONGAnimaisAPI.Domain.Interfaces.Services;
+using ONGAnimaisAPI.Domain.Notifications;
 
 namespace ONGAnimaisAPI.Domain.Services
 {
-    public class UsuarioService : IUsuarioService
+    public class UsuarioService : NotificadorContext, IUsuarioService
     {
         private readonly IUsuarioRepository _uRepository;
         private readonly IONGRepository _oRepository;
@@ -12,7 +15,8 @@ namespace ONGAnimaisAPI.Domain.Services
 
         public UsuarioService(IONGRepository oRepository,
                               IEventoRepository eRepository,
-                              IUsuarioRepository uRepository)
+                              IUsuarioRepository uRepository,
+                              INotificador notificador): base(notificador)
         {
             this._oRepository = oRepository;
             this._eRepository = eRepository;
@@ -24,6 +28,7 @@ namespace ONGAnimaisAPI.Domain.Services
         public async Task AtualizarUsuario(Usuario usuario)
         {
             var usuarioDB = await _uRepository.Obter(usuario.Id);
+
             if (usuarioDB != null)
             {
                 usuarioDB.Nome = usuario.Nome;
@@ -55,7 +60,12 @@ namespace ONGAnimaisAPI.Domain.Services
 
         public async Task<Usuario> ObterUsuario(int id)
         {
-            return await _uRepository.Obter(id);
+            var usuario = await _uRepository.Obter(id);
+
+            if (usuario == null)
+                Notificar($"Usuario: usuário com id '{id}' não existe", TipoNotificacao.NotFound);
+
+            return usuario;
         }
 
         public async Task<Usuario> ObterUsuarioEventos(int id)

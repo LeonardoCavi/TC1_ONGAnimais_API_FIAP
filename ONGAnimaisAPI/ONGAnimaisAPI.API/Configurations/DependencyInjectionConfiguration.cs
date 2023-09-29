@@ -1,7 +1,9 @@
 ﻿using ONGAnimaisAPI.Application.Interfaces;
 using ONGAnimaisAPI.Application.Services;
+using ONGAnimaisAPI.Domain.Interfaces.Notifications;
 using ONGAnimaisAPI.Domain.Interfaces.Repository;
 using ONGAnimaisAPI.Domain.Interfaces.Services;
+using ONGAnimaisAPI.Domain.Notifications;
 using ONGAnimaisAPI.Domain.Services;
 using ONGAnimaisAPI.Infra.Repositories;
 
@@ -23,6 +25,9 @@ namespace ONGAnimaisAPI.API.Configurations
             //Application Services
             services.AddScoped<IONGApplicationService, ONGApplicationService>();
             services.AddScoped<IUsuarioApplicationService, UsuarioApplicationService>();
+
+            //Notificador
+            services.AddScoped<INotificador, Notificador>();
         }
     }
 }
