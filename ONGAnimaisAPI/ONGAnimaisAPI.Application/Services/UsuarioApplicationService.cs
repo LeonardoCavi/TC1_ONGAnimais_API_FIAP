@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ONGAnimaisAPI.Application.Interfaces;
+using ONGAnimaisAPI.Application.Validations;
 using ONGAnimaisAPI.Application.Validations.Usuario;
 using ONGAnimaisAPI.Application.ViewModels.ONG;
 using ONGAnimaisAPI.Application.ViewModels.Usuario;
@@ -57,29 +58,46 @@ namespace ONGAnimaisAPI.Application.Services
 
         public async Task<ObtemUsuarioViewModel> ObterUsuario(int id)
         {
-            if(id > 0)
-            {
-                var usuario = await _service.ObterUsuario(id);
+            ExecutarValidacao(new IdValidation(), id);
 
-                if (_notificador.TemNotificacao())
-                    return null;
+            if (_notificador.TemNotificacao())
+                return null;
 
-                return _mapper.Map<ObtemUsuarioViewModel>(usuario);
-            }
+            var usuario = await _service.ObterUsuario(id);
 
-            Notificar("Id: o id é inválido", TipoNotificacao.BadRequest);
-            return null;
+            if (_notificador.TemNotificacao())
+                return null;
+
+            return _mapper.Map<ObtemUsuarioViewModel>(usuario);
         }
 
         public async Task<ObtemUsuarioEventosViewModel> ObterUsuarioEventos(int id)
         {
+            ExecutarValidacao(new IdValidation(), id);
+
+            if (_notificador.TemNotificacao())
+                return null;
+
             var usuarioevento = await _service.ObterUsuarioEventos(id);
+
+            if (_notificador.TemNotificacao())
+                return null;
+
             return _mapper.Map<ObtemUsuarioEventosViewModel>(usuarioevento);
         }
 
         public async Task<ObtemUsuarioONGsViewModel> ObterUsuarioONGs(int id)
         {
+            ExecutarValidacao(new IdValidation(), id);
+
+            if (_notificador.TemNotificacao())
+                return null;
+
             var usuarioong = await _service.ObterUsuarioONGs(id);
+
+            if (_notificador.TemNotificacao())
+                return null;
+
             return _mapper.Map<ObtemUsuarioONGsViewModel>(usuarioong);
         }
 

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using ONGAnimaisAPI.Application.Interfaces;
+using ONGAnimaisAPI.Application.ViewModels;
 using ONGAnimaisAPI.Application.ViewModels.Evento;
 using ONGAnimaisAPI.Application.ViewModels.ONG;
 using ONGAnimaisAPI.Application.ViewModels.Usuario;
@@ -15,10 +17,12 @@ namespace ONGAnimaisAPI.API.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly IUsuarioApplicationService _application;
+        private readonly IMapper _mapper;
         private readonly INotificador _notificador;
-        public UsuarioController(IUsuarioApplicationService application, INotificador notificador)
+        public UsuarioController(IUsuarioApplicationService application, IMapper mapper, INotificador notificador)
         {
             this._application = application;
+            this._mapper = mapper;
             this._notificador = notificador;
         }
 
@@ -32,22 +36,14 @@ namespace ONGAnimaisAPI.API.Controllers
             {
                 var usuario = await _application.ObterUsuario(id);
 
-                if (!_notificador.TemNotificacao())
+                if (_notificador.TemNotificacao())
                 {
-                    return Ok(usuario);
-                }
-                else
-                {
-                    var notificacoes = _notificador.ObterNotificacoes();
-                    var notificacoesRetorno = new { erros = string.Join(", ", notificacoes.Select(x => x.Mensagem)) };
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
 
-                    if (notificacoes.Any(x => x.Tipo == TipoNotificacao.BadRequest))
-                        return BadRequest(notificacoesRetorno);
-                    if(notificacoes.Any(x => x.Tipo == TipoNotificacao.NotFound))
-                        return NotFound(notificacoesRetorno);
-
-                    return StatusCode(500, notificacoesRetorno);
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
+
+                return Ok(_mapper.Map<RespostaViewModel<ObtemUsuarioViewModel>>(usuario));
             }
             catch (Exception ex)
             {
@@ -144,18 +140,12 @@ namespace ONGAnimaisAPI.API.Controllers
 
                 if (_notificador.TemNotificacao())
                 {
-                    var notificacoes = _notificador.ObterNotificacoes();
-                    var notificacoesRetorno = new { erros = notificacoes.Select(x => x.Mensagem) };
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
 
-                    if (notificacoes.Any(x => x.Tipo == TipoNotificacao.BadRequest))
-                        return BadRequest(notificacoesRetorno);
-                    if (notificacoes.Any(x => x.Tipo == TipoNotificacao.NotFound))
-                        return NotFound(notificacoesRetorno);
-
-                    return StatusCode(500, notificacoesRetorno);
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                return Created("", usuario);
+                return Created("", _mapper.Map<RespostaViewModel<InsereUsuarioViewModel>>(usuario));
             }
             catch (Exception ex)
             {

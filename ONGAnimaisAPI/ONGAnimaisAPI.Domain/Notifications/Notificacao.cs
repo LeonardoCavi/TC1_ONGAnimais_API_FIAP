@@ -8,7 +8,7 @@ namespace ONGAnimaisAPI.Domain.Notifications
 {
     public enum TipoNotificacao
     {
-        BadRequest,
+        Validation,
         NotFound,
         Error
     }
