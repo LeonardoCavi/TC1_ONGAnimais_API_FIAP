@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using ONGAnimaisAPI.Application.Interfaces;
+using ONGAnimaisAPI.Application.ViewModels;
 using ONGAnimaisAPI.Application.ViewModels.Evento;
 using ONGAnimaisAPI.Application.ViewModels.ONG;
-using ONGAnimaisAPI.Domain.Entities;
+using ONGAnimaisAPI.Domain.Interfaces.Notifications;
 
 namespace ONGAnimaisAPI.API.Controllers
 {
@@ -11,34 +13,36 @@ namespace ONGAnimaisAPI.API.Controllers
     public class ONGController : ControllerBase
     {
         private readonly IONGApplicationService _application;
+        private readonly IMapper _mapper;
+        private readonly INotificador _notificador;
 
-        public ONGController(IONGApplicationService application)
+        public ONGController(IONGApplicationService application,
+                             IMapper mapper,
+                             INotificador notificador)
         {
             this._application = application;
+            this._mapper = mapper;
+            this._notificador = notificador;
         }
 
         #region [ONG]
+
         [Route("obter-ong/{id}")]
         [HttpGet]
         public async Task<IActionResult> ObterONG(int id)
         {
             try
             {
-                if (id <= 0)
-                {
-                    return BadRequest("Identificador da ONG inválido. Tente novamente!");
-                }
-
                 var ong = await _application.ObterONG(id);
 
-                if (ong != null)
+                if (_notificador.TemNotificacao())
                 {
-                    return Ok(ong);
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
+
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
-                else
-                {
-                    return NotFound("ONG não encontrada!");
-                }
+
+                return Ok(_mapper.Map<RespostaViewModel<ObtemONGViewModel>>(ong));
             }
             catch (Exception ex)
             {
@@ -54,14 +58,14 @@ namespace ONGAnimaisAPI.API.Controllers
             {
                 var ongs = await _application.ObterTodasONG();
 
-                if (ongs.Any())
+                if (_notificador.TemNotificacao())
                 {
-                    return Ok(ongs);
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
+
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
-                else
-                {
-                    return NotFound("Não existe ONGs cadastradas!");
-                }
+
+                return Ok(_mapper.Map<RespostaViewModel<ObtemONGViewModel>>(ongs));
             }
             catch (Exception ex)
             {
@@ -75,21 +79,16 @@ namespace ONGAnimaisAPI.API.Controllers
         {
             try
             {
-                if (id <= 0)
-                {
-                    return BadRequest("Identificador da ONG inválido. Tente novamente!");
-                }
-
                 var ong = await _application.ObterONGEventos(id);
 
-                if (ong != null)
+                if (_notificador.TemNotificacao())
                 {
-                    return Ok(ong);
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
+
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
-                else
-                {
-                    return NotFound("ONG não encontrada!");
-                }
+
+                return Ok(_mapper.Map<RespostaViewModel<ObtemONGEventosViewModel>>(ong));
             }
             catch (Exception ex)
             {
@@ -103,13 +102,16 @@ namespace ONGAnimaisAPI.API.Controllers
         {
             try
             {
-                if (ong == null)
+                await _application.InserirONG(ong);
+
+                if (_notificador.TemNotificacao())
                 {
-                    return BadRequest("Dados da ONG incorretos!");
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
+
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                await _application.InserirONG(ong);
-                return Created("", ong);
+                return Created("", _mapper.Map<RespostaViewModel<InsereONGViewModel>>(ong));
             }
             catch (Exception ex)
             {
@@ -123,17 +125,16 @@ namespace ONGAnimaisAPI.API.Controllers
         {
             try
             {
-                if (ong == null)
+                await _application.AtualizarONG(ong);
+
+                if (_notificador.TemNotificacao())
                 {
-                    return BadRequest("Dados da ONG incorretos!");
-                }
-                if (ong.Id <= 0)
-                {
-                    return BadRequest("Identificador da ONG inválido. Tente novamente!");
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
+
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                await _application.AtualizarONG(ong);
-                return NoContent();
+                return Created("", _mapper.Map<RespostaViewModel<string>>("ONG atualizada com sucesso!"));
             }
             catch (Exception ex)
             {
@@ -147,12 +148,15 @@ namespace ONGAnimaisAPI.API.Controllers
         {
             try
             {
-                if (id <= 0)
+                await _application.ExcluirONG(id);
+
+                if (_notificador.TemNotificacao())
                 {
-                    return BadRequest("Identificador da ONG inválido. Tente novamente!");
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
+
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                await _application.ExcluirONG(id);
                 return NoContent();
             }
             catch (Exception ex)
@@ -160,35 +164,27 @@ namespace ONGAnimaisAPI.API.Controllers
                 return StatusCode(500, "ERRO => " + ex.Message);
             }
         }
-        #endregion
+
+        #endregion [ONG]
 
         #region [Evento]
+
         [Route("{ongId}/obter-evento/{id}")]
         [HttpGet]
         public async Task<IActionResult> ObterEvento(int ongId, int id)
         {
             try
             {
-                if (ongId <= 0)
-                {
-                    return BadRequest("Identificador da ONG inválido. Tente novamente!");
-                }
-
-                if (id <= 0)
-                {
-                    return BadRequest("Identificador do Evento inválido. Tente novamente!");
-                }
-
                 var evento = await _application.ObterEvento(ongId, id);
 
-                if (evento != null)
+                if (_notificador.TemNotificacao())
                 {
-                    return Ok(evento);
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
+
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
-                else
-                {
-                    return NotFound("Evento não encontrado!");
-                }
+
+                return Ok(_mapper.Map<RespostaViewModel<ObtemEventoViewModel>>(evento));
             }
             catch (Exception ex)
             {
@@ -202,18 +198,16 @@ namespace ONGAnimaisAPI.API.Controllers
         {
             try
             {
-                if (ongId <= 0)
-                {
-                    return BadRequest("Identificador da ONG inválido. Tente novamente!");
-                }
-
-                if (evento == null)
-                {
-                    return BadRequest("Dados do Evento incorretos!");
-                }
-
                 await _application.InserirEvento(ongId, evento);
-                return Created("", evento);
+
+                if (_notificador.TemNotificacao())
+                {
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
+
+                    return StatusCode(resposta.StatusCode, resposta);
+                }
+
+                return Created("", _mapper.Map<RespostaViewModel<InsereEventoViewModel>>(evento));
             }
             catch (Exception ex)
             {
@@ -227,25 +221,22 @@ namespace ONGAnimaisAPI.API.Controllers
         {
             try
             {
-                if (ongId <= 0)
-                {
-                    return BadRequest("Identificador da ONG inválido. Tente novamente!");
-                }
-
-                if (evento == null)
-                {
-                    return BadRequest("Dados do Evento incorretos!");
-                }
-
                 await _application.AtualizarEvento(ongId, evento);
-                return Created("", evento);
+
+                if (_notificador.TemNotificacao())
+                {
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
+
+                    return StatusCode(resposta.StatusCode, resposta);
+                }
+
+                return Created("", _mapper.Map<RespostaViewModel<string>>("Evento atualizado com sucesso!"));
             }
             catch (Exception ex)
             {
                 return StatusCode(500, "ERRO => " + ex.Message);
             }
         }
-
 
         [Route("{ongId}/excluir-evento/{id}")]
         [HttpDelete]
@@ -253,16 +244,15 @@ namespace ONGAnimaisAPI.API.Controllers
         {
             try
             {
-                if (id <= 0)
+                await _application.ExcluirEvento(ongId, id);
+
+                if (_notificador.TemNotificacao())
                 {
-                    return BadRequest("Identificador do Evento inválido. Tente novamente!");
-                }
-                if (ongId <= 0)
-                {
-                    return BadRequest("Identificador da ONG inválido. Tente novamente!");
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
+
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                await _application.ExcluirEvento(ongId, id);
                 return NoContent();
             }
             catch (Exception ex)
@@ -270,6 +260,7 @@ namespace ONGAnimaisAPI.API.Controllers
                 return StatusCode(500, "ERRO => " + ex.Message);
             }
         }
-        #endregion
+
+        #endregion [Evento]
     }
 }

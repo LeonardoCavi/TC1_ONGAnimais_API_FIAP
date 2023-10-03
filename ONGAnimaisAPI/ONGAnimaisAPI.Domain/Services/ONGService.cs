@@ -1,16 +1,21 @@
-﻿using ONGAnimaisAPI.Domain.Entities;
+﻿using ONGAnimaisAPI.Domain.Abstracts;
+using ONGAnimaisAPI.Domain.Entities;
+using ONGAnimaisAPI.Domain.Interfaces.Notifications;
 using ONGAnimaisAPI.Domain.Interfaces.Repository;
 using ONGAnimaisAPI.Domain.Interfaces.Services;
+using ONGAnimaisAPI.Domain.Notifications;
 
 namespace ONGAnimaisAPI.Domain.Services
 {
-    public class ONGService : IONGService
+    public class ONGService : NotificadorContext, IONGService
     {
         private readonly IONGRepository _oRepository;
         private readonly IEventoRepository _eRepository;
 
-        public ONGService(IONGRepository oRepository,
-                          IEventoRepository eRepository)
+        public ONGService(
+            IONGRepository oRepository,
+            IEventoRepository eRepository,
+            INotificador notificador) : base(notificador)
         {
             this._oRepository = oRepository;
             this._eRepository = eRepository;
@@ -39,10 +44,19 @@ namespace ONGAnimaisAPI.Domain.Services
         {
             var ongDB = await ObterONG(ongId);
 
-            if (ongDB != null)
+            if (ongDB == null)
+            {
+                Notificar($"ONG: ong com id '{id}' não existe", TipoNotificacao.NotFound);
+            }
+            else
             {
                 var evento = await _eRepository.Obter(id);
-                if (evento != null)
+
+                if (evento == null)
+                {
+                    Notificar($"Evento: evento com id '{id}' não existe", TipoNotificacao.NotFound);
+                }
+                else
                 {
                     await _eRepository.Excluir(evento);
                 }
@@ -63,17 +77,37 @@ namespace ONGAnimaisAPI.Domain.Services
         {
             var ongDB = await ObterONG(ongId);
 
-            if(ongDB != null)
+            if (ongDB == null)
             {
-                return await _eRepository.Obter(id);
+                Notificar($"ONG: ong com id '{id}' não existe", TipoNotificacao.NotFound);
+                return null;
             }
+            else
+            {
+                var evento = await _eRepository.Obter(id);
 
-            return null;
+                if(evento == null)
+                {
+                    Notificar($"Evento: evento com id '{id}' não existe", TipoNotificacao.NotFound);
+                    return null;
+                }
+                else
+                {
+                    return evento;
+                }
+            }
         }
 
         public async Task<ICollection<Evento>> ObterTodosEventos()
         {
-            return await _eRepository.ObterTodos();
+            var eventos = await _eRepository.ObterTodos();
+
+            if (eventos == null)
+            {
+                Notificar($"Evento: não existe eventos cadastrados", TipoNotificacao.NotFound);
+            }
+
+            return eventos;
         }
         #endregion
 
@@ -99,7 +133,12 @@ namespace ONGAnimaisAPI.Domain.Services
         public async Task ExcluirONG(int id)
         {
             var ong = await _oRepository.Obter(id);
-            if (ong != null)
+
+            if (ong == null)
+            {
+                Notificar($"ONG: ong com id '{id}' não existe", TipoNotificacao.NotFound);
+            }
+            else
             {
                 await _oRepository.Excluir(ong);
             }
@@ -112,17 +151,38 @@ namespace ONGAnimaisAPI.Domain.Services
 
         public async Task<ONG> ObterONG(int id)
         {
-            return await _oRepository.Obter(id);
+            var ong =  await _oRepository.Obter(id);
+
+            if(ong == null)
+            {
+                Notificar($"ONG: ong com id '{id}' não existe", TipoNotificacao.NotFound);
+            }
+
+            return ong;
         }
 
         public async Task<ICollection<ONG>> ObterTodasONG()
         {
-            return await _oRepository.ObterTodos();
+            var ongs =  await _oRepository.ObterTodos();
+
+            if (ongs == null)
+            {
+                Notificar($"ONG: não existe ongs cadastradas", TipoNotificacao.NotFound);
+            }
+
+            return ongs;
         }
 
         public async Task<ONG> ObterONGEventos(int id)
         {
-            return await _oRepository.ObterONGEventos(id);
+            var ong =  await _oRepository.ObterONGEventos(id);
+
+            if (ong == null)
+            {
+                Notificar($"ONG: ong com id '{id}' não existe", TipoNotificacao.NotFound);
+            }
+
+            return ong;
         }
 
         #endregion

@@ -3,6 +3,8 @@ using ONGAnimaisAPI.Domain.Notifications;
 using ONGAnimaisAPI.Application.ViewModels;
 using System.Net;
 using ONGAnimaisAPI.Application.ViewModels.Usuario;
+using ONGAnimaisAPI.Application.ViewModels.ONG;
+using ONGAnimaisAPI.Application.ViewModels.Evento;
 
 namespace ONGAnimaisAPI.API.Mappings
 {
@@ -27,6 +29,70 @@ namespace ONGAnimaisAPI.API.Mappings
                     map => map.MapFrom(src => 201));
 
             CreateMap<ObtemUsuarioViewModel, RespostaViewModel<ObtemUsuarioViewModel>>()
+                .ForMember(dest => dest.Sucesso,
+                    map => map.MapFrom(src => true))
+                .ForMember(dest => dest.Objeto,
+                    map => map.MapFrom(src => src))
+                .ForMember(dest => dest.StatusCode,
+                    map => map.MapFrom(src => 200));
+
+            CreateMap<ObtemONGViewModel, RespostaViewModel<ObtemONGViewModel>>()
+                .ForMember(dest => dest.Sucesso,
+                    map => map.MapFrom(src => true))
+                .ForMember(dest => dest.Objeto,
+                    map => map.MapFrom(src => src))
+                .ForMember(dest => dest.StatusCode,
+                    map => map.MapFrom(src => 200));
+
+            CreateMap<ObtemONGEventosViewModel, RespostaViewModel<ObtemONGEventosViewModel>>()
+                .ForMember(dest => dest.Sucesso,
+                    map => map.MapFrom(src => true))
+                .ForMember(dest => dest.Objeto,
+                    map => map.MapFrom(src => src))
+                .ForMember(dest => dest.StatusCode,
+                    map => map.MapFrom(src => 200));
+
+            CreateMap<InsereONGViewModel, RespostaViewModel<InsereONGViewModel>>()
+                .ForMember(dest => dest.Sucesso,
+                    map => map.MapFrom(src => true))
+                .ForMember(dest => dest.Objeto,
+                    map => map.MapFrom(src => src))
+                .ForMember(dest => dest.StatusCode,
+                    map => map.MapFrom(src => 200));
+
+            //CreateMap<AtualizaONGViewModel, RespostaViewModel<AtualizaONGViewModel>>()
+            //    .ForMember(dest => dest.Sucesso,
+            //        map => map.MapFrom(src => true))
+            //    .ForMember(dest => dest.Objeto,
+            //        map => map.MapFrom(src => src))
+            //    .ForMember(dest => dest.StatusCode,
+            //        map => map.MapFrom(src => 200));
+
+            CreateMap<ObtemEventoViewModel, RespostaViewModel<ObtemEventoViewModel>>()
+                .ForMember(dest => dest.Sucesso,
+                    map => map.MapFrom(src => true))
+                .ForMember(dest => dest.Objeto,
+                    map => map.MapFrom(src => src))
+                .ForMember(dest => dest.StatusCode,
+                    map => map.MapFrom(src => 200));
+
+            CreateMap<InsereEventoViewModel, RespostaViewModel<InsereEventoViewModel>>()
+                .ForMember(dest => dest.Sucesso,
+                    map => map.MapFrom(src => true))
+                .ForMember(dest => dest.Objeto,
+                    map => map.MapFrom(src => src))
+                .ForMember(dest => dest.StatusCode,
+                    map => map.MapFrom(src => 200));
+
+            //CreateMap<AtualizaEventoViewModel, RespostaViewModel<AtualizaEventoViewModel>>()
+            //    .ForMember(dest => dest.Sucesso,
+            //        map => map.MapFrom(src => true))
+            //    .ForMember(dest => dest.Objeto,
+            //        map => map.MapFrom(src => src))
+            //    .ForMember(dest => dest.StatusCode,
+            //        map => map.MapFrom(src => 200));
+
+            CreateMap<string, RespostaViewModel<string>>()
                 .ForMember(dest => dest.Sucesso,
                     map => map.MapFrom(src => true))
                 .ForMember(dest => dest.Objeto,
