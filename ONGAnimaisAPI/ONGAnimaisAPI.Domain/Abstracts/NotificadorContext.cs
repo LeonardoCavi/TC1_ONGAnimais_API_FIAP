@@ -42,5 +42,12 @@ namespace ONGAnimaisAPI.Domain.Abstracts
 
             Notificar(validator);
         }
+
+        protected void ExecutarValidacao<TV>(TV validacao, (int,int) ids) where TV : AbstractValidator<(int, int)>
+        {
+            var validator = validacao.Validate(ids);
+
+            Notificar(validator);
+        }
     }
 }
