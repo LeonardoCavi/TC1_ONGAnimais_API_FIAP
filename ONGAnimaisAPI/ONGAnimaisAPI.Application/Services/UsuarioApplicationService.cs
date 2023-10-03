@@ -30,13 +30,21 @@ namespace ONGAnimaisAPI.Application.Services
 
         public async Task AtualizarUsuario(AtualizaUsuarioViewModel usuario)
         {
-            var usuarioMap = _mapper.Map<Usuario>(usuario);
-            await _service.AtualizarUsuario(usuarioMap);
+            ExecutarValidacao(new AtualizaUsuarioValidation(), usuario);
+
+            if (!_notificador.TemNotificacao())
+            {
+                var usuarioMap = _mapper.Map<Usuario>(usuario);
+                await _service.AtualizarUsuario(usuarioMap);
+            }
         }
 
         public async Task ExcluirUsuario(int id)
         {
-            await _service.ExcluirUsuario(id);
+            ExecutarValidacao(new IdValidation(), id);
+
+            if (!_notificador.TemNotificacao())
+                await _service.ExcluirUsuario(id);
         }
 
         public async Task InserirUsuario(InsereUsuarioViewModel usuario)
@@ -60,73 +68,85 @@ namespace ONGAnimaisAPI.Application.Services
         {
             ExecutarValidacao(new IdValidation(), id);
 
-            if (_notificador.TemNotificacao())
-                return null;
+            if (!_notificador.TemNotificacao())
+            {
+                var usuario = await _service.ObterUsuario(id);
 
-            var usuario = await _service.ObterUsuario(id);
+                if (!_notificador.TemNotificacao())
+                    return _mapper.Map<ObtemUsuarioViewModel>(usuario);
+            }
 
-            if (_notificador.TemNotificacao())
-                return null;
-
-            return _mapper.Map<ObtemUsuarioViewModel>(usuario);
+            return null;
         }
 
         public async Task<ObtemUsuarioEventosViewModel> ObterUsuarioEventos(int id)
         {
             ExecutarValidacao(new IdValidation(), id);
 
-            if (_notificador.TemNotificacao())
-                return null;
+            if (!_notificador.TemNotificacao())
+            {
+                var usuarioevento = await _service.ObterUsuarioEventos(id);
 
-            var usuarioevento = await _service.ObterUsuarioEventos(id);
+                if (!_notificador.TemNotificacao())
+                    return _mapper.Map<ObtemUsuarioEventosViewModel>(usuarioevento);
+            }
 
-            if (_notificador.TemNotificacao())
-                return null;
-
-            return _mapper.Map<ObtemUsuarioEventosViewModel>(usuarioevento);
+            return null;
         }
 
         public async Task<ObtemUsuarioONGsViewModel> ObterUsuarioONGs(int id)
         {
             ExecutarValidacao(new IdValidation(), id);
 
-            if (_notificador.TemNotificacao())
-                return null;
+            if (!_notificador.TemNotificacao())
+            {
+                var usuarioOng = await _service.ObterUsuarioONGs(id);
 
-            var usuarioong = await _service.ObterUsuarioONGs(id);
+                if (!_notificador.TemNotificacao())
+                    return _mapper.Map<ObtemUsuarioONGsViewModel>(usuarioOng);
+            }
 
-            if (_notificador.TemNotificacao())
-                return null;
-
-            return _mapper.Map<ObtemUsuarioONGsViewModel>(usuarioong);
+            return null;
         }
 
         #endregion
 
         #region [Evento]
 
-        public async Task SeguirEvento(int eventoId, int id)
+        public async Task SeguirEvento(int usuarioId, int id)
         {
-            await _service.SeguirEvento(eventoId, id);
+            ExecutarValidacao(new IdUsuarioValidation(), (usuarioId, id));
+
+            if (!_notificador.TemNotificacao())
+                await _service.SeguirEvento(usuarioId, id);
         }
 
-        public async Task DesseguirEvento(int eventoId, int id)
+        public async Task DesseguirEvento(int usuarioId, int id)
         {
-            await _service.DesseguirEvento(eventoId, id);
+            ExecutarValidacao(new IdUsuarioValidation(), (usuarioId, id));
+
+            if (!_notificador.TemNotificacao())
+                await _service.DesseguirEvento(usuarioId, id);
         }
 
         #endregion
 
         #region [ONG]
 
-        public async Task SeguirONG(int ongId, int id)
+        public async Task SeguirONG(int usuarioId, int id)
         {
-            await _service.SeguirONG(ongId, id);
+            ExecutarValidacao(new IdUsuarioValidation(), (usuarioId, id));
+
+            if (!_notificador.TemNotificacao())
+                await _service.SeguirONG(usuarioId, id);
         }
 
-        public async Task DesseguirONG(int ongId, int id)
+        public async Task DesseguirONG(int usuarioId, int id)
         {
-            await _service.DesseguirONG(ongId, id);
+            ExecutarValidacao(new IdUsuarioValidation(), (usuarioId, id));
+
+            if (!_notificador.TemNotificacao())
+                await _service.DesseguirONG(usuarioId, id);
         }
 
         #endregion

@@ -33,6 +33,31 @@ namespace ONGAnimaisAPI.API.Mappings
                     map => map.MapFrom(src => src))
                 .ForMember(dest => dest.StatusCode,
                     map => map.MapFrom(src => 200));
+
+            CreateMap<List<ObtemUsuarioViewModel>, RespostaViewModel<List<ObtemUsuarioViewModel>>>()
+                .ForMember(dest => dest.Sucesso,
+                    map => map.MapFrom(src => true))
+                .ForMember(dest => dest.Objeto,
+                    map => map.MapFrom(src => src))
+                .ForMember(dest => dest.StatusCode,
+                    map => map.MapFrom(src => 200));
+
+            CreateMap<ObtemUsuarioEventosViewModel, RespostaViewModel<ObtemUsuarioEventosViewModel>>()
+                .ForMember(dest => dest.Sucesso,
+                    map => map.MapFrom(src => true))
+                .ForMember(dest => dest.Objeto,
+                    map => map.MapFrom(src => src))
+                .ForMember(dest => dest.StatusCode,
+                    map => map.MapFrom(src => 200));
+
+            CreateMap<ObtemUsuarioONGsViewModel, RespostaViewModel<ObtemUsuarioONGsViewModel>>()
+                .ForMember(dest => dest.Sucesso,
+                    map => map.MapFrom(src => true))
+                .ForMember(dest => dest.Objeto,
+                    map => map.MapFrom(src => src))
+                .ForMember(dest => dest.StatusCode,
+                    map => map.MapFrom(src => 200));
+
         }
     }
 

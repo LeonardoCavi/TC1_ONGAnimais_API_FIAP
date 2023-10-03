@@ -29,7 +29,7 @@ namespace ONGAnimaisAPI.Domain.Services
         {
             var usuarioDB = await _uRepository.Obter(usuario.Id);
 
-            if (usuarioDB != null)
+            if (!_notificador.TemNotificacao())
             {
                 usuarioDB.Nome = usuario.Nome;
                 usuarioDB.Telefone = usuario.Telefone;
@@ -42,10 +42,9 @@ namespace ONGAnimaisAPI.Domain.Services
         public async Task ExcluirUsuario(int id)
         {
             var usuario = await _uRepository.Obter(id);
-            if (usuario != null)
-            {
+
+            if (!_notificador.TemNotificacao())
                 await _uRepository.Excluir(usuario);
-            }
         }
 
         public async Task InserirUsuario(Usuario usuario)
@@ -55,14 +54,19 @@ namespace ONGAnimaisAPI.Domain.Services
 
         public async Task<ICollection<Usuario>> ObterTodosUsuarios()
         {
-            return await _uRepository.ObterTodos();
+            var usuarios = await _uRepository.ObterTodos();
+
+            if (!usuarios.Any())
+                Notificar($"Usuario: não existem usuários cadastrados", TipoNotificacao.NotFound);
+
+            return usuarios;
         }
 
         public async Task<Usuario> ObterUsuario(int id)
         {
             var usuario = await _uRepository.Obter(id);
 
-            if (usuario == null)
+            if (usuario is null)
                 Notificar($"Usuario: usuário com id '{id}' não existe", TipoNotificacao.NotFound);
 
             return usuario;
@@ -70,45 +74,69 @@ namespace ONGAnimaisAPI.Domain.Services
 
         public async Task<Usuario> ObterUsuarioEventos(int id)
         {
-            return await _uRepository.ObterUsuarioEventos(id);
+            var usuarioEventos = await _uRepository.ObterUsuarioEventos(id);
+
+            if (usuarioEventos is null)
+                Notificar($"Usuario: usuário com id '{id}' não existe", TipoNotificacao.NotFound);
+
+            return usuarioEventos;
         }
 
         public async Task<Usuario> ObterUsuarioONGs(int id)
         {
-            return await _uRepository.ObterUsuarioONGs(id);
+            var usuarioOngs = await _uRepository.ObterUsuarioONGs(id);
+
+            if (usuarioOngs is null)
+                Notificar($"Usuario: usuário com id '{id}' não existe", TipoNotificacao.NotFound);
+
+            return usuarioOngs;
         }
 
         #endregion [Usuario]
 
         #region [Evento]
 
-        public async Task SeguirEvento(int eventoId, int id)
+        public async Task SeguirEvento(int usuarioId, int id)
         {
-            var usuario = await _uRepository.ObterUsuarioEventos(id);
-            if (usuario != null)
+            var usuarioEventos = await _uRepository.ObterUsuarioEventos(usuarioId);
+
+            if (usuarioEventos is null)
+                Notificar($"Usuario: usuário com id '{usuarioId}' não existe", TipoNotificacao.NotFound);
+            else
             {
-                if(!usuario.EventosSeguidos.Any(e => e.Id == eventoId))
+                if (usuarioEventos.EventosSeguidos.Any(e => e.Id == id))
+                    Notificar($"Usuario: usuário com id '{usuarioId}' já está seguindo o evento com id '{id}'", TipoNotificacao.Validation);
+                else
                 {
-                    var evento = await _eRepository.Obter(eventoId);
-                    if (evento != null)
+                    var evento = await _eRepository.Obter(id);
+
+                    if (evento is null)
+                        Notificar($"Evento: evento com id '{id}' não existe", TipoNotificacao.NotFound);
+                    else
                     {
-                        usuario.EventosSeguidos.Add(evento);
-                        await _uRepository.Atualizar(usuario);
-                    }                         
+                        usuarioEventos.EventosSeguidos.Add(evento);
+                        await _uRepository.Atualizar(usuarioEventos);
+                    }
                 }
             }
         }
 
-        public async Task DesseguirEvento(int eventoId, int id)
+        public async Task DesseguirEvento(int usuarioId, int id)
         {
-            var usuario = await _uRepository.ObterUsuarioEventos(id);
-            if (usuario != null)
+            var usuarioEventos = await _uRepository.ObterUsuarioEventos(usuarioId);
+
+            if (usuarioEventos is null)
+                Notificar($"Usuario: usuário com id '{usuarioId}' não existe", TipoNotificacao.NotFound);
+            else
             {
-                var evento = usuario.EventosSeguidos.FirstOrDefault(e => e.Id == eventoId);
-                if (evento != null)
+                var evento = usuarioEventos.EventosSeguidos.FirstOrDefault(e => e.Id == id);
+
+                if (evento is null)
+                    Notificar($"Usuario: usuário com id '{usuarioId}' não está seguindo o evento com id '{id}'", TipoNotificacao.Validation);
+                else 
                 {
-                    usuario.EventosSeguidos.Remove(evento);
-                    await _uRepository.Atualizar(usuario);
+                    usuarioEventos.EventosSeguidos.Remove(evento);
+                    await _uRepository.Atualizar(usuarioEventos);
                 }
             }
         }
@@ -117,33 +145,47 @@ namespace ONGAnimaisAPI.Domain.Services
 
         #region [ONG]
 
-        public async Task SeguirONG(int ongId, int id)
+        public async Task SeguirONG(int usuarioId, int id)
         {
-            var usuario = await _uRepository.ObterUsuarioONGs(id);
-            if (usuario != null)
+            var usuarioOngs = await _uRepository.ObterUsuarioONGs(usuarioId);
+
+            if (usuarioOngs is null)
+                Notificar($"Usuario: usuário com id '{usuarioId}' não existe", TipoNotificacao.NotFound);
+            else
             {
-                if (!usuario.ONGsSeguidas.Any(o => o.Id == ongId))
+                if (usuarioOngs.ONGsSeguidas.Any(e => e.Id == id))
+                    Notificar($"Usuario: usuário com id '{usuarioId}' já está seguindo a ong com id '{id}'", TipoNotificacao.Validation);
+                else
                 {
-                    var ong = await _oRepository.Obter(ongId);
-                    if (ong != null)
+                    var ong = await _oRepository.Obter(id);
+
+                    if (ong is null)
+                        Notificar($"ONG: ong com id '{id}' não existe", TipoNotificacao.NotFound);
+                    else
                     {
-                        usuario.ONGsSeguidas.Add(ong);
-                        await _uRepository.Atualizar(usuario);
+                        usuarioOngs.ONGsSeguidas.Add(ong);
+                        await _uRepository.Atualizar(usuarioOngs);
                     }
                 }
             }
         }
 
-        public async Task DesseguirONG(int ongId, int id)
+        public async Task DesseguirONG(int usuarioId, int id)
         {
-            var usuario = await _uRepository.ObterUsuarioONGs(id);
-            if (usuario != null)
+            var usuarioOngs = await _uRepository.ObterUsuarioONGs(usuarioId);
+
+            if (usuarioOngs is null)
+                Notificar($"Usuario: usuário com id '{usuarioId}' não existe", TipoNotificacao.NotFound);
+            else
             {
-                var ong = usuario.ONGsSeguidas.FirstOrDefault(o => o.Id == ongId);
-                if (ong != null)
+                var ong = usuarioOngs.ONGsSeguidas.FirstOrDefault(o => o.Id == id);
+
+                if (ong is null)
+                    Notificar($"Usuario: usuário com id '{usuarioId}' não está seguindo a ong com id '{id}'", TipoNotificacao.Validation);
+                else
                 {
-                    usuario.ONGsSeguidas.Remove(ong);
-                    await _uRepository.Atualizar(usuario);
+                    usuarioOngs.ONGsSeguidas.Remove(ong);
+                    await _uRepository.Atualizar(usuarioOngs);
                 }
             }
         }

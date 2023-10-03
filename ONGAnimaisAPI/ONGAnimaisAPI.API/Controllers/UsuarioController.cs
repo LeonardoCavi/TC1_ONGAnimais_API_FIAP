@@ -59,14 +59,14 @@ namespace ONGAnimaisAPI.API.Controllers
             {
                 var usuarios = await _application.ObterTodosUsuarios();
 
-                if (usuarios.Any())
+                if (_notificador.TemNotificacao())
                 {
-                    return Ok(usuarios);
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
+
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
-                else
-                {
-                    return NotFound("Não existe Usuários cadastrados!");
-                }
+
+                return Ok(_mapper.Map<RespostaViewModel<List<ObtemUsuarioViewModel>>>(usuarios));
             }
             catch (Exception ex)
             {
@@ -80,21 +80,16 @@ namespace ONGAnimaisAPI.API.Controllers
         {
             try
             {
-                if (id <= 0)
+                var usuarioEventos = await _application.ObterUsuarioEventos(id);
+
+                if (_notificador.TemNotificacao())
                 {
-                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
+
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                var usuario = await _application.ObterUsuarioEventos(id);
-
-                if (usuario != null)
-                {
-                    return Ok(usuario);
-                }
-                else
-                {
-                    return NotFound("Usuário não encontrado!");
-                }
+                return Ok(_mapper.Map<RespostaViewModel<ObtemUsuarioEventosViewModel>>(usuarioEventos));
             }
             catch (Exception ex)
             {
@@ -108,21 +103,16 @@ namespace ONGAnimaisAPI.API.Controllers
         {
             try
             {
-                if (id <= 0)
+                var usuarioOngs = await _application.ObterUsuarioONGs(id);
+
+                if (_notificador.TemNotificacao())
                 {
-                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
+
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                var usuario = await _application.ObterUsuarioONGs(id);
-
-                if (usuario != null)
-                {
-                    return Ok(usuario);
-                }
-                else
-                {
-                    return NotFound("Usuário não encontrado!");
-                }
+                return Ok(_mapper.Map<RespostaViewModel<ObtemUsuarioONGsViewModel>>(usuarioOngs));
             }
             catch (Exception ex)
             {
@@ -202,23 +192,13 @@ namespace ONGAnimaisAPI.API.Controllers
 
         #region [Evento]
 
-        [Route("{usuarioId}/seguir-evento")]
-        [HttpPost]
-        public async Task<IActionResult> SeguirEvento(int eventoId, int usuarioId)
+        [Route("{usuarioId}/seguir-evento/{id}")]
+        [HttpPut]
+        public async Task<IActionResult> SeguirEvento(int usuarioId, int id)
         {
             try
             {
-                if (usuarioId <= 0)
-                {
-                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
-                }
-
-                if (eventoId <= 0)
-                {
-                    return BadRequest("Identificador do Evento inválido. Tente novamente!");
-                }
-
-                await _application.SeguirEvento(eventoId, usuarioId);
+                await _application.SeguirEvento(usuarioId, id);
                 return NoContent();
             }
             catch (Exception ex)
@@ -227,23 +207,15 @@ namespace ONGAnimaisAPI.API.Controllers
             }
         }
 
-        [Route("{usuarioId}/desseguir-evento")]
-        [HttpDelete]
-        public async Task<IActionResult> DesseguirEvento(int eventoId, int usuarioId)
+        [Route("{usuarioId}/desseguir-evento/{id}")]
+        [HttpPut]
+        public async Task<IActionResult> DesseguirEvento(int usuarioId, int id)
         {
             try
             {
-                if (usuarioId <= 0)
-                {
-                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
-                }
+                await _application.DesseguirEvento(usuarioId, id);
 
-                if (eventoId <= 0)
-                {
-                    return BadRequest("Identificador do Evento inválido. Tente novamente!");
-                }
 
-                await _application.DesseguirEvento(eventoId, usuarioId);
                 return NoContent();
             }
             catch (Exception ex)
