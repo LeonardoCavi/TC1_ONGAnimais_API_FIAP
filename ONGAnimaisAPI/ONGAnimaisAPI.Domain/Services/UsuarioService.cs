@@ -27,7 +27,7 @@ namespace ONGAnimaisAPI.Domain.Services
 
         public async Task AtualizarUsuario(Usuario usuario)
         {
-            var usuarioDB = await _uRepository.Obter(usuario.Id);
+            var usuarioDB = await ObterUsuario(usuario.Id);
 
             if (!_notificador.TemNotificacao())
             {
@@ -41,7 +41,7 @@ namespace ONGAnimaisAPI.Domain.Services
 
         public async Task ExcluirUsuario(int id)
         {
-            var usuario = await _uRepository.Obter(id);
+            var usuario = await ObterUsuario(id);
 
             if (!_notificador.TemNotificacao())
                 await _uRepository.Excluir(usuario);
@@ -98,14 +98,12 @@ namespace ONGAnimaisAPI.Domain.Services
 
         public async Task SeguirEvento(int usuarioId, int id)
         {
-            var usuarioEventos = await _uRepository.ObterUsuarioEventos(usuarioId);
+            var usuarioEventos = await ObterUsuarioEventos(usuarioId);
 
-            if (usuarioEventos is null)
-                Notificar($"Usuario: usuário com id '{usuarioId}' não existe", TipoNotificacao.NotFound);
-            else
+            if (!_notificador.TemNotificacao())
             {
                 if (usuarioEventos.EventosSeguidos.Any(e => e.Id == id))
-                    Notificar($"Usuario: usuário com id '{usuarioId}' já está seguindo o evento com id '{id}'", TipoNotificacao.Validation);
+                    Notificar($"Usuario: usuário com id '{usuarioId}' já está seguindo o evento com id '{id}'", TipoNotificacao.Conflict);
                 else
                 {
                     var evento = await _eRepository.Obter(id);
@@ -123,16 +121,14 @@ namespace ONGAnimaisAPI.Domain.Services
 
         public async Task DesseguirEvento(int usuarioId, int id)
         {
-            var usuarioEventos = await _uRepository.ObterUsuarioEventos(usuarioId);
+            var usuarioEventos = await ObterUsuarioEventos(usuarioId);
 
-            if (usuarioEventos is null)
-                Notificar($"Usuario: usuário com id '{usuarioId}' não existe", TipoNotificacao.NotFound);
-            else
+            if (!_notificador.TemNotificacao())
             {
                 var evento = usuarioEventos.EventosSeguidos.FirstOrDefault(e => e.Id == id);
 
                 if (evento is null)
-                    Notificar($"Usuario: usuário com id '{usuarioId}' não está seguindo o evento com id '{id}'", TipoNotificacao.Validation);
+                    Notificar($"Usuario: usuário com id '{usuarioId}' já não está seguindo o evento com id '{id}'", TipoNotificacao.Conflict);
                 else 
                 {
                     usuarioEventos.EventosSeguidos.Remove(evento);
@@ -147,14 +143,12 @@ namespace ONGAnimaisAPI.Domain.Services
 
         public async Task SeguirONG(int usuarioId, int id)
         {
-            var usuarioOngs = await _uRepository.ObterUsuarioONGs(usuarioId);
+            var usuarioOngs = await ObterUsuarioONGs(usuarioId);
 
-            if (usuarioOngs is null)
-                Notificar($"Usuario: usuário com id '{usuarioId}' não existe", TipoNotificacao.NotFound);
-            else
+            if (!_notificador.TemNotificacao())
             {
                 if (usuarioOngs.ONGsSeguidas.Any(e => e.Id == id))
-                    Notificar($"Usuario: usuário com id '{usuarioId}' já está seguindo a ong com id '{id}'", TipoNotificacao.Validation);
+                    Notificar($"Usuario: usuário com id '{usuarioId}' já está seguindo a ong com id '{id}'", TipoNotificacao.Conflict);
                 else
                 {
                     var ong = await _oRepository.Obter(id);
@@ -172,16 +166,14 @@ namespace ONGAnimaisAPI.Domain.Services
 
         public async Task DesseguirONG(int usuarioId, int id)
         {
-            var usuarioOngs = await _uRepository.ObterUsuarioONGs(usuarioId);
+            var usuarioOngs = await ObterUsuarioONGs(usuarioId);
 
-            if (usuarioOngs is null)
-                Notificar($"Usuario: usuário com id '{usuarioId}' não existe", TipoNotificacao.NotFound);
-            else
+            if (!_notificador.TemNotificacao())
             {
                 var ong = usuarioOngs.ONGsSeguidas.FirstOrDefault(o => o.Id == id);
 
                 if (ong is null)
-                    Notificar($"Usuario: usuário com id '{usuarioId}' não está seguindo a ong com id '{id}'", TipoNotificacao.Validation);
+                    Notificar($"Usuario: usuário com id '{usuarioId}' já não está seguindo a ong com id '{id}'", TipoNotificacao.Conflict);
                 else
                 {
                     usuarioOngs.ONGsSeguidas.Remove(ong);

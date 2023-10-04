@@ -38,16 +38,16 @@ namespace ONGAnimaisAPI.API.Controllers
 
                 if (_notificador.TemNotificacao())
                 {
-                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes()); //TODO mudar a RespostaViewModel para ErrorViewModel
 
                     return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                return Ok(_mapper.Map<RespostaViewModel<ObtemUsuarioViewModel>>(usuario));
+                return Ok(_mapper.Map<RespostaViewModel<ObtemUsuarioViewModel>>(usuario)); //TODO Abandonar RespostaViewModel para retornos de sucesso
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                return StatusCode(500, "ERRO => " + ex.Message); //TODO implementar mapeamento para exception
             }
         }
 
@@ -149,18 +149,16 @@ namespace ONGAnimaisAPI.API.Controllers
         {
             try
             {
-                if (usuario == null)
-                {
-                    return BadRequest("Dados do Usuário incorretos!");
-                }
-                if (usuario.Id <= 0)
-                {
-                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
-                }
-
-
                 await _application.AtualizarUsuario(usuario);
-                return NoContent();
+
+                if (_notificador.TemNotificacao())
+                {
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
+
+                    return StatusCode(resposta.StatusCode, resposta);
+                }
+
+                return Ok("Usuário atualizado com sucesso!");
             }
             catch (Exception ex)
             {
@@ -174,13 +172,16 @@ namespace ONGAnimaisAPI.API.Controllers
         {
             try
             {
-                if (id <= 0)
+                await _application.ExcluirUsuario(id);
+
+                if (_notificador.TemNotificacao())
                 {
-                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
+
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                await _application.ExcluirUsuario(id);
-                return NoContent();
+                return Ok("Usuário excluído com sucesso!");
             }
             catch (Exception ex)
             {
@@ -199,7 +200,15 @@ namespace ONGAnimaisAPI.API.Controllers
             try
             {
                 await _application.SeguirEvento(usuarioId, id);
-                return NoContent();
+
+                if (_notificador.TemNotificacao())
+                {
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
+
+                    return StatusCode(resposta.StatusCode, resposta);
+                }
+
+                return Ok("Evento seguido com sucesso!");
             }
             catch (Exception ex)
             {
@@ -215,8 +224,14 @@ namespace ONGAnimaisAPI.API.Controllers
             {
                 await _application.DesseguirEvento(usuarioId, id);
 
+                if (_notificador.TemNotificacao())
+                {
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
 
-                return NoContent();
+                    return StatusCode(resposta.StatusCode, resposta);
+                }
+
+                return Ok("Evento desseguido com sucesso!");
             }
             catch (Exception ex)
             {
@@ -228,24 +243,22 @@ namespace ONGAnimaisAPI.API.Controllers
 
         #region [ONG]
 
-        [Route("{usuarioId}/seguir-ong")]
-        [HttpPost]
-        public async Task<IActionResult> SeguirONG(int ongId, int usuarioId)
+        [Route("{usuarioId}/seguir-ong/{id}")]
+        [HttpPut]
+        public async Task<IActionResult> SeguirONG(int usuarioId, int id)
         {
             try
             {
-                if (usuarioId <= 0)
+                await _application.SeguirONG(usuarioId, id);
+
+                if (_notificador.TemNotificacao())
                 {
-                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
+
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                if (ongId <= 0)
-                {
-                    return BadRequest("Identificador da ONG inválido. Tente novamente!");
-                }
-
-                await _application.SeguirONG(ongId, usuarioId);
-                return NoContent();
+                return Ok("ONG seguida com sucesso!");
             }
             catch (Exception ex)
             {
@@ -253,24 +266,22 @@ namespace ONGAnimaisAPI.API.Controllers
             }
         }
 
-        [Route("{usuarioId}/desseguir-ong")]
-        [HttpDelete]
-        public async Task<IActionResult> DesseguirONG(int ongId, int usuarioId)
+        [Route("{usuarioId}/desseguir-ong/{id}")]
+        [HttpPut]
+        public async Task<IActionResult> DesseguirONG(int usuarioId, int id)
         {
             try
             {
-                if (usuarioId <= 0)
+                await _application.DesseguirONG(usuarioId, id);
+
+                if (_notificador.TemNotificacao())
                 {
-                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
+                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
+
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                if (ongId <= 0)
-                {
-                    return BadRequest("Identificador da ONG inválido. Tente novamente!");
-                }
-
-                await _application.DesseguirONG(ongId, usuarioId);
-                return NoContent();
+                return Ok("ONG desseguida com sucesso!");
             }
             catch (Exception ex)
             {
