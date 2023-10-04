@@ -139,6 +139,8 @@ namespace ONGAnimaisAPI.API.Mappings
                     return (int) HttpStatusCode.BadRequest;
                 case TipoNotificacao.NotFound:
                     return (int) HttpStatusCode.NotFound;
+                case TipoNotificacao.Conflict:
+                    return (int)HttpStatusCode.Conflict;
                 default:
                     return (int) HttpStatusCode.InternalServerError;
             }
