@@ -3,6 +3,7 @@ using ONGAnimaisAPI.Application.Interfaces;
 using ONGAnimaisAPI.Application.Validations;
 using ONGAnimaisAPI.Application.Validations.Evento;
 using ONGAnimaisAPI.Application.Validations.ONG;
+using ONGAnimaisAPI.Application.Validations.Usuario;
 using ONGAnimaisAPI.Application.ViewModels.Evento;
 using ONGAnimaisAPI.Application.ViewModels.ONG;
 using ONGAnimaisAPI.Domain.Abstracts;
@@ -141,18 +142,14 @@ namespace ONGAnimaisAPI.Application.Services
 
         public async Task<ObtemEventoViewModel> ObterEvento(int ongId, int id)
         {
-            ExecutarValidacao(new IdValidation(), ongId);
+            ExecutarValidacao(new IdEventoValidation(), (ongId, id));
 
             if (!_notificador.TemNotificacao())
             {
-                ExecutarValidacao(new IdValidation(), id);
+                var evento = await _service.ObterEvento(ongId, id);
                 if (!_notificador.TemNotificacao())
                 {
-                    var evento = await _service.ObterEvento(ongId, id);
-                    if (!_notificador.TemNotificacao())
-                    {
-                        return _mapper.Map<ObtemEventoViewModel>(evento);
-                    }
+                    return _mapper.Map<ObtemEventoViewModel>(evento);
                 }
             }
 
@@ -161,15 +158,11 @@ namespace ONGAnimaisAPI.Application.Services
 
         public async Task ExcluirEvento(int ongId, int id)
         {
-            ExecutarValidacao(new IdValidation(), ongId);
+            ExecutarValidacao(new IdEventoValidation(), (ongId, id));
 
             if (!_notificador.TemNotificacao())
             {
-                ExecutarValidacao(new IdValidation(), id);
-                if (!_notificador.TemNotificacao())
-                {
-                    await _service.ExcluirEvento(ongId, id);
-                }
+                await _service.ExcluirEvento(ongId, id);
             }
         }
 

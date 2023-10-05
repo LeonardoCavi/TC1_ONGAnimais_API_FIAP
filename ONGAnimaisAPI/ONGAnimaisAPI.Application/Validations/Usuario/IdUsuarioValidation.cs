@@ -13,9 +13,9 @@ namespace ONGAnimaisAPI.Application.Validations.Usuario
         public IdUsuarioValidation()
         {
             RuleFor(u => u.UsuarioId)
-               .GreaterThan(0).WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}");
+               .GreaterThan(0).WithMessage("UsuarioId: o Id do Usuário precisa ser maior do que zero");
             RuleFor(u => u.Id)
-                .GreaterThan(0).WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}"); ;
+                .GreaterThan(0).WithMessage("Id: o Id precisa ser maior do que zero");
         }
     }
 }
