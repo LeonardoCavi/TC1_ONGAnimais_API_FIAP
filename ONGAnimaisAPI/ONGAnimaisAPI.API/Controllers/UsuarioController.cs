@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using ONGAnimaisAPI.Application.Interfaces;
+using ONGAnimaisAPI.Application.ViewModels;
 using ONGAnimaisAPI.Application.ViewModels.Evento;
 using ONGAnimaisAPI.Application.ViewModels.ONG;
 using ONGAnimaisAPI.Application.ViewModels.Usuario;
 using ONGAnimaisAPI.Domain.Entities;
+using ONGAnimaisAPI.Domain.Interfaces.Notifications;
+using ONGAnimaisAPI.Domain.Notifications;
 using System.Security.Cryptography;
 
 namespace ONGAnimaisAPI.API.Controllers
@@ -13,10 +17,13 @@ namespace ONGAnimaisAPI.API.Controllers
     public class UsuarioController : ControllerBase
     {
         private readonly IUsuarioApplicationService _application;
-
-        public UsuarioController(IUsuarioApplicationService application)
+        private readonly IMapper _mapper;
+        private readonly INotificador _notificador;
+        public UsuarioController(IUsuarioApplicationService application, IMapper mapper, INotificador notificador)
         {
             this._application = application;
+            this._mapper = mapper;
+            this._notificador = notificador;
         }
 
         #region [Usuario]
@@ -27,25 +34,21 @@ namespace ONGAnimaisAPI.API.Controllers
         {
             try
             {
-                if (id <= 0)
-                {
-                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
-                }
-
                 var usuario = await _application.ObterUsuario(id);
 
-                if (usuario != null)
+                if (_notificador.TemNotificacao())
                 {
-                    return Ok(usuario);
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
+
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
-                else
-                {
-                    return NotFound("Usuário não encontrada!");
-                }
+
+                return Ok(usuario);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 
@@ -57,18 +60,18 @@ namespace ONGAnimaisAPI.API.Controllers
             {
                 var usuarios = await _application.ObterTodosUsuarios();
 
-                if (usuarios.Any())
+                if (_notificador.TemNotificacao())
                 {
-                    return Ok(usuarios);
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
-                else
-                {
-                    return NotFound("Não existe Usuários cadastrados!");
-                }
+
+                return Ok(usuarios);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 
@@ -78,25 +81,20 @@ namespace ONGAnimaisAPI.API.Controllers
         {
             try
             {
-                if (id <= 0)
+                var usuarioEventos = await _application.ObterUsuarioEventos(id);
+
+                if (_notificador.TemNotificacao())
                 {
-                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                var usuario = await _application.ObterUsuarioEventos(id);
-
-                if (usuario != null)
-                {
-                    return Ok(usuario);
-                }
-                else
-                {
-                    return NotFound("Usuário não encontrado!");
-                }
+                return Ok(usuarioEventos);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 
@@ -106,25 +104,20 @@ namespace ONGAnimaisAPI.API.Controllers
         {
             try
             {
-                if (id <= 0)
+                var usuarioOngs = await _application.ObterUsuarioONGs(id);
+
+                if (_notificador.TemNotificacao())
                 {
-                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                var usuario = await _application.ObterUsuarioONGs(id);
-
-                if (usuario != null)
-                {
-                    return Ok(usuario);
-                }
-                else
-                {
-                    return NotFound("Usuário não encontrado!");
-                }
+                return Ok(usuarioOngs);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 
@@ -134,17 +127,21 @@ namespace ONGAnimaisAPI.API.Controllers
         {
             try
             {
-                if (usuario == null)
+                await _application.InserirUsuario(usuario);
+
+                if (_notificador.TemNotificacao())
                 {
-                    return BadRequest("Dados do Usuário incorretos!");
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
+
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                await _application.InserirUsuario(usuario);
                 return Created("", usuario);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 
@@ -154,22 +151,20 @@ namespace ONGAnimaisAPI.API.Controllers
         {
             try
             {
-                if (usuario == null)
-                {
-                    return BadRequest("Dados do Usuário incorretos!");
-                }
-                if (usuario.Id <= 0)
-                {
-                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
-                }
-
-
                 await _application.AtualizarUsuario(usuario);
-                return NoContent();
+
+                if (_notificador.TemNotificacao())
+                {
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
+                    return StatusCode(resposta.StatusCode, resposta);
+                }
+
+                return Ok("Usuário atualizado com sucesso!");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 
@@ -179,17 +174,20 @@ namespace ONGAnimaisAPI.API.Controllers
         {
             try
             {
-                if (id <= 0)
+                await _application.ExcluirUsuario(id);
+
+                if (_notificador.TemNotificacao())
                 {
-                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                await _application.ExcluirUsuario(id);
-                return NoContent();
+                return Ok("Usuário excluído com sucesso!");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 
@@ -197,53 +195,49 @@ namespace ONGAnimaisAPI.API.Controllers
 
         #region [Evento]
 
-        [Route("{usuarioId}/seguir-evento")]
-        [HttpPost]
-        public async Task<IActionResult> SeguirEvento(int eventoId, int usuarioId)
+        [Route("{usuarioId}/seguir-evento/{id}")]
+        [HttpPut]
+        public async Task<IActionResult> SeguirEvento(int usuarioId, int id)
         {
             try
             {
-                if (usuarioId <= 0)
+                await _application.SeguirEvento(usuarioId, id);
+
+                if (_notificador.TemNotificacao())
                 {
-                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                if (eventoId <= 0)
-                {
-                    return BadRequest("Identificador do Evento inválido. Tente novamente!");
-                }
-
-                await _application.SeguirEvento(eventoId, usuarioId);
-                return NoContent();
+                return Ok("Evento seguido com sucesso!");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 
-        [Route("{usuarioId}/desseguir-evento")]
-        [HttpDelete]
-        public async Task<IActionResult> DesseguirEvento(int eventoId, int usuarioId)
+        [Route("{usuarioId}/desseguir-evento/{id}")]
+        [HttpPut]
+        public async Task<IActionResult> DesseguirEvento(int usuarioId, int id)
         {
             try
             {
-                if (usuarioId <= 0)
+                await _application.DesseguirEvento(usuarioId, id);
+
+                if (_notificador.TemNotificacao())
                 {
-                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                if (eventoId <= 0)
-                {
-                    return BadRequest("Identificador do Evento inválido. Tente novamente!");
-                }
-
-                await _application.DesseguirEvento(eventoId, usuarioId);
-                return NoContent();
+                return Ok("Evento desseguido com sucesso!");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 
@@ -251,53 +245,49 @@ namespace ONGAnimaisAPI.API.Controllers
 
         #region [ONG]
 
-        [Route("{usuarioId}/seguir-ong")]
-        [HttpPost]
-        public async Task<IActionResult> SeguirONG(int ongId, int usuarioId)
+        [Route("{usuarioId}/seguir-ong/{id}")]
+        [HttpPut]
+        public async Task<IActionResult> SeguirONG(int usuarioId, int id)
         {
             try
             {
-                if (usuarioId <= 0)
+                await _application.SeguirONG(usuarioId, id);
+
+                if (_notificador.TemNotificacao())
                 {
-                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                if (ongId <= 0)
-                {
-                    return BadRequest("Identificador da ONG inválido. Tente novamente!");
-                }
-
-                await _application.SeguirONG(ongId, usuarioId);
-                return NoContent();
+                return Ok("ONG seguida com sucesso!");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 
-        [Route("{usuarioId}/desseguir-ong")]
-        [HttpDelete]
-        public async Task<IActionResult> DesseguirONG(int ongId, int usuarioId)
+        [Route("{usuarioId}/desseguir-ong/{id}")]
+        [HttpPut]
+        public async Task<IActionResult> DesseguirONG(int usuarioId, int id)
         {
             try
             {
-                if (usuarioId <= 0)
+                await _application.DesseguirONG(usuarioId, id);
+
+                if (_notificador.TemNotificacao())
                 {
-                    return BadRequest("Identificador do Usuário inválido. Tente novamente!");
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
+                    return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                if (ongId <= 0)
-                {
-                    return BadRequest("Identificador da ONG inválido. Tente novamente!");
-                }
-
-                await _application.DesseguirONG(ongId, usuarioId);
-                return NoContent();
+                return Ok("ONG desseguida com sucesso!");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 

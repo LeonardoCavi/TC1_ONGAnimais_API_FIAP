@@ -1,19 +1,26 @@
 ﻿using AutoMapper;
 using ONGAnimaisAPI.Application.Interfaces;
+using ONGAnimaisAPI.Application.Validations;
+using ONGAnimaisAPI.Application.Validations.Evento;
+using ONGAnimaisAPI.Application.Validations.ONG;
+using ONGAnimaisAPI.Application.Validations.Usuario;
 using ONGAnimaisAPI.Application.ViewModels.Evento;
 using ONGAnimaisAPI.Application.ViewModels.ONG;
+using ONGAnimaisAPI.Domain.Abstracts;
 using ONGAnimaisAPI.Domain.Entities;
+using ONGAnimaisAPI.Domain.Interfaces.Notifications;
 using ONGAnimaisAPI.Domain.Interfaces.Services;
 
 namespace ONGAnimaisAPI.Application.Services
 {
-    public class ONGApplicationService : IONGApplicationService
+    public class ONGApplicationService : NotificadorContext, IONGApplicationService
     {
         private readonly IONGService _service;
         private readonly IMapper _mapper;
 
         public ONGApplicationService(IONGService service,
-                                     IMapper mapper)
+                                     IMapper mapper,
+                                     INotificador notificador) : base(notificador)
         {
             this._service = service;
             this._mapper = mapper;
@@ -23,70 +30,142 @@ namespace ONGAnimaisAPI.Application.Services
 
         public async Task AtualizarONG(AtualizaONGViewModel ong)
         {
-            var ongMap = _mapper.Map<ONG>(ong);
-            await _service.AtualizarONG(ongMap);
+            ExecutarValidacao(new AtualizaONGValidation(), ong);
+
+            if (!_notificador.TemNotificacao())
+            {
+                var ongMap = _mapper.Map<ONG>(ong);
+                await _service.AtualizarONG(ongMap);
+            }
         }
 
         public async Task ExcluirONG(int id)
         {
-            await _service.ExcluirONG(id);
+            ExecutarValidacao(new IdValidation(), id);
+
+            if (!_notificador.TemNotificacao())
+            {
+                await _service.ExcluirONG(id);
+            }
         }
 
         public async Task InserirONG(InsereONGViewModel ong)
         {
-            var ongMap = _mapper.Map<ONG>(ong);
-            await _service.InserirONG(ongMap);
+            ExecutarValidacao(new InsereONGValidation(), ong);
+
+            if (!_notificador.TemNotificacao())
+            {
+                var ongMap = _mapper.Map<ONG>(ong);
+                await _service.InserirONG(ongMap);
+            }
         }
 
         public async Task<ObtemONGViewModel> ObterONG(int id)
         {
+            ExecutarValidacao(new IdValidation(), id);
+
+            if (_notificador.TemNotificacao())
+                return null;
+
             var ong = await _service.ObterONG(id);
+
+            if (_notificador.TemNotificacao())
+                return null;
+
             return _mapper.Map<ObtemONGViewModel>(ong);
         }
 
         public async Task<ObtemONGEventosViewModel> ObterONGEventos(int id)
         {
+            ExecutarValidacao(new IdValidation(), id);
+
+            if (_notificador.TemNotificacao())
+                return null;
+
             var ongevento = await _service.ObterONGEventos(id);
+
+            if (_notificador.TemNotificacao())
+                return null;
+
             return _mapper.Map<ObtemONGEventosViewModel>(ongevento);
         }
 
         public async Task<ICollection<ObtemONGViewModel>> ObterTodasONG()
         {
             var ongs = await _service.ObterTodasONG();
+
+            if (_notificador.TemNotificacao())
+                return null;
+
             return _mapper.Map<List<ObtemONGViewModel>>(ongs);
         }
 
         #endregion [ONG]
 
-        #region [Usuario]
+        #region [Evento]
 
         public async Task InserirEvento(int ongId, InsereEventoViewModel evento)
         {
-            var eventoMap = _mapper.Map<Evento>(evento);
-            eventoMap.OngId = ongId;
+            ExecutarValidacao(new IdValidation(), ongId);
 
-            await _service.InserirEvento(eventoMap);
+            if (!_notificador.TemNotificacao())
+            {
+                ExecutarValidacao(new InsereEventoValidation(), evento);
+
+                if (!_notificador.TemNotificacao())
+                {
+                    var eventoMap = _mapper.Map<Evento>(evento);
+                    eventoMap.OngId = ongId;
+
+                    await _service.InserirEvento(eventoMap);
+                }
+            }
         }
 
         public async Task AtualizarEvento(int ongId, AtualizaEventoViewModel evento)
         {
-            var eventoMap = _mapper.Map<Evento>(evento);
-            eventoMap.OngId = ongId;
+            ExecutarValidacao(new IdValidation(), ongId);
 
-            await _service.AtualizarEvento(eventoMap);
+            if (!_notificador.TemNotificacao())
+            {
+                ExecutarValidacao(new AtualizaEventoValidation(), evento);
+
+                if (!_notificador.TemNotificacao())
+                {
+                    var eventoMap = _mapper.Map<Evento>(evento);
+                    eventoMap.OngId = ongId;
+
+                    await _service.AtualizarEvento(eventoMap);
+                }
+            }
         }
 
         public async Task<ObtemEventoViewModel> ObterEvento(int ongId, int id)
         {
-            var evento = await _service.ObterEvento(ongId, id);
-            return _mapper.Map<ObtemEventoViewModel>(evento);
+            ExecutarValidacao(new IdEventoValidation(), (ongId, id));
+
+            if (!_notificador.TemNotificacao())
+            {
+                var evento = await _service.ObterEvento(ongId, id);
+                if (!_notificador.TemNotificacao())
+                {
+                    return _mapper.Map<ObtemEventoViewModel>(evento);
+                }
+            }
+
+            return null;
         }
 
         public async Task ExcluirEvento(int ongId, int id)
         {
-            await _service.ExcluirEvento(ongId, id);
+            ExecutarValidacao(new IdEventoValidation(), (ongId, id));
+
+            if (!_notificador.TemNotificacao())
+            {
+                await _service.ExcluirEvento(ongId, id);
+            }
         }
 
-        #endregion [Usuario]
+        #endregion [Evento]
     }
 }

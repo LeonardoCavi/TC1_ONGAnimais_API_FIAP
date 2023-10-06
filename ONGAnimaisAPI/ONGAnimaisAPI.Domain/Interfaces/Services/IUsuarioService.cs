@@ -24,15 +24,15 @@ namespace ONGAnimaisAPI.Domain.Interfaces.Services
 
         #region [ONG]
 
-        Task SeguirONG(int ongId, int id);
-        Task DesseguirONG(int ongId, int id);
+        Task SeguirONG(int usuarioId, int id);
+        Task DesseguirONG(int usuarioId, int id);
 
         #endregion
 
         #region [Evento]
 
-        Task SeguirEvento(int eventoId, int id);
-        Task DesseguirEvento(int eventoId, int id);
+        Task SeguirEvento(int usuarioId, int id);
+        Task DesseguirEvento(int usuarioId, int id);
 
         #endregion
     }
