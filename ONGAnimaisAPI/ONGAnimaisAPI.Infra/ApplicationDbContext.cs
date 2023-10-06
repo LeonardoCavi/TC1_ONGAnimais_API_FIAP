@@ -14,6 +14,7 @@ namespace ONGAnimaisAPI.Infra
         public DbSet<ONG> ONGs { get; set; }
         public DbSet<Evento> Eventos { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Aplicacao> Aplicacoes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -21,6 +22,7 @@ namespace ONGAnimaisAPI.Infra
             modelBuilder.ApplyConfiguration(new ONGConfiguration());
             modelBuilder.ApplyConfiguration(new EventoConfiguration());
             modelBuilder.ApplyConfiguration(new UsuarioConfiguration());
+            modelBuilder.ApplyConfiguration(new AplicacaoConfiguration());
         }
     }
 }
