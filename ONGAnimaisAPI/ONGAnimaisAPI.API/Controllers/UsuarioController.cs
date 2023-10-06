@@ -40,16 +40,17 @@ namespace ONGAnimaisAPI.API.Controllers
 
                 if (_notificador.TemNotificacao())
                 {
-                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes()); //TODO mudar a RespostaViewModel para ErrorViewModel
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
 
                     return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                return Ok(_mapper.Map<RespostaViewModel<ObtemUsuarioViewModel>>(usuario)); //TODO Abandonar RespostaViewModel para retornos de sucesso
+                return Ok(usuario);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message); //TODO implementar mapeamento para exception
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 
@@ -63,16 +64,16 @@ namespace ONGAnimaisAPI.API.Controllers
 
                 if (_notificador.TemNotificacao())
                 {
-                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
-
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
                     return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                return Ok(_mapper.Map<RespostaViewModel<List<ObtemUsuarioViewModel>>>(usuarios));
+                return Ok(usuarios);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 
@@ -86,16 +87,16 @@ namespace ONGAnimaisAPI.API.Controllers
 
                 if (_notificador.TemNotificacao())
                 {
-                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
-
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
                     return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                return Ok(_mapper.Map<RespostaViewModel<ObtemUsuarioEventosViewModel>>(usuarioEventos));
+                return Ok(usuarioEventos);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 
@@ -109,16 +110,16 @@ namespace ONGAnimaisAPI.API.Controllers
 
                 if (_notificador.TemNotificacao())
                 {
-                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
-
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
                     return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                return Ok(_mapper.Map<RespostaViewModel<ObtemUsuarioONGsViewModel>>(usuarioOngs));
+                return Ok(usuarioOngs);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 
@@ -132,16 +133,17 @@ namespace ONGAnimaisAPI.API.Controllers
 
                 if (_notificador.TemNotificacao())
                 {
-                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
 
                     return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                return Created("", _mapper.Map<RespostaViewModel<InsereUsuarioViewModel>>(usuario));
+                return Created("", usuario);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 
@@ -155,8 +157,7 @@ namespace ONGAnimaisAPI.API.Controllers
 
                 if (_notificador.TemNotificacao())
                 {
-                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
-
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
                     return StatusCode(resposta.StatusCode, resposta);
                 }
 
@@ -164,7 +165,8 @@ namespace ONGAnimaisAPI.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 
@@ -178,8 +180,7 @@ namespace ONGAnimaisAPI.API.Controllers
 
                 if (_notificador.TemNotificacao())
                 {
-                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
-
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
                     return StatusCode(resposta.StatusCode, resposta);
                 }
 
@@ -187,7 +188,8 @@ namespace ONGAnimaisAPI.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 
@@ -205,8 +207,7 @@ namespace ONGAnimaisAPI.API.Controllers
 
                 if (_notificador.TemNotificacao())
                 {
-                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
-
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
                     return StatusCode(resposta.StatusCode, resposta);
                 }
 
@@ -214,7 +215,8 @@ namespace ONGAnimaisAPI.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 
@@ -228,8 +230,7 @@ namespace ONGAnimaisAPI.API.Controllers
 
                 if (_notificador.TemNotificacao())
                 {
-                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
-
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
                     return StatusCode(resposta.StatusCode, resposta);
                 }
 
@@ -237,7 +238,8 @@ namespace ONGAnimaisAPI.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 
@@ -255,8 +257,7 @@ namespace ONGAnimaisAPI.API.Controllers
 
                 if (_notificador.TemNotificacao())
                 {
-                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
-
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
                     return StatusCode(resposta.StatusCode, resposta);
                 }
 
@@ -264,7 +265,8 @@ namespace ONGAnimaisAPI.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 
@@ -278,8 +280,7 @@ namespace ONGAnimaisAPI.API.Controllers
 
                 if (_notificador.TemNotificacao())
                 {
-                    var resposta = _mapper.Map<RespostaViewModel<object>>(_notificador.ObterNotificacoes());
-
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
                     return StatusCode(resposta.StatusCode, resposta);
                 }
 
@@ -287,7 +288,8 @@ namespace ONGAnimaisAPI.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "ERRO => " + ex.Message);
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                return StatusCode(resposta.StatusCode, resposta);
             }
         }
 
