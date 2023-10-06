@@ -11,6 +11,7 @@ namespace ONGAnimaisAPI.Domain.Notifications
         Validation,
         NotFound,
         Conflict,
+        Unauthorized,
         Error
     }
     public class Notificacao

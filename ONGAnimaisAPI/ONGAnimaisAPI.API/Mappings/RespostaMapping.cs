@@ -5,6 +5,7 @@ using System.Net;
 using ONGAnimaisAPI.Application.ViewModels.Usuario;
 using ONGAnimaisAPI.Application.ViewModels.ONG;
 using ONGAnimaisAPI.Application.ViewModels.Evento;
+using ONGAnimaisAPI.Application.ViewModels.Autorizacao;
 
 namespace ONGAnimaisAPI.API.Mappings
 {
@@ -124,6 +125,14 @@ namespace ONGAnimaisAPI.API.Mappings
                     map => map.MapFrom(src => src))
                 .ForMember(dest => dest.StatusCode,
                     map => map.MapFrom(src => 200));
+
+            CreateMap<string, RespostaViewModel<AutenticaViewModel>>()
+                .ForMember(dest => dest.Sucesso,
+                    map => map.MapFrom(src => true))
+                .ForMember(dest => dest.Objeto,
+                    map => map.MapFrom(src => src))
+                .ForMember(dest => dest.StatusCode,
+                    map => map.MapFrom(src => 200));
         }
     }
 
@@ -141,6 +150,8 @@ namespace ONGAnimaisAPI.API.Mappings
                     return (int) HttpStatusCode.NotFound;
                 case TipoNotificacao.Conflict:
                     return (int)HttpStatusCode.Conflict;
+                case TipoNotificacao.Unauthorized:
+                    return (int)HttpStatusCode.Unauthorized;
                 default:
                     return (int) HttpStatusCode.InternalServerError;
             }

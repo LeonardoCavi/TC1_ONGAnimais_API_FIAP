@@ -11,6 +11,7 @@ namespace ONGAnimaisAPI.API.Configurations
             {
                 config.AddProfile(new ONGProfile());
                 config.AddProfile(new UsuarioProfile());
+                config.AddProfile(new AutenticaProfile());
             });
 
             return mapper;

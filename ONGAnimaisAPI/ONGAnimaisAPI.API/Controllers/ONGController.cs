@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ONGAnimaisAPI.Application.Interfaces;
 using ONGAnimaisAPI.Application.ViewModels;
@@ -9,6 +10,7 @@ using ONGAnimaisAPI.Domain.Interfaces.Notifications;
 namespace ONGAnimaisAPI.API.Controllers
 {
     [Route("[controller]")]
+    [Authorize]
     [ApiController]
     public class ONGController : ControllerBase
     {

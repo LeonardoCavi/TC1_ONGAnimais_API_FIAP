@@ -9,7 +9,9 @@ builder.Services.AddControllers()
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerConfiguration(builder.Configuration);
+
+builder.Services.AddAutenticationConfiguration(builder.Configuration);
 
 //Project Dependency Injection
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -18,18 +20,11 @@ builder.Services.AddDependencyInjection();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.DefaultModelsExpandDepth(-1);
-    });
-}
-
 app.UseHttpsRedirection();
 
+app.UseSwaggerConfiguration();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
