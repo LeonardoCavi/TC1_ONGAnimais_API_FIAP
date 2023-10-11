@@ -36,4 +36,9 @@
     <ProjectReference Include="..\ONGAnimaisAPI.Infra\ONGAnimaisAPI.Infra.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="jsons\Usuario\" />
+    <Folder Include="logs\" />
+  </ItemGroup>
+
 </Project>

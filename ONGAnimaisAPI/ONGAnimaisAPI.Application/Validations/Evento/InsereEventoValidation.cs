@@ -17,19 +17,17 @@ namespace ONGAnimaisAPI.Application.Validations.Evento
 
             RuleFor(e => e.Data)
                 .NotEmpty().WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}")
-                //.GreaterThan(new DateTime()).WithMessage("{PropertyPath}: o campo {PropertyName} não é uma data válida ou é anterior à data de hoje");
-                .Must(data => DataValida(data)).WithMessage("{PropertyPath}: o campo {PropertyName} não é uma data válida ou é anterior à data de hoje");
+                .GreaterThan(new DateTime()).WithMessage("{PropertyPath}: o campo {PropertyName} não é uma data válida ou é anterior à data de hoje");
 
             RuleFor(e => e.Endereco.Logradouro)
                 .NotEmpty().WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}")
                 .Length(2, 150).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
 
             RuleFor(e => e.Endereco.Numero)
-                .NotEmpty().WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}")
-                .Length(2, 20).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
+                .Length(0, 20).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
 
             RuleFor(e => e.Endereco.Complemento)
-                .Length(2, 20).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
+                .Length(0, 150).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
 
             RuleFor(e => e.Endereco.Bairro)
                 .NotEmpty().WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}")
@@ -46,18 +44,6 @@ namespace ONGAnimaisAPI.Application.Validations.Evento
             RuleFor(e => e.Endereco.CEP)
                 .NotEmpty().WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}")
                 .Length(8).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter {TotalLength} caracteres");
-        }
-
-        private bool DataValida(DateTime data)
-        {
-            if(data >= DateTime.Today)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
     }
 }

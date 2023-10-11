@@ -1,0 +1,34 @@
+{
+    "id": "1",
+    "nome": "ONG Petzinhos",
+    "descricao": "ONG de ajuda a animais abandonado acharem um lar",
+    "responsavel": "Petshop PetVet",
+    "email": "petzinhos@mail.com.br",
+    "endereco": {
+        "cep": "01202001",
+        "logradouro": "Alameda Barão de Limeira",
+        "numero": "400",
+        "complemento": "",
+        "bairro": "Campos Elíseos",
+        "cidade": "São Paulo",
+        "uf": "SP"
+    },
+    "telefones": [{
+            "ddd": "11",
+            "numero": "21200730",
+            "tipo": "Fixo"
+        }, {
+            "ddd": "11",
+            "numero": "936671941",
+            "tipo": "Celular"
+        }
+    ],
+    "contatos": [{
+            "descricao": "Site",
+            "url": "https://www.petzinhos.com.br"
+        }, {
+            "descricao": "Instagram",
+            "url": "https://www.instagram.com/petzinhos"
+        }
+    ]
+}

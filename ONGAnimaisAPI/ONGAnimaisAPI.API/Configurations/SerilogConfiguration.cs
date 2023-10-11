@@ -1,4 +1,6 @@
 ﻿using Serilog;
+using Serilog.Events;
+using Serilog.Filters;
 
 namespace ONGAnimaisAPI.API.Configurations
 {
@@ -10,6 +12,9 @@ namespace ONGAnimaisAPI.API.Configurations
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom
                 .Configuration(configuration)
+                    .MinimumLevel.Override("Default", LogEventLevel.Fatal)
+                    .MinimumLevel.Override("Microsoft", LogEventLevel.Fatal)
+                    .MinimumLevel.Override("System", LogEventLevel.Fatal)
                 .CreateLogger();
         }
 

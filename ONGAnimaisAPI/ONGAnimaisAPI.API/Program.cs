@@ -10,8 +10,8 @@ builder.Services.AddControllers()
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 //Serilog
-builder.Host.UseSerilogConfiguration();
 builder.Services.AddSerilogConfiguration(builder.Configuration);
+builder.Host.UseSerilogConfiguration();
 //Swagger
 builder.Services.AddSwaggerConfiguration(builder.Configuration);
 //JWT Autentication
@@ -23,6 +23,8 @@ builder.Services.AddDBContextConfiguration(builder.Configuration);
 builder.Services.AddDependencyInjection();
 
 var app = builder.Build();
+
+app.Seed(builder.Configuration);
 
 app.UseHttpsRedirection();
 

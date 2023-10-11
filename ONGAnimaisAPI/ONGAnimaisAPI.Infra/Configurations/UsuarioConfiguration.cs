@@ -24,7 +24,7 @@ namespace ONGAnimaisAPI.Infra.Configurations
                 enderecoBuilder.ToTable("UsuarioEndereco");
                 enderecoBuilder.Property(e => e.CEP).HasColumnType("VARCHAR(8)").IsRequired();
                 enderecoBuilder.Property(e => e.Logradouro).HasColumnType("VARCHAR(150)").IsRequired();
-                enderecoBuilder.Property(e => e.Numero).HasColumnType("VARCHAR(20)").IsRequired();
+                enderecoBuilder.Property(e => e.Numero).HasColumnType("VARCHAR(20)");
                 enderecoBuilder.Property(e => e.Complemento).HasColumnType("VARCHAR(150)");
                 enderecoBuilder.Property(e => e.Bairro).HasColumnType("VARCHAR(150)").IsRequired();
                 enderecoBuilder.Property(e => e.Cidade).HasColumnType("VARCHAR(150)").IsRequired();
