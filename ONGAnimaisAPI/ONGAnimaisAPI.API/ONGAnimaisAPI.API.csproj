@@ -22,6 +22,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Serilog" Version="3.0.1" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="7.0.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="7.0.1" />
     <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
@@ -33,6 +34,11 @@
     <ProjectReference Include="..\ONGAnimaisAPI.Application\ONGAnimaisAPI.Application.csproj" />
     <ProjectReference Include="..\ONGAnimaisAPI.Domain\ONGAnimaisAPI.Domain.csproj" />
     <ProjectReference Include="..\ONGAnimaisAPI.Infra\ONGAnimaisAPI.Infra.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="jsons\Usuario\" />
+    <Folder Include="logs\" />
   </ItemGroup>
 
 </Project>
