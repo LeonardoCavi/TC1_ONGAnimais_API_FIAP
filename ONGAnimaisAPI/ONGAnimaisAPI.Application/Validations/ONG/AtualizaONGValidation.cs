@@ -36,7 +36,7 @@ namespace ONGAnimaisAPI.Application.Validations.ONG
                 .Length(2, 20).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
 
             RuleFor(o => o.Endereco.Complemento)
-                .Length(2, 20).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
+                .Length(0, 150).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
 
             RuleFor(o => o.Endereco.Bairro)
                 .NotEmpty().WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}")

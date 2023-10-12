@@ -1,0 +1,17 @@
+{
+    "nome": "Mamoru Takamura",
+    "telefone": {
+        "ddd": "14",
+        "numero": "929438778",
+        "tipo": "Celular"
+    },
+    "endereco": {
+        "cep": "03372007",
+        "logradouro": "Travessa Luís Sullivan",
+        "numero": "200",
+        "complemento": "",
+        "bairro": "Chácara Mafalda",
+        "cidade": "São Paulo",
+        "uf": "SP"
+    }
+}
