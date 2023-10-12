@@ -28,7 +28,7 @@ namespace ONGAnimaisTelegramBot.Application.Service
             if (mensagem != null && botId.HasValue)
                 await ProcessarMensagem(mensagem, botId.Value);
             else
-                _logger.LogWarning($"{ClassName}:ReceberMensagem => Evento ignoradco: Objeto ou botId é nulo");
+                _logger.LogWarning($"{ClassName}:ReceberMensagem => Evento ignorado: Objeto ou botId é nulo");
         }
 
         private async Task ProcessarMensagem(Message mensagem, long? botId)
