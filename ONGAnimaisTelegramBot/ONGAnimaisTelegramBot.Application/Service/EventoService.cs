@@ -25,10 +25,24 @@ namespace ONGAnimaisTelegramBot.Application.Service
 
         public async Task ReceberMensagem(Message mensagem, long? botId)
         {
-            if (mensagem != null && botId.HasValue)
+            var intervalo = DateTime.Now.Subtract(mensagem.Date);
+
+            if (mensagem != null && botId.HasValue && intervalo.TotalMinutes < 5)
                 await ProcessarMensagem(mensagem, botId.Value);
             else
                 _logger.LogWarning($"{ClassName}:ReceberMensagem => Evento ignorado: Objeto ou botId é nulo");
+        }
+
+        public async Task ReceberCallBack(CallbackQuery callback, long? botId)
+        {
+            var mensagem = new Message()
+            {
+                Text = callback.Data,
+                Date = DateTime.Now,
+                From = callback.From,
+            };
+
+            await ReceberMensagem(mensagem, botId);
         }
 
         private async Task ProcessarMensagem(Message mensagem, long? botId)
@@ -44,18 +58,17 @@ namespace ONGAnimaisTelegramBot.Application.Service
                 {
                     string sessaoId = $"{mensagem.From.Id}:{botId}";
 
-                    // Verificar se o cliente já está em atendimento
                     var atendimento = _atendimentoManager.ObterAtendimento(sessaoId);
 
                     if (atendimento is null)
                     {
                         _logger.LogInformation($"{ClassName}:ProcessarMensagem => Atendimento não foi encontrado. Iniciando sessão de atendimento para: {sessaoId}");
-                        _atendimentoManager.NovoAtendimento(mensagem, sessaoId);
+                        await _atendimentoManager.NovoAtendimento(mensagem, sessaoId);
                     }
                     else
                     {
                         _logger.LogInformation($"{ClassName}:ProcessarMensagem => Nova mensagem de: {sessaoId}");
-                        _atendimentoManager.NovaMensagem(mensagem, atendimento);
+                        await _atendimentoManager.NovaMensagem(mensagem, atendimento);
                     }
                 }
             }

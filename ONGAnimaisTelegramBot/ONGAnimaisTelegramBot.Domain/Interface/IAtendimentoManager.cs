@@ -11,7 +11,7 @@ namespace ONGAnimaisTelegramBot.Domain.Interface
     public interface IAtendimentoManager
     {
         Atendimento ObterAtendimento(string sessaoId);
-        void NovoAtendimento(Message mensagem, string sessaoId);
-        void NovaMensagem(Message mensagem, Atendimento atendimento);
+        Task NovoAtendimento(Message mensagem, string sessaoId);
+        Task NovaMensagem(Message mensagem, Atendimento atendimento);
     }
 }

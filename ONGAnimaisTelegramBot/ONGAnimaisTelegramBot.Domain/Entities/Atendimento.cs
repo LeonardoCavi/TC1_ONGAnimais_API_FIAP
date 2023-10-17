@@ -8,8 +8,10 @@ namespace ONGAnimaisTelegramBot.Domain.Entities
 {
     public class Atendimento
     {
-        public virtual string NomeCliente { get; set; }
-        public virtual bool EmAtendimento { get; set; }
-        public virtual DateTime InstanteUltimaMensagem { get; set; }
+        public string SessaoId { get; set; }
+        public string NomeCliente { get; set; }
+        public bool EmAtendimento { get; set; }
+        public DateTime InstanteUltimaMensagem { get; set; }
+        public string MenuAnterior { get; set; }
     }
 }

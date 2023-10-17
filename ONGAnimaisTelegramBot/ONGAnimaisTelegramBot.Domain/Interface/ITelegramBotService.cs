@@ -5,8 +5,9 @@ namespace ONGAnimaisTelegramBot.Domain.Service
     public interface ITelegramBotService
     {
         Task EscutarEventos(IUpdateHandler updateHandler, CancellationToken cancellationToken);
-        Task EnviarMensagemAsync(string sessaoId, string texto);
-        Task EnviarArquivoAsync( string sessaoId, byte[] buffer, string nomeArquivo);
-        Task<byte[]> ObterArquivoAsync(string fileId);
+        Task EnviarMensagem(string sessaoId, string texto);
+        Task EnviarMensagem(string sessaoId, string texto, IDictionary<string, string> opcoes);
+        Task EnviarArquivo( string sessaoId, byte[] buffer, string nomeArquivo);
+        Task<byte[]> ObterArquivo(string fileId);
     }
 }

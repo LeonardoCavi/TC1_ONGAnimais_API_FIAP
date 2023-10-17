@@ -16,22 +16,25 @@ namespace ONGAnimaisTelegramBot.Domain.Service
         private string ClassName = typeof(AtendimentoManager).Name;
         private ILogger<AtendimentoManager> _logger;
         private ConcurrentDictionary<string, Atendimento> Atendimentos = new ConcurrentDictionary<string, Atendimento>();
-        public AtendimentoManager(ILogger<AtendimentoManager> logger)
+        private IBotManager _botManager;
+        public AtendimentoManager(ILogger<AtendimentoManager> logger, IBotManager botManager)
         {
             _logger = logger;
+            _botManager = botManager;
         }
 
-        public void NovaMensagem(Message mensagem, Atendimento atendimento)
+        public async Task NovaMensagem(Message mensagem, Atendimento atendimento)
         {
-            //Direcionar atendimento para o Bot
-            throw new NotImplementedException();
+            await _botManager.TratarRecebimento(atendimento, mensagem.Text);
+
+            if (!atendimento.EmAtendimento)
+                RemoverAtendimento(atendimento.SessaoId);
         }
 
-        public void NovoAtendimento(Message mensagem, string sessaoId)
+        public async Task NovoAtendimento(Message mensagem, string sessaoId)
         {
-            //Criar atendimento e acionar no dicionario de atendimentos
-            //Iniciar atendimento no Bot em alguma service nova
-            throw new NotImplementedException();
+            var atendimento = CriarAtendimento(mensagem, sessaoId);
+            await _botManager.Iniciar(atendimento);
         }
 
         public Atendimento ObterAtendimento(string sessaoId)
@@ -40,6 +43,28 @@ namespace ONGAnimaisTelegramBot.Domain.Service
                 return Atendimentos[sessaoId];
 
             return null;
+        }
+
+        private Atendimento CriarAtendimento(Message mensagem, string sessaoId)
+        {
+            var nomeCliente = $"{mensagem.From.FirstName}{(string.IsNullOrEmpty(mensagem.From.LastName) ? "" : $" {mensagem.From.LastName}")}";
+            var atendimento = new Atendimento()
+            {
+                SessaoId = sessaoId,
+                NomeCliente = nomeCliente,
+                InstanteUltimaMensagem = DateTime.Now,
+                EmAtendimento = true
+            };
+
+            Atendimentos[sessaoId] = atendimento;
+
+            return atendimento;
+        }
+
+        private void RemoverAtendimento(string sessaoId)
+        {
+            if (Atendimentos.ContainsKey(sessaoId))
+                Atendimentos.TryRemove(sessaoId, out var _);
         }
     }
 }

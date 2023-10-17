@@ -21,6 +21,7 @@ namespace ONGAnimaisTelegramBot.Worker.Configurations
             services.AddSingleton<IEventoService, EventoService>();
             services.AddSingleton<ISessaoMonitor, SessaoMonitor>();
             services.AddSingleton<IAtendimentoManager, AtendimentoManager>();
+            services.AddSingleton<IBotManager, BotManager>();
         }
     }
 }

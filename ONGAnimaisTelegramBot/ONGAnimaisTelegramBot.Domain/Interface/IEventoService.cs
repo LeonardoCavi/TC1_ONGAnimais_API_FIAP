@@ -10,5 +10,6 @@ namespace ONGAnimaisTelegramBot.Domain.Interface
     public interface IEventoService
     {
         Task ReceberMensagem(Message mensagem, long? botId);
+        Task ReceberCallBack(CallbackQuery callback, long? botId);
     }
 }

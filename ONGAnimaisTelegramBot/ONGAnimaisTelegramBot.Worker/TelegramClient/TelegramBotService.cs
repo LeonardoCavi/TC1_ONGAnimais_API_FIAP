@@ -6,6 +6,7 @@ using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ONGAnimaisTelegramBot.Worker.TelegramClient
 {
@@ -42,7 +43,7 @@ namespace ONGAnimaisTelegramBot.Worker.TelegramClient
             {
                 ReceiverOptions options = new()
                 {
-                    AllowedUpdates = new UpdateType[] { UpdateType.Message }
+                    AllowedUpdates = new UpdateType[] { UpdateType.Message, UpdateType.CallbackQuery }
                 };
 
                 await telegramBotClient.ReceiveAsync(
@@ -55,7 +56,7 @@ namespace ONGAnimaisTelegramBot.Worker.TelegramClient
             await Task.CompletedTask;
         }
 
-        public async Task EnviarMensagemAsync(string sessaoId, string texto)
+        public async Task EnviarMensagem(string sessaoId, string texto)
         {
             try
             {
@@ -73,7 +74,30 @@ namespace ONGAnimaisTelegramBot.Worker.TelegramClient
             }
         }
 
-        public async Task EnviarArquivoAsync(string sessaoId, byte[] buffer, string nomeArquivo)
+        public async Task EnviarMensagem(string sessaoId, string texto, IDictionary<string, string> opcoes)
+        {
+            try
+            {
+                var clientId = ObterClientId(sessaoId);
+
+                var buttons = opcoes.Select(x => new InlineKeyboardButton[] { InlineKeyboardButton.WithCallbackData(x.Value, x.Key) });
+                var keyboardMarkup = new InlineKeyboardMarkup(buttons);
+
+                var message = await telegramBotClient.SendTextMessageAsync(
+                    chatId: clientId,
+                    text: texto,
+                    parseMode: ParseMode.Markdown,
+                    replyMarkup: keyboardMarkup);
+
+                _logger.LogInformation($"{ClassName}:EnviarMensagemAsync => ClientId: {clientId}; Texto: {texto}; MessageId: {message.MessageId}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"{ClassName}:EnviarMensagemAsync => {ex.Message}");
+            }
+        }
+
+        public async Task EnviarArquivo(string sessaoId, byte[] buffer, string nomeArquivo)
         {
             try
             {
@@ -93,7 +117,7 @@ namespace ONGAnimaisTelegramBot.Worker.TelegramClient
             }
         }
 
-        public async Task<byte[]> ObterArquivoAsync(string fileId)
+        public async Task<byte[]> ObterArquivo(string fileId)
         {
             try
             {

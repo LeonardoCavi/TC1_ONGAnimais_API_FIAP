@@ -9,6 +9,7 @@ using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types;
 using Telegram.Bot;
 using ONGAnimaisTelegramBot.Domain.Interface;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace ONGAnimaisTelegramBot.Worker.Handler
 {
@@ -32,6 +33,12 @@ namespace ONGAnimaisTelegramBot.Worker.Handler
                 case UpdateType.Message:
                     await _eventoService.ReceberMensagem(update.Message, botClient.BotId);
                     break;
+                case UpdateType.CallbackQuery:
+
+                    await RemoverOpcoes(botClient, update.CallbackQuery);
+
+                    await _eventoService.ReceberCallBack(update.CallbackQuery, botClient.BotId);
+                    break;
                 default:
                     _logger.LogInformation($"{ClassName}:HandleUpdateAsync => Evento ignorado: {JsonConvert.SerializeObject(update.Type)}");
                     break;
@@ -40,6 +47,38 @@ namespace ONGAnimaisTelegramBot.Worker.Handler
         public async Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
             _logger.LogError(exception, $"{ClassName}:PollingErrorHandler => Houve uma exceção durante a obtenção de eventos: {exception.Message}");
+        }
+
+        private async Task RemoverOpcoes(ITelegramBotClient botClient, CallbackQuery callbackQuery)
+        {
+            try
+            {
+                if (callbackQuery.Message.ReplyMarkup != null)
+                {
+                    var mensagemEditada = callbackQuery.Message.Text;
+
+                    var textoOpcoes = new List<string>();
+
+                    foreach (var row in callbackQuery.Message.ReplyMarkup.InlineKeyboard)
+                    {
+                        foreach (var button in row)
+                        {
+                            if (button.CallbackData == callbackQuery.Data)
+                                textoOpcoes.Add($"*{button.Text} ✅*");
+                            else
+                                textoOpcoes.Add($"{button.Text}");
+                        }
+                    }
+
+                    var opcoes = string.Join(Environment.NewLine, textoOpcoes);
+                    mensagemEditada += $"{Environment.NewLine}{Environment.NewLine}{opcoes}";
+                    await botClient.EditMessageTextAsync(callbackQuery.Message.Chat.Id, callbackQuery.Message.MessageId, mensagemEditada, ParseMode.Markdown);
+                }
+            }
+            catch
+            {
+
+            }
         }
     }
 }
