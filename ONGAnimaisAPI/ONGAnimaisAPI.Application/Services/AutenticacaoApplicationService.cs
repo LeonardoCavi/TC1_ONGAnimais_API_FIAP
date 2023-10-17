@@ -23,7 +23,7 @@ namespace ONGAnimaisAPI.Application.Services
             this._mapper = mapper;
         }
 
-        public async Task<string> Autenticar(AutenticaViewModel aut)
+        public async Task<object> Autenticar(AutenticaViewModel aut)
         {
             ExecutarValidacao(new AutenticaValidation(), aut);
 

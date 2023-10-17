@@ -2,6 +2,6 @@
 {
     public interface IAplicacaoService
     {
-        Task<string> Autenticar(string usuario, string senha);
+        Task<object> Autenticar(string usuario, string senha);
     }
 }

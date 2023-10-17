@@ -54,7 +54,7 @@ namespace ONGAnimaisAPI.API.Controllers
                     return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                return Created("", new {Token = token});
+                return Created("", token);
             }
             catch (Exception ex)
             {

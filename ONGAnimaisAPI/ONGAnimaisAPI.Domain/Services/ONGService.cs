@@ -109,6 +109,19 @@ namespace ONGAnimaisAPI.Domain.Services
 
             return eventos;
         }
+
+        public async Task<ICollection<Evento>> ObterEventosPorCidade(string cidade, string uf, int paginacao = 0)
+        {
+            var eventos = await _eRepository.ObterEventosPorCidade(cidade, uf, paginacao);
+
+            if (eventos.Count == 0 || eventos == null)
+            {
+                Notificar($"Evento: não existem eventos cadastrados em sua cidade - {cidade}-{uf}", TipoNotificacao.NotFound);
+            }
+
+            return eventos;
+        }
+
         #endregion
 
         #region [ONG]
@@ -183,6 +196,18 @@ namespace ONGAnimaisAPI.Domain.Services
             }
 
             return ong;
+        }
+
+        public async Task<ICollection<ONG>> ObterONGsPorCidade(string cidade, string uf, int paginacao = 0)
+        {
+            var ongs = await _oRepository.ObterONGsPorCidade(cidade, uf, paginacao);
+
+            if (ongs.Count == 0 || ongs == null)
+            {
+                Notificar($"ONG: não existem ongs cadastradas em sua cidade - {cidade}-{uf}", TipoNotificacao.NotFound);
+            }
+
+            return ongs;
         }
 
         #endregion

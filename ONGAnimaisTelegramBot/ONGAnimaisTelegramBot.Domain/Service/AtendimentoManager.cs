@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using ONGAnimaisTelegramBot.Domain.Entities;
 using ONGAnimaisTelegramBot.Domain.Interface;
+using ONGAnimaisTelegramBot.Infra.Vendors.Interface;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -16,9 +17,13 @@ namespace ONGAnimaisTelegramBot.Domain.Service
         private string ClassName = typeof(AtendimentoManager).Name;
         private ILogger<AtendimentoManager> _logger;
         private ConcurrentDictionary<string, Atendimento> Atendimentos = new ConcurrentDictionary<string, Atendimento>();
-        public AtendimentoManager(ILogger<AtendimentoManager> logger)
+        private readonly IONGAPIHttpClient _httpClient;
+
+        public AtendimentoManager(ILogger<AtendimentoManager> logger,
+                                  IONGAPIHttpClient httpClient)
         {
             _logger = logger;
+            _httpClient = httpClient;
         }
 
         public void NovaMensagem(Message mensagem, Atendimento atendimento)
@@ -38,7 +43,6 @@ namespace ONGAnimaisTelegramBot.Domain.Service
         {
             if (Atendimentos.ContainsKey(sessaoId))
                 return Atendimentos[sessaoId];
-
             return null;
         }
     }

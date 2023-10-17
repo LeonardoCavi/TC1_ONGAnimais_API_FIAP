@@ -6,6 +6,8 @@ IHost host = Host.CreateDefaultBuilder(args)
     {
         services.AddSerilogConfiguration(hostContext.Configuration);
         services.AddDependencyInjection();
+        services.AddHttpClientConfiguration();
+        services.AddVendorConfiguration(hostContext.Configuration);
         services.AddHostedService<Worker>();
     })
     .Build();

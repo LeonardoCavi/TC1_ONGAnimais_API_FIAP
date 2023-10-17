@@ -5,6 +5,7 @@ using ONGAnimaisAPI.Application.Interfaces;
 using ONGAnimaisAPI.Application.ViewModels;
 using ONGAnimaisAPI.Application.ViewModels.Evento;
 using ONGAnimaisAPI.Application.ViewModels.ONG;
+using ONGAnimaisAPI.Domain.Entities;
 using ONGAnimaisAPI.Domain.Interfaces.Notifications;
 using System.Text.Json;
 
@@ -92,6 +93,37 @@ namespace ONGAnimaisAPI.API.Controllers
             {
                 var resposta = _mapper.Map<ErroViewModel>(ex);
                 _logger.LogError($"[{_className}] - [ObterTodasONG] => Exception.: {ex.Message}");
+                return StatusCode(resposta.StatusCode, resposta);
+            }
+        }
+
+        /// <summary>
+        /// Obter/Consultar ONGs por Cidade e UF
+        /// </summary>
+        /// <param name="ongcidade"></param>
+        /// <returns></returns>
+        [Route("obter-ongs-por-cidade")]
+        [HttpGet]
+        public async Task<IActionResult> ObterONGsPorCidade([FromQuery] BuscaONGCidadeViewModel ongcidade, int paginacao = 0)
+        {
+            try
+            {
+                _logger.LogInformation($"[{_className}] - [ObterONGsPorCidade] => Request.: {JsonSerializer.Serialize(ongcidade)}");
+                var ongs = await _application.ObterONGsPorCidade(ongcidade, paginacao);
+
+                if (_notificador.TemNotificacao())
+                {
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
+                    _logger.LogWarning($"[{_className}] - [ObterONGsPorCidade] => Notificações.: {JsonSerializer.Serialize(resposta)}");
+                    return StatusCode(resposta.StatusCode, resposta);
+                }
+
+                return Ok(ongs);
+            }
+            catch (Exception ex)
+            {
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                _logger.LogError($"[{_className}] - [ObterONGsPorCidade] => Exception.: {ex.Message}");
                 return StatusCode(resposta.StatusCode, resposta);
             }
         }
@@ -257,6 +289,38 @@ namespace ONGAnimaisAPI.API.Controllers
             {
                 var resposta = _mapper.Map<ErroViewModel>(ex);
                 _logger.LogError($"[{_className}] - [ObterEvento] => Exception.: {ex.Message}");
+                return StatusCode(resposta.StatusCode, resposta);
+            }
+        }
+
+        /// <summary>
+        /// Obter/Consultar Eventos por Cidade e UF
+        /// </summary>
+        /// <param name="eventocidade"></param>
+        /// <param name="paginacao"></param>
+        /// <returns></returns>
+        [Route("obter-eventos-por-cidade")]
+        [HttpGet]
+        public async Task<IActionResult> ObterEventosPorCidade([FromQuery] BuscaEventoCidadeViewModel eventocidade, int paginacao = 0)
+        {
+            try
+            {
+                _logger.LogInformation($"[{_className}] - [ObterEventosPorCidade] => Request.: {JsonSerializer.Serialize(eventocidade)}");
+                var ongs = await _application.ObterEventosPorCidade(eventocidade, paginacao);
+
+                if (_notificador.TemNotificacao())
+                {
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
+                    _logger.LogWarning($"[{_className}] - [ObterEventosPorCidade] => Notificações.: {JsonSerializer.Serialize(resposta)}");
+                    return StatusCode(resposta.StatusCode, resposta);
+                }
+
+                return Ok(ongs);
+            }
+            catch (Exception ex)
+            {
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                _logger.LogError($"[{_className}] - [ObterEventosPorCidade] => Exception.: {ex.Message}");
                 return StatusCode(resposta.StatusCode, resposta);
             }
         }

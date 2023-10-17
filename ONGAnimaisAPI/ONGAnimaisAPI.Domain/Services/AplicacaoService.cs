@@ -19,7 +19,7 @@ namespace ONGAnimaisAPI.Domain.Services
             this._tService = tService;
         }
 
-        public async Task<string> Autenticar(string usuario, string senha)
+        public async Task<object> Autenticar(string usuario, string senha)
         {
             var aut = await _aRepository.Autenticar(usuario, senha);
 
