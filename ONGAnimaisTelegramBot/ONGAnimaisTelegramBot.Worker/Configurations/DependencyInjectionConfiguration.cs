@@ -1,13 +1,12 @@
 ﻿using ONGAnimaisTelegramBot.Application.Service;
 using ONGAnimaisTelegramBot.Domain.Interface;
 using ONGAnimaisTelegramBot.Domain.Service;
+using ONGAnimaisTelegramBot.Infra.Utility;
+using ONGAnimaisTelegramBot.Infra.Vendors;
+using ONGAnimaisTelegramBot.Infra.Vendors.Interface;
 using ONGAnimaisTelegramBot.Worker.Handler;
 using ONGAnimaisTelegramBot.Worker.TelegramClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Polly;
 using Telegram.Bot.Polling;
 
 namespace ONGAnimaisTelegramBot.Worker.Configurations
@@ -21,7 +20,14 @@ namespace ONGAnimaisTelegramBot.Worker.Configurations
             services.AddSingleton<IEventoService, EventoService>();
             services.AddSingleton<ISessaoMonitor, SessaoMonitor>();
             services.AddSingleton<IAtendimentoManager, AtendimentoManager>();
-            services.AddSingleton<IBotManager, BotManager>();
+            services.AddSingleton<IONGAPIHttpClient, ONGAPIHttpClient>();
+            services.AddSingleton<HttpHelp>();
+            services.AddSingleton<AsyncPolicy>(
+               PollyConfiguration.CreateWaitAndRetryPolicy(new[]
+               {
+                    TimeSpan.FromSeconds(1),
+                    TimeSpan.FromSeconds(3)
+               }));
         }
     }
 }

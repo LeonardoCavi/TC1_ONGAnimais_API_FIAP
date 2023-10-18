@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using ONGAnimaisTelegramBot.Domain.Entities;
 using ONGAnimaisTelegramBot.Domain.Interface;
+using ONGAnimaisTelegramBot.Infra.Vendors.Interface;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -41,7 +42,6 @@ namespace ONGAnimaisTelegramBot.Domain.Service
         {
             if (Atendimentos.ContainsKey(sessaoId))
                 return Atendimentos[sessaoId];
-
             return null;
         }
 

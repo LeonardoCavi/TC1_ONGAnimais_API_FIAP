@@ -44,11 +44,11 @@ namespace ONGAnimaisAPI.Application.Validations.Usuario
 
             RuleFor(u => u.Endereco.UF)
                 .NotEmpty().WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}")
-                .Length(2).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter {TotalLength} caracteres");
+                .Length(2).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter {MaxLength} caracteres");
 
             RuleFor(u => u.Endereco.CEP)
                 .NotEmpty().WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}")
-                .Length(8).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter {TotalLength} caracteres");
+                .Length(8).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter {MaxLength} caracteres");
         }
     }
 }

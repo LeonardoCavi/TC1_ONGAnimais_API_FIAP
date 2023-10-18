@@ -9,6 +9,8 @@ namespace ONGAnimaisAPI.Domain.Interfaces.Services
 
         Task<ONG> ObterONG(int id);
 
+        Task<ICollection<ONG>> ObterONGsPorCidade(string cidade, string uf, int paginacao = 0);
+
         Task<ONG> ObterONGEventos(int id);
 
         Task<ICollection<ONG>> ObterTodasONG();
@@ -23,6 +25,8 @@ namespace ONGAnimaisAPI.Domain.Interfaces.Services
         Task InserirEvento(Evento evento);
 
         Task<Evento> ObterEvento(int ongId, int id);
+
+        Task<ICollection<Evento>> ObterEventosPorCidade(string cidade, string uf, int paginacao = 0);
 
         Task<ICollection<Evento>> ObterTodosEventos();
 
