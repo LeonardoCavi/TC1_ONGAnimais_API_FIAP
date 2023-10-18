@@ -1,0 +1,14 @@
+{
+    "nome": "Evento contra raiva animal",
+    "descricao": "Campanha de vacinação contra raiva",
+    "endereco": {
+        "cep": "04610020",
+        "logradouro": "Rua Valter Fontenelle Ribeiro",
+        "numero": "",
+        "complemento": "Praça da Igreja",
+        "bairro": "Parque Colonial",
+        "cidade": "São Paulo",
+        "uf": "SP"
+    },
+    "data": "2023-10-10T23:36:43.312Z"
+}
