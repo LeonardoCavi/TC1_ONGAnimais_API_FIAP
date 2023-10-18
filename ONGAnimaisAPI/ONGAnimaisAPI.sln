@@ -3,53 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. API", "1. API", "{24525BCD-6BA5-4B70-8533-739A1A0AA170}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. APPLICATION", "2. APPLICATION", "{0E66C989-9DF3-4AA8-808D-AA1E715A0F06}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. DOMAIN", "3. DOMAIN", "{B525ED18-B379-4D33-925F-2ADDB3935045}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. INFRA", "4. INFRA", "{5CA0C100-D37F-4AFD-A2D6-0EF192FC519D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONGAnimaisAPI.API", "ONGAnimaisAPI.API\ONGAnimaisAPI.API.csproj", "{563E7C6D-AB71-48E0-8C95-586B572CFC6C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONGAnimaisAPI.Application", "ONGAnimaisAPI.Application\ONGAnimaisAPI.Application.csproj", "{F120E750-F437-49D5-BD5E-F6742DAC3D39}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONGAnimaisAPI.Domain", "ONGAnimaisAPI.Domain\ONGAnimaisAPI.Domain.csproj", "{24572E4F-8C5B-4640-9356-98068F0E6CF2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONGAnimaisAPI.Infra", "ONGAnimaisAPI.Infra\ONGAnimaisAPI.Infra.csproj", "{F64DD0B4-C094-46EE-AF53-3AD3D5993175}"
-EndProject
 Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{563E7C6D-AB71-48E0-8C95-586B572CFC6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{563E7C6D-AB71-48E0-8C95-586B572CFC6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{563E7C6D-AB71-48E0-8C95-586B572CFC6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{563E7C6D-AB71-48E0-8C95-586B572CFC6C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F120E750-F437-49D5-BD5E-F6742DAC3D39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F120E750-F437-49D5-BD5E-F6742DAC3D39}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F120E750-F437-49D5-BD5E-F6742DAC3D39}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F120E750-F437-49D5-BD5E-F6742DAC3D39}.Release|Any CPU.Build.0 = Release|Any CPU
-		{24572E4F-8C5B-4640-9356-98068F0E6CF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{24572E4F-8C5B-4640-9356-98068F0E6CF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{24572E4F-8C5B-4640-9356-98068F0E6CF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{24572E4F-8C5B-4640-9356-98068F0E6CF2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F64DD0B4-C094-46EE-AF53-3AD3D5993175}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F64DD0B4-C094-46EE-AF53-3AD3D5993175}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F64DD0B4-C094-46EE-AF53-3AD3D5993175}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F64DD0B4-C094-46EE-AF53-3AD3D5993175}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{563E7C6D-AB71-48E0-8C95-586B572CFC6C} = {24525BCD-6BA5-4B70-8533-739A1A0AA170}
-		{F120E750-F437-49D5-BD5E-F6742DAC3D39} = {0E66C989-9DF3-4AA8-808D-AA1E715A0F06}
-		{24572E4F-8C5B-4640-9356-98068F0E6CF2} = {B525ED18-B379-4D33-925F-2ADDB3935045}
-		{F64DD0B4-C094-46EE-AF53-3AD3D5993175} = {5CA0C100-D37F-4AFD-A2D6-0EF192FC519D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {474F39A5-757A-4B5F-821F-CD3B4408787A}

@@ -2,27 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <PropertyGroup>
-  	<GenerateDocumentationFile>true</GenerateDocumentationFile>
-  	<NoWarn>$(NoWarn);1591</NoWarn>
-  </PropertyGroup>
-	
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="12.0.0" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.11" />
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.11" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.11">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Serilog" Version="3.0.1" />
-    <PackageReference Include="Serilog.Extensions.Hosting" Version="7.0.0" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="7.0.0" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="7.0.1" />
     <PackageReference Include="Serilog.Sinks.Async" Version="1.5.0" />
@@ -31,14 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ONGAnimaisAPI.Application\ONGAnimaisAPI.Application.csproj" />
-    <ProjectReference Include="..\ONGAnimaisAPI.Domain\ONGAnimaisAPI.Domain.csproj" />
-    <ProjectReference Include="..\ONGAnimaisAPI.Infra\ONGAnimaisAPI.Infra.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="jsons\Usuario\" />
-    <Folder Include="logs\" />
+    <Folder Include="Controllers\" />
+    <Folder Include="Configurations\" />
+    <Folder Include="ViewModels\" />
   </ItemGroup>
 
 </Project>

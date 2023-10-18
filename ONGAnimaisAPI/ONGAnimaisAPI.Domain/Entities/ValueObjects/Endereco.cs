@@ -1,6 +1,6 @@
 ﻿namespace ONGAnimaisAPI.Domain.Entities.ValueObjects
 {
-    public class Endereco : ValueObject
+    public class Endereco
     {
         public string CEP { get; set; }
         public string Logradouro { get; set; }
@@ -9,10 +9,5 @@
         public string Bairro { get; set; }
         public string Cidade { get; set; }
         public string UF { get; set; }
-
-        protected override IEnumerable<object> GetAtomicValues()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
