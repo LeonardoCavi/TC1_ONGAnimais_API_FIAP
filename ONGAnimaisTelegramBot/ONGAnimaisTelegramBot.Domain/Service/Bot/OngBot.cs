@@ -38,6 +38,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 }
                 return await MenuPrincipal(sessaoId);
             }
+
             else
             {
                 return Tuple.Create(false, string.Empty);

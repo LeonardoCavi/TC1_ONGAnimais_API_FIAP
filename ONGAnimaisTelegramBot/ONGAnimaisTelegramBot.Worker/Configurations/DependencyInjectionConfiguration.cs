@@ -1,6 +1,7 @@
 ﻿using ONGAnimaisTelegramBot.Application.Service;
 using ONGAnimaisTelegramBot.Domain.Interface;
 using ONGAnimaisTelegramBot.Domain.Service;
+using ONGAnimaisTelegramBot.Domain.Service.Bot;
 using ONGAnimaisTelegramBot.Infra.Utility;
 using ONGAnimaisTelegramBot.Infra.Vendors;
 using ONGAnimaisTelegramBot.Infra.Vendors.Interface;
@@ -20,7 +21,9 @@ namespace ONGAnimaisTelegramBot.Worker.Configurations
             services.AddSingleton<IEventoService, EventoService>();
             services.AddSingleton<ISessaoMonitor, SessaoMonitor>();
             services.AddSingleton<IAtendimentoManager, AtendimentoManager>();
+            services.AddSingleton<IBotManager, BotManager>();
             services.AddSingleton<IONGAPIHttpClient, ONGAPIHttpClient>();
+            services.AddSingleton<OngBot>();
             services.AddSingleton<HttpHelp>();
             services.AddSingleton<AsyncPolicy>(
                PollyConfiguration.CreateWaitAndRetryPolicy(new[]

@@ -14,22 +14,23 @@ namespace ONGAnimaisTelegramBot.Domain.Service
     {
         private string ClassName = typeof(BotManager).Name;
         private ILogger<BotManager> _logger;
-        private OngBot bot;
-        public BotManager(ILogger<BotManager> logger)
+        private OngBot _bot;
+        public BotManager(ILogger<BotManager> logger, OngBot bot)
         {
             _logger = logger;
+            _bot = bot;
         }
 
         public async Task Iniciar(Atendimento atendimento)
         {
-            var result = await bot.MenuPrincipal(atendimento.SessaoId);
+            var result = await _bot.MenuPrincipal(atendimento.SessaoId);
 
             atendimento.MenuAnterior = result.Item2;
         }
 
         public async Task TratarRecebimento(Atendimento atendimento, string mensagem)
         {
-            var resultado = await bot.TratarResposta(atendimento.SessaoId, atendimento.MenuAnterior, mensagem);
+            var resultado = await _bot.TratarResposta(atendimento.SessaoId, atendimento.MenuAnterior, mensagem);
             
             atendimento.EmAtendimento = resultado.Item1;
             atendimento.MenuAnterior = resultado.Item2;
