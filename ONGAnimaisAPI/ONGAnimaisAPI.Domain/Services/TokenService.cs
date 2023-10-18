@@ -16,7 +16,7 @@ namespace ONGAnimaisAPI.Domain.Services
             this._configuration = configuration;
         }
 
-        public string GerarToken(string usuario)
+        public object GerarToken(string usuario)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII
@@ -36,7 +36,14 @@ namespace ONGAnimaisAPI.Domain.Services
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            //return tokenHandler.WriteToken(token);
+
+            var tokenResponse = new
+            {
+                Token = tokenHandler.WriteToken(token),
+                Expiration = tokenDescriptor.Expires.Value
+            };
+            return tokenResponse;
         }
     }
 }

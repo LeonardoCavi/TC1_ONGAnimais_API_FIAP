@@ -9,6 +9,6 @@ namespace ONGAnimaisAPI.Application.Interfaces
 {
     public interface IAutenticacaoApplicationService
     {
-        Task<string> Autenticar(AutenticaViewModel aut);
+        Task<object> Autenticar(AutenticaViewModel aut);
     }
 }

@@ -15,5 +15,15 @@ namespace ONGAnimaisAPI.Infra.Repositories
             return await _dBSet.Include(o => o.Eventos)
                 .FirstOrDefaultAsync(o => o.Id == id);
         }
+
+        public async Task<ICollection<ONG>> ObterONGsPorCidade(string cidade, string uf, int paginacao = 0)
+        {
+            return await _dBSet
+                .Where(o => o.Endereco.Cidade == cidade &&
+            o.Endereco.UF == uf)
+                .Skip(paginacao * 5)
+                .Take(5)
+                .ToListAsync();
+        }
     }
 }

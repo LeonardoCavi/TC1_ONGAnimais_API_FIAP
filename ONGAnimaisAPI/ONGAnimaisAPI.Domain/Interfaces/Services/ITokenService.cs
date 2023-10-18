@@ -2,6 +2,6 @@
 {
     public interface ITokenService
     {
-        string GerarToken(string usuario);
+        object GerarToken(string usuario);
     }
 }

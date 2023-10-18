@@ -48,11 +48,11 @@ namespace ONGAnimaisAPI.Application.Validations.ONG
 
             RuleFor(o => o.Endereco.UF)
                 .NotEmpty().WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}")
-                .Length(2).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter {TotalLength} caracteres");
+                .Length(2).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter {MaxLength} caracteres");
 
             RuleFor(o => o.Endereco.CEP)
                 .NotEmpty().WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}")
-                .Length(8).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter {TotalLength} caracteres");
+                .Length(8).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter {MaxLength} caracteres");
 
 
             RuleForEach(o => o.Telefones)
