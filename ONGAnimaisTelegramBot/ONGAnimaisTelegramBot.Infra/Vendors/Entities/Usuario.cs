@@ -8,6 +8,9 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors.Entities
         [JsonPropertyName("id")]
         public int Id { get; set; }
 
+        [JsonPropertyName("telegramId")]
+        public string TelegramId { get; set; }
+
         [JsonPropertyName("nome")]
         public string Nome { get; set; }
 
