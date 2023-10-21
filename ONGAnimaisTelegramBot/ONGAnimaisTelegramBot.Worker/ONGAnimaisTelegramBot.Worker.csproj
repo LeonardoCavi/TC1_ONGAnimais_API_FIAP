@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-ONGAnimaisTelegramBot.Worker-ba147ba5-f8ed-4d04-a050-e62ec010176d</UserSecretsId>
   </PropertyGroup>

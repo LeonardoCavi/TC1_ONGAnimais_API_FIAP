@@ -23,7 +23,7 @@ namespace ONGAnimaisTelegramBot.Worker.Configurations
             services.AddSingleton<IAtendimentoManager, AtendimentoManager>();
             services.AddSingleton<IBotManager, BotManager>();
             services.AddSingleton<IONGAPIHttpClient, ONGAPIHttpClient>();
-            services.AddSingleton<OngBot>();
+            //services.AddSingleton<OngBot>();
             services.AddSingleton<HttpHelp>();
             services.AddSingleton<AsyncPolicy>(
                PollyConfiguration.CreateWaitAndRetryPolicy(new[]

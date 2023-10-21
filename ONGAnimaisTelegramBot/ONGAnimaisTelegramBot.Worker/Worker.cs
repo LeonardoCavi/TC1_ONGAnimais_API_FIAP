@@ -27,8 +27,8 @@ namespace ONGAnimaisTelegramBot.Worker
                     using var scope = _serviceProvider.CreateScope();
 
                     var telegramBotService = scope.ServiceProvider.GetRequiredService<ITelegramBotService>();
-                    var sessaoMonitor = scope.ServiceProvider.GetRequiredService<ISessaoMonitor>();
                     var updateHandler = scope.ServiceProvider.GetRequiredService<IUpdateHandler>();
+                    var sessaoMonitor = scope.ServiceProvider.GetRequiredService<ISessaoMonitor>();
                     await telegramBotService.EscutarEventos(updateHandler, stoppingToken);
                     await sessaoMonitor.IniciarMonitoramento(stoppingToken);
                 });

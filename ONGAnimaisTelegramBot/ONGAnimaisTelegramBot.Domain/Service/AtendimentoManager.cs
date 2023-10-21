@@ -18,23 +18,34 @@ namespace ONGAnimaisTelegramBot.Domain.Service
         private ILogger<AtendimentoManager> _logger;
         private ConcurrentDictionary<string, Atendimento> Atendimentos = new ConcurrentDictionary<string, Atendimento>();
         private IBotManager _botManager;
-        public AtendimentoManager(ILogger<AtendimentoManager> logger, IBotManager botManager)
+        private ISessaoMonitor _sessaoMonitor;
+        public AtendimentoManager(ILogger<AtendimentoManager> logger, IBotManager botManager, ISessaoMonitor sessaoMonitor)
         {
             _logger = logger;
             _botManager = botManager;
+            _sessaoMonitor = sessaoMonitor;
+
+            _sessaoMonitor.SetNotificacaoPreDesconexao(NotificarPreDesconexao);
+            _sessaoMonitor.SetNotificacaoDesconexao(NotificarDesconexao);
         }
 
         public async Task NovaMensagem(Message mensagem, Atendimento atendimento)
         {
-            await _botManager.TratarRecebimento(atendimento, mensagem.Text);
+            _sessaoMonitor.AtualizarSessao(atendimento.SessaoId);
+
+            await _botManager.TratarRecebimento(mensagem, atendimento);
 
             if (!atendimento.EmAtendimento)
+            {
                 RemoverAtendimento(atendimento.SessaoId);
+                _sessaoMonitor.RemoverSessao(atendimento.SessaoId);
+            }
         }
 
         public async Task NovoAtendimento(Message mensagem, string sessaoId)
         {
             var atendimento = CriarAtendimento(mensagem, sessaoId);
+            _sessaoMonitor.AdicionarSessao(sessaoId);
             await _botManager.Iniciar(atendimento);
         }
 
@@ -65,6 +76,19 @@ namespace ONGAnimaisTelegramBot.Domain.Service
         {
             if (Atendimentos.ContainsKey(sessaoId))
                 Atendimentos.TryRemove(sessaoId, out var _);
+        }
+
+        private async Task NotificarPreDesconexao(string sessaoId)
+        {
+            var atendimento = ObterAtendimento(sessaoId);
+            await _botManager.Notificar("Atenção! Você será desconectado em breve, caso não interaja com o Bot.", atendimento, false);
+        }
+
+        private async Task NotificarDesconexao(string sessaoId)
+        {
+            var atendimento = ObterAtendimento(sessaoId);
+            await _botManager.Notificar("Atendimento encerrado..", atendimento, true);
+            RemoverAtendimento(sessaoId);
         }
     }
 }
