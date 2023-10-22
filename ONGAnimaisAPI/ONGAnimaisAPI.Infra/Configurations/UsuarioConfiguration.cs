@@ -11,6 +11,7 @@ namespace ONGAnimaisAPI.Infra.Configurations
             builder.ToTable("Usuarios");
             builder.HasKey(u => u.Id);
             builder.Property(u => u.Nome).HasColumnType("VARCHAR(150)").IsRequired();
+            builder.Property(u => u.TelegramId).HasColumnType("VARCHAR(16)");
             builder.OwnsOne(u => u.Telefone, telefoneBuilder =>
             {
                 telefoneBuilder.ToTable("UsuarioTelefone");
@@ -22,13 +23,19 @@ namespace ONGAnimaisAPI.Infra.Configurations
             builder.OwnsOne(u => u.Endereco, enderecoBuilder =>
             {
                 enderecoBuilder.ToTable("UsuarioEndereco");
-                enderecoBuilder.Property(e => e.CEP).HasColumnType("VARCHAR(8)").IsRequired();
-                enderecoBuilder.Property(e => e.Logradouro).HasColumnType("VARCHAR(150)").IsRequired();
+                enderecoBuilder.Property(e => e.CEP).HasColumnType("VARCHAR(8)");//.IsRequired();
+                enderecoBuilder.Property(e => e.Logradouro).HasColumnType("VARCHAR(150)");//.IsRequired();
                 enderecoBuilder.Property(e => e.Numero).HasColumnType("VARCHAR(20)");
                 enderecoBuilder.Property(e => e.Complemento).HasColumnType("VARCHAR(150)");
-                enderecoBuilder.Property(e => e.Bairro).HasColumnType("VARCHAR(150)").IsRequired();
-                enderecoBuilder.Property(e => e.Cidade).HasColumnType("VARCHAR(150)").IsRequired();
-                enderecoBuilder.Property(e => e.UF).HasColumnType("VARCHAR(2)").IsRequired();
+                enderecoBuilder.Property(e => e.Bairro).HasColumnType("VARCHAR(150)");//.IsRequired();
+                enderecoBuilder.Property(e => e.Cidade).HasColumnType("VARCHAR(150)");//.IsRequired();
+                enderecoBuilder.Property(e => e.UF).HasColumnType("VARCHAR(2)");//.IsRequired();
+            });
+            builder.OwnsOne(u => u.GeoLocalizacao, geoBuilder =>
+            {
+                geoBuilder.ToTable("UsuarioGeoLocalizacao");
+                geoBuilder.Property(g => g.Latitude).HasColumnType("DECIMAL(10, 8)");//.IsRequired();
+                geoBuilder.Property(g => g.Longitude).HasColumnType("DECIMAL(10, 8)");//.IsRequired();
             });
             builder.HasMany(u => u.EventosSeguidos)
                 .WithMany();

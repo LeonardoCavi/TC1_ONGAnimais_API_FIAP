@@ -1,12 +1,17 @@
-﻿using ONGAnimaisAPI.Application.Interfaces;
+﻿using Microsoft.Extensions.DependencyInjection;
+using ONGAnimaisAPI.Application.Interfaces;
 using ONGAnimaisAPI.Application.Services;
 using ONGAnimaisAPI.Domain.Interfaces.Notifications;
 using ONGAnimaisAPI.Domain.Interfaces.Repositories;
 using ONGAnimaisAPI.Domain.Interfaces.Repository;
 using ONGAnimaisAPI.Domain.Interfaces.Services;
+using ONGAnimaisAPI.Domain.Interfaces.Utility;
 using ONGAnimaisAPI.Domain.Notifications;
 using ONGAnimaisAPI.Domain.Services;
 using ONGAnimaisAPI.Infra.Repositories;
+using ONGAnimaisAPI.Infra.Utility;
+using ONGAnimaisAPI.Infra.Utility.Geocoding;
+using Polly;
 
 namespace ONGAnimaisAPI.API.Configurations
 {
@@ -33,6 +38,16 @@ namespace ONGAnimaisAPI.API.Configurations
 
             //Notificador
             services.AddScoped<INotificador, Notificador>();
+
+            //Utility HttpClient
+            services.AddScoped<IGeocodingAPIHttpClient, GeocodingAPIHttpClient>();
+            services.AddScoped<HttpHelp>();
+            services.AddSingleton<AsyncPolicy>(
+               PollyConfiguration.CreateWaitAndRetryPolicy(new[]
+               {
+                    TimeSpan.FromSeconds(1),
+                    TimeSpan.FromSeconds(3)
+               }));
         }
     }
 }

@@ -16,6 +16,8 @@ namespace ONGAnimaisAPI.Domain.Interfaces.Services
 
         Task<Usuario> ObterUsuarioONGs(int id);
 
+        Task<Usuario> ObterUsuarioPorTelegramId(string telegramId);
+
         Task AtualizarUsuario(Usuario usuario);
 
         Task ExcluirUsuario(int id);

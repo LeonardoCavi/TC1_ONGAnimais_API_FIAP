@@ -114,6 +114,20 @@ namespace ONGAnimaisAPI.Application.Services
             return null;
         }
 
+        public async Task<ICollection<ObtemONGGeoViewModel>> ObterONGsPorCidadeGeo(BuscaONGCidadeViewModel ongcidade, int paginacao = 0)
+        {
+            ExecutarValidacao(new BuscaONGCidadeValidation(), ongcidade);
+
+            if (!_notificador.TemNotificacao())
+            {
+                var ongs = await _service.ObterONGsPorCidadeGeo(ongcidade.Cidade, ongcidade.UF, paginacao);
+
+                return _mapper.Map<ICollection<ObtemONGGeoViewModel>>(ongs);
+            }
+
+            return null;
+        }
+
         #endregion [ONG]
 
         #region [Evento]
@@ -189,6 +203,20 @@ namespace ONGAnimaisAPI.Application.Services
                 var eventos = await _service.ObterEventosPorCidade(eventocidade.Cidade, eventocidade.UF, paginacao);
 
                 return _mapper.Map<ICollection<ObtemEventoViewModel>>(eventos);
+            }
+
+            return null;
+        }
+
+        public async Task<ICollection<ObtemEventoGeoViewModel>> ObterEventosPorCidadeGeo(BuscaEventoCidadeViewModel eventocidade, int paginacao = 0)
+        {
+            ExecutarValidacao(new BuscaEventoCidadeValidation(), eventocidade);
+
+            if (!_notificador.TemNotificacao())
+            {
+                var eventos = await _service.ObterEventosPorCidadeGeo(eventocidade.Cidade, eventocidade.UF, paginacao);
+
+                return _mapper.Map<ICollection<ObtemEventoGeoViewModel>>(eventos);
             }
 
             return null;

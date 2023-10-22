@@ -1,13 +1,11 @@
 ﻿using ONGAnimaisAPI.Domain.Entities.ValueObjects;
 
-namespace ONGAnimaisAPI.Application.ViewModels.Usuario
+namespace ONGAnimaisAPI.Application.ViewModels.ONG
 {
-    public class AtualizaUsuarioViewModel
+    public class ObtemONGGeoViewModel
     {
         public int Id { get; set; }
         public string Nome { get; set; }
-        public Telefone Telefone { get; set; }
-        public Endereco Endereco { get; set; }
         public GeoLocalizacao GeoLocalizacao { get; set; }
     }
 }

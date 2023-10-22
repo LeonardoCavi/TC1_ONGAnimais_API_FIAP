@@ -17,6 +17,8 @@ namespace ONGAnimaisAPI.Application.Interfaces
 
         Task<ObtemUsuarioONGsViewModel> ObterUsuarioONGs(int id);
 
+        Task<ObtemUsuarioViewModel> ObterUsuarioPorTelegramId(string telegramId);
+
         Task AtualizarUsuario(AtualizaUsuarioViewModel usuario);
 
         Task ExcluirUsuario(int id);

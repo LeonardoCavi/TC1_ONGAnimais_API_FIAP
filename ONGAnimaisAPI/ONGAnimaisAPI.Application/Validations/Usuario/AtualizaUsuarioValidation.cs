@@ -28,7 +28,7 @@ namespace ONGAnimaisAPI.Application.Validations.Usuario
                 .Length(8, 9).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
 
             RuleFor(u => u.Endereco.Logradouro)
-                .NotEmpty().WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}")
+                //.NotEmpty().WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}")
                 .Length(2, 150).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
 
             RuleFor(u => u.Endereco.Numero)
@@ -38,19 +38,19 @@ namespace ONGAnimaisAPI.Application.Validations.Usuario
                 .Length(0, 150).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
 
             RuleFor(u => u.Endereco.Bairro)
-                .NotEmpty().WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}")
+                //.NotEmpty().WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}")
                 .Length(2, 150).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
 
             RuleFor(u => u.Endereco.Cidade)
-                .NotEmpty().WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}")
+                //.NotEmpty().WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}")
                 .Length(2, 150).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
 
             RuleFor(u => u.Endereco.UF)
-                .NotEmpty().WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}")
+                //.NotEmpty().WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}")
                 .Length(2).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter {MaxLength} caracteres");
 
             RuleFor(u => u.Endereco.CEP)
-                .NotEmpty().WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}")
+                //.NotEmpty().WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}")
                 .Length(8).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter {MaxLength} caracteres");
         }
     }

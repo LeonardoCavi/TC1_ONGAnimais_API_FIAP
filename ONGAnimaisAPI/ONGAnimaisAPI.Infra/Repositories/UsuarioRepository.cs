@@ -24,6 +24,12 @@ namespace ONGAnimaisAPI.Infra.Repositories
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
 
+        public async Task<Usuario> ObterUsuarioPorTelegramId(string telegramId)
+        {
+            return await _dBSet
+                .FirstOrDefaultAsync(u => u.TelegramId == telegramId);
+        }
+
         #endregion
 
     }

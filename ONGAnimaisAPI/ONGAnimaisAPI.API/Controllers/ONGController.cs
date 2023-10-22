@@ -129,6 +129,38 @@ namespace ONGAnimaisAPI.API.Controllers
         }
 
         /// <summary>
+        /// Obter/Consultar uma lista de ONGs e sua Geo Localização(Latitude+Longitude) por Cidade e UF 
+        /// </summary>
+        /// <param name="ongcidade"></param>
+        /// <param name="paginacao"></param>
+        /// <returns></returns>
+        [Route("obter-ongs-por-cidade-geo")]
+        [HttpGet]
+        public async Task<IActionResult> ObterONGsPorCidadeGeo([FromQuery] BuscaONGCidadeViewModel ongcidade, int paginacao = 0)
+        {
+            try
+            {
+                _logger.LogInformation($"[{_className}] - [ObterONGsPorCidadeGeo] => Request.: {JsonSerializer.Serialize(ongcidade)}");
+                var ongs = await _application.ObterONGsPorCidadeGeo(ongcidade, paginacao);
+
+                if (_notificador.TemNotificacao())
+                {
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
+                    _logger.LogWarning($"[{_className}] - [ObterONGsPorCidadeGeo] => Notificações.: {JsonSerializer.Serialize(resposta)}");
+                    return StatusCode(resposta.StatusCode, resposta);
+                }
+
+                return Ok(ongs);
+            }
+            catch (Exception ex)
+            {
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                _logger.LogError($"[{_className}] - [ObterONGsPorCidadeGeo] => Exception.: {ex.Message}");
+                return StatusCode(resposta.StatusCode, resposta);
+            }
+        }
+
+        /// <summary>
         /// Obter/Consultar ONG e seus Eventos pelo identificador(id)
         /// </summary>
         /// <param name="id"></param>
@@ -306,7 +338,7 @@ namespace ONGAnimaisAPI.API.Controllers
             try
             {
                 _logger.LogInformation($"[{_className}] - [ObterEventosPorCidade] => Request.: {JsonSerializer.Serialize(eventocidade)}");
-                var ongs = await _application.ObterEventosPorCidade(eventocidade, paginacao);
+                var eventos = await _application.ObterEventosPorCidade(eventocidade, paginacao);
 
                 if (_notificador.TemNotificacao())
                 {
@@ -315,12 +347,44 @@ namespace ONGAnimaisAPI.API.Controllers
                     return StatusCode(resposta.StatusCode, resposta);
                 }
 
-                return Ok(ongs);
+                return Ok(eventos);
             }
             catch (Exception ex)
             {
                 var resposta = _mapper.Map<ErroViewModel>(ex);
                 _logger.LogError($"[{_className}] - [ObterEventosPorCidade] => Exception.: {ex.Message}");
+                return StatusCode(resposta.StatusCode, resposta);
+            }
+        }
+
+        /// <summary>
+        /// Obter/Consultar uma lista de Eventos e sua Geo Localização(Latitude+Longitude) por Cidade e UF 
+        /// </summary>
+        /// <param name="eventocidade"></param>
+        /// <param name="paginacao"></param>
+        /// <returns></returns>
+        [Route("obter-eventos-por-cidade-geo")]
+        [HttpGet]
+        public async Task<IActionResult> ObterEventosPorCidadeGeo([FromQuery] BuscaEventoCidadeViewModel eventocidade, int paginacao = 0)
+        {
+            try
+            {
+                _logger.LogInformation($"[{_className}] - [ObterEventosPorCidadeGeo] => Request.: {JsonSerializer.Serialize(eventocidade)}");
+                var eventos = await _application.ObterEventosPorCidadeGeo(eventocidade, paginacao);
+
+                if (_notificador.TemNotificacao())
+                {
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
+                    _logger.LogWarning($"[{_className}] - [ObterEventosPorCidadeGeo] => Notificações.: {JsonSerializer.Serialize(resposta)}");
+                    return StatusCode(resposta.StatusCode, resposta);
+                }
+
+                return Ok(eventos);
+            }
+            catch (Exception ex)
+            {
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                _logger.LogError($"[{_className}] - [ObterEventosPorCidadeGeo] => Exception.: {ex.Message}");
                 return StatusCode(resposta.StatusCode, resposta);
             }
         }

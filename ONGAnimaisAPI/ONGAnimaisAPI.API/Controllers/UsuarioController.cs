@@ -162,6 +162,38 @@ namespace ONGAnimaisAPI.API.Controllers
         }
 
         /// <summary>
+        /// Obter/Consultar Usuário pelo identificador do Telegram(telegramId)
+        /// </summary>
+        /// <param name="telegramId"></param>
+        /// <returns></returns>
+        [Route("obter-usuario-por-telegramid/{telegramId}")]
+        [HttpGet]
+        public async Task<IActionResult> ObterUsuarioPorTelegramId(string telegramId)
+        {
+            try
+            {
+                _logger.LogInformation($"[{_className}] - [ObterUsuarioPorTelegramId] => Request.: {new { TelegramId = telegramId }}");
+
+                var usuario = await _application.ObterUsuarioPorTelegramId(telegramId);
+
+                if (_notificador.TemNotificacao())
+                {
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
+                    _logger.LogWarning($"[{_className}] - [ObterUsuarioPorTelegramId] => Notificações.: {JsonSerializer.Serialize(resposta)}");
+                    return StatusCode(resposta.StatusCode, resposta);
+                }
+
+                return Ok(usuario);
+            }
+            catch (Exception ex)
+            {
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                _logger.LogError($"[{_className}] - [ObterUsuarioPorTelegramId] => Exception.: {ex.Message}");
+                return StatusCode(resposta.StatusCode, resposta);
+            }
+        }
+
+        /// <summary>
         /// Inserir/Criar Usuário
         /// </summary>
         /// <param name="usuario"></param>

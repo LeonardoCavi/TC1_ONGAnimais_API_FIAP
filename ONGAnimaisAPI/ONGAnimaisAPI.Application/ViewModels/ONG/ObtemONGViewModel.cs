@@ -11,6 +11,7 @@ namespace ONGAnimaisAPI.Application.ViewModels.ONG
         public string Responsavel { get; set; }
         public string Email { get; set; }
         public Endereco Endereco { get; set; }
+        public GeoLocalizacao GeoLocalizacao { get; set; }
         public List<Telefone> Telefones { get; set; }
         public List<Contato> Contatos { get; set; }
     }

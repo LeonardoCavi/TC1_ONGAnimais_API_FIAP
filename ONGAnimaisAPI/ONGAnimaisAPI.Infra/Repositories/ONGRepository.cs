@@ -13,7 +13,8 @@ namespace ONGAnimaisAPI.Infra.Repositories
         public async Task<ONG> ObterONGEventos(int id)
         {
             return await _dBSet.Include(o => o.Eventos)
-                .FirstOrDefaultAsync(o => o.Id == id);
+                .Where(o => o.Id == id && o.Eventos.Any(e => e.Data >= DateTime.Now))
+                .FirstOrDefaultAsync();
         }
 
         public async Task<ICollection<ONG>> ObterONGsPorCidade(string cidade, string uf, int paginacao = 0)
@@ -23,6 +24,16 @@ namespace ONGAnimaisAPI.Infra.Repositories
             o.Endereco.UF == uf)
                 .Skip(paginacao * 5)
                 .Take(5)
+                .ToListAsync();
+        }
+
+        public async Task<ICollection<ONG>> ObterONGsPorCidadeGeo(string cidade, string uf, int paginacao = 0)
+        {
+            return await _dBSet
+                .Where(o => o.Endereco.Cidade == cidade &&
+            o.Endereco.UF == uf)
+                .Skip(paginacao * 5)
+                .Take(50)
                 .ToListAsync();
         }
     }

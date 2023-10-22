@@ -92,6 +92,17 @@ namespace ONGAnimaisAPI.Domain.Services
             return usuarioOngs;
         }
 
+        public async Task<Usuario> ObterUsuarioPorTelegramId(string telegramId)
+        {
+            var usuario = await _uRepository.ObterUsuarioPorTelegramId(telegramId);
+
+            if (usuario is null)
+                Notificar($"Usuario: usuário com Telegram Id '{telegramId}' não existe", TipoNotificacao.NotFound);
+
+            return usuario;
+
+        }
+
         #endregion [Usuario]
 
         #region [Evento]

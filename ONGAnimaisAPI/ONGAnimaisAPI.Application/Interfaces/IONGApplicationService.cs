@@ -15,6 +15,8 @@ namespace ONGAnimaisAPI.Application.Interfaces
 
         Task<ICollection<ObtemONGViewModel>> ObterONGsPorCidade(BuscaONGCidadeViewModel ongcidade, int paginacao = 0);
 
+        Task<ICollection<ObtemONGGeoViewModel>> ObterONGsPorCidadeGeo(BuscaONGCidadeViewModel ongcidade, int paginacao = 0);
+
         Task<ObtemONGEventosViewModel> ObterONGEventos(int id);
 
         Task AtualizarONG(AtualizaONGViewModel ong);
@@ -34,6 +36,8 @@ namespace ONGAnimaisAPI.Application.Interfaces
         Task ExcluirEvento(int ongId, int id);
 
         Task<ICollection<ObtemEventoViewModel>> ObterEventosPorCidade(BuscaEventoCidadeViewModel eventocidade, int paginacao = 0);
+
+        Task<ICollection<ObtemEventoGeoViewModel>> ObterEventosPorCidadeGeo(BuscaEventoCidadeViewModel eventocidade, int paginacao = 0);
 
         #endregion 
     }

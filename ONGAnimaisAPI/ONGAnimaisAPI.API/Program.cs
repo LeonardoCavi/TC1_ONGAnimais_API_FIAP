@@ -16,7 +16,8 @@ builder.Host.UseSerilogConfiguration();
 builder.Services.AddSwaggerConfiguration(builder.Configuration);
 //JWT Autentication
 builder.Services.AddAutenticationConfiguration(builder.Configuration);
-
+//HttpHelp
+builder.Services.AddHttpClientConfiguration();
 //Project Dependency Injection
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDBContextConfiguration(builder.Configuration);

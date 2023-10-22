@@ -6,5 +6,6 @@ namespace ONGAnimaisAPI.Domain.Interfaces.Repository
     {
         Task<Usuario> ObterUsuarioEventos(int id);
         Task<Usuario> ObterUsuarioONGs(int id);
+        Task<Usuario> ObterUsuarioPorTelegramId(string telegramId);
     }
 }
