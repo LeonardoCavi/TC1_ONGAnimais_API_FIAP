@@ -12,7 +12,7 @@ namespace ONGAnimaisTelegramBot.Domain.Interface
         Task IniciarMonitoramento(CancellationToken cancellationToken);
         void SetNotificacaoPreDesconexao(Func<string, Task> action);
         void SetNotificacaoDesconexao(Func<string, Task> action);
-        void AdicionarSessao(Sessao sessao);
+        void AdicionarSessao(string sessaoId);
         void AtualizarSessao(string sessaoId);
         void RemoverSessao(string sessaoId);
     }

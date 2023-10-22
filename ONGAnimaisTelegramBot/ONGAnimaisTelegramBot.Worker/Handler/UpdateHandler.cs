@@ -35,7 +35,7 @@ namespace ONGAnimaisTelegramBot.Worker.Handler
                     break;
                 case UpdateType.CallbackQuery:
 
-                    await RemoverOpcoes(botClient, update.CallbackQuery);
+                    //await RemoverOpcoes(botClient, update.CallbackQuery);
 
                     await _eventoService.ReceberCallBack(update.CallbackQuery, botClient.BotId);
                     break;

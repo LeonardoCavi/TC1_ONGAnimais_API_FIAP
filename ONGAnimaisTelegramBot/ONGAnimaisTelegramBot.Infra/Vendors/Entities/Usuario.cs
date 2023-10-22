@@ -18,12 +18,15 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors.Entities
         public Telefone Telefone { get; set; }
 
         [JsonPropertyName("endereco")]
-        public Endereco Endereco { get; set; }
+        public Endereco Endereco { get; set; } = new Endereco();
 
         [JsonPropertyName("eventosSeguidos")]
-        public List<Evento> EventosSeguidos { get; set; }
+        public List<Evento> EventosSeguidos { get; set; } = new List<Evento>();
 
         [JsonPropertyName("onGsSeguidas")]
-        public List<ONG> ONGsSeguidas { get; set; }
+        public List<ONG> ONGsSeguidas { get; set; } = new List<ONG> { };
+
+        [JsonPropertyName("geolocalizacao")]
+        public Geolocalizacao Geolocalizacao { get; set; } = new Geolocalizacao();
     }
 }

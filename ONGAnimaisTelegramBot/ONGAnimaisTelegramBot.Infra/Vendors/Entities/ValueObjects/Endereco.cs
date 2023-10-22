@@ -24,11 +24,5 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors.Entities.ValueObjects
 
         [JsonPropertyName("uf")]
         public string UF { get; set; }
-
-        [JsonPropertyName("latidude")]
-        public decimal Latidude { get; set; }
-
-        [JsonPropertyName("longitude")]
-        public decimal Longitude { get; set; }
     }
 }
