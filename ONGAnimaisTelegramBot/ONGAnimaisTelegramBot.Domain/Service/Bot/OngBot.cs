@@ -5,6 +5,7 @@ using ONGAnimaisTelegramBot.Infra.Vendors.Entities.ValueObjects;
 using ONGAnimaisTelegramBot.Infra.Vendors.Interface;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Telegram.Bot.Types;
 
 namespace ONGAnimaisTelegramBot.Domain.Service.Bot
@@ -40,7 +41,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 }
                 else if (texto == "3" || texto.ToLower().Contains("voluntario") || texto.ToLower().Contains("voluntário"))
                 {
-                    return await MenuUsuario();
+                    return await MenuVolutario();
                 }
                 else if (texto == "4" || texto.ToLower().Contains("sair"))
                 {
@@ -56,7 +57,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             {
                 if (texto == "1" || texto.ToLower().Contains("sim"))
                 {
-                    await CadastrarNovoUsuario();
+                    await CadastrarNovoUsuario(mensagem);
                     return await MenuPrincipal();
                 }
                 else if (texto == "2" || texto.ToLower().Contains("não") || texto.ToLower().Contains("nao"))
@@ -69,7 +70,6 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 return await MenuCadastro();
             }
 
-
             if (menuAnterior == "MenuONG")
             {
                 if (texto == "1" || texto.ToLower().Contains("região") || texto.ToLower().Contains("regiao"))
@@ -78,7 +78,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 }
                 else if (texto == "2" || texto.ToLower().Contains("seguindo") || texto.ToLower().Contains("seguir"))
                 {
-                    return await MenuONG();
+                    return await MenuONGSeguirDesseguir();
                 }
                 else if (texto == "3" || texto.ToLower().Contains("voltar"))
                 {
@@ -89,16 +89,53 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 return await MenuONG();
             }
 
+            if (menuAnterior == "MenuEvento")
+            {
+                if (texto == "1" || texto.ToLower().Contains("região") || texto.ToLower().Contains("regiao"))
+                {
+                    return await MenuEventoRegiao();
+                }
+                else if (texto == "2" || texto.ToLower().Contains("seguindo") || texto.ToLower().Contains("seguir"))
+                {
+                    return await MenuEvento();
+                }
+                else if (texto == "3" || texto.ToLower().Contains("voltar"))
+                {
+                    return await MenuPrincipal();
+                }
+
+                await EnviarOpcaoInvalida();
+                return await MenuEvento();
+            }
+
+            if (menuAnterior == "MenuVolutario")
+            {
+                if (texto == "1" || texto.ToLower().Contains("ong"))
+                {
+                    return await MenuONG();
+                }
+                else if (texto == "2" || texto.ToLower().Contains("evento"))
+                {
+                    return await MenuEvento();
+                }
+                else if (texto == "3" || texto.ToLower().Contains("voltar"))
+                {
+                    return await MenuPrincipal();
+                }
+
+                await EnviarOpcaoInvalida();
+                return await MenuEvento();
+            }
 
             if (menuAnterior == "MenuONGRegiao")
             {
                 if (texto == "1" || texto.ToLower().Contains("compartilhar"))
                 {
-                    return await SolicitarLocalizacao();
+                    return await SolicitarLocalizacaoONG();
                 }
                 else if (texto == "2" || texto.ToLower().Contains("informar"))
                 {
-                    return await InformarCidade();
+                    return await InformarCidadeONG();
                 }
                 else if (texto == "3" || texto.ToLower().Contains("voltar"))
                 {
@@ -106,9 +143,66 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 }
 
                 await EnviarOpcaoInvalida();
-                return await MenuONG();
+                return await MenuONGRegiao();
             }
 
+            if (menuAnterior == "MenuEventoRegiao")
+            {
+                if (texto == "1" || texto.ToLower().Contains("compartilhar"))
+                {
+                    return await SolicitarLocalizacaoEvento();
+                }
+                else if (texto == "2" || texto.ToLower().Contains("informar"))
+                {
+                    return await InformarCidadeEvento();
+                }
+                else if (texto == "3" || texto.ToLower().Contains("voltar"))
+                {
+                    return await MenuPrincipal();
+                }
+
+                await EnviarOpcaoInvalida();
+                return await MenuEventoRegiao();
+            }
+
+            if (menuAnterior == "MenuONGSeguirDesseguir")
+            {
+                if (int.TryParse(texto, out int id))
+                {
+                    return await MenuInformacoesONG(id);
+                }
+                else if (texto.ToLower() == "voltar")
+                {
+                    return await MenuPrincipal();
+                }
+                else if (texto.ToLower() == "ver-mais" || texto.ToLower() == "ver mais")
+                {
+                    return await MenuONGSeguirDesseguir(1);
+                }
+
+                await EnviarOpcaoInvalida();
+                return await MenuONGSeguirDesseguir();
+            }
+
+            if (menuAnterior == "MenuEventoSeguirDesseguir")
+            {
+                if (Regex.IsMatch(texto, "^[0-9]+;[0-9]+$"))
+                {
+                    var ids = texto.Split(";");
+                    await MenuInformacoesEvento(int.Parse(ids[0]), int.Parse(ids[1]));
+                }
+                else if (texto.ToLower() == "voltar")
+                {
+                    return await MenuPrincipal();
+                }
+                else if (texto.ToLower() == "ver-mais" || texto.ToLower() == "ver mais")
+                {
+                    return await MenuEventoSeguirDesseguir(1);
+                }
+
+                await EnviarOpcaoInvalida();
+                return await MenuONGSeguirDesseguir();
+            }
 
             if (menuAnterior == "MenuONGRegiaoCompartilhada")
             {
@@ -129,6 +223,24 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 return await MenuONGRegiaoCompartilhada();
             }
 
+            if (menuAnterior == "MenuEventoRegiaoCompartilhada")
+            {
+                if (texto == "1" || texto.ToLower().Contains("buscar"))
+                {
+                    return await MenuEventoRegiaoCompartilhada();
+                }
+                else if (texto == "2" || texto.ToLower().Contains("alterar"))
+                {
+                    return await MenuEventoRegiaoCompartilhada();
+                }
+                else if (texto == "3" || texto.ToLower().Contains("voltar"))
+                {
+                    return await MenuPrincipal();
+                }
+
+                await EnviarOpcaoInvalida();
+                return await MenuEventoRegiaoCompartilhada();
+            }
 
             if (menuAnterior == "MenuListaONGsRegiao")
             {
@@ -149,8 +261,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 return await MenuListaONGsRegiao();
             }
 
-
-            if (menuAnterior == "SolicitarLocalizacao")
+            if (menuAnterior == "SolicitarLocalizacaoONG")
             {
                 if(mensagem.Location != null)
                 {
@@ -159,24 +270,67 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
 
                     return await MenuListaONGsGeolocalizacao();
                 }
-                else
+                else if (texto.ToLower() == "voltar")
+                {
                     return await MenuPrincipal();
+                }
+
+                await EnviarOpcaoInvalida();
+                return await SolicitarLocalizacaoONG();
             }
 
+            if (menuAnterior == "SolicitarLocalizacaoEvento")
+            {
+                if (mensagem.Location != null)
+                {
+                    _atendimento.Usuario.Geolocalizacao.Latidude = (decimal)mensagem.Location.Latitude;
+                    _atendimento.Usuario.Geolocalizacao.Longitude = (decimal)mensagem.Location.Longitude;
 
-            if (menuAnterior == "InformarCidade")
+                    return await MenuListaEventosGeolocalizacao();
+                }
+                else if (texto.ToLower() == "voltar")
+                {
+                    return await MenuPrincipal();
+                }
+
+                await EnviarOpcaoInvalida();
+                return await SolicitarLocalizacaoEvento();
+            }
+
+            if (menuAnterior == "InformarCidadeONG")
             {
                 _atendimento.Usuario.Endereco.Cidade = texto;
-                return await InformarEstadoUF();
+                return await InformarEstadoUFONG();
             }
 
+            if (menuAnterior == "InformarCidadeEvento")
+            {
+                _atendimento.Usuario.Endereco.Cidade = texto;
+                return await InformarEstadoUFEvento();
+            }
 
-            if (menuAnterior == "InformarEstadoUF")
+            if (menuAnterior == "InformarEstadoUFONG")
             {
                 _atendimento.Usuario.Endereco.UF = texto;
                 return await MenuListaONGsRegiao();
             }
 
+            if (menuAnterior == "InformarEstadoUFEvento")
+            {
+                _atendimento.Usuario.Endereco.UF = texto;
+                return await MenuListaEventosRegiao();
+            }
+
+            if (menuAnterior == "InformacoesNaoEncontradas")
+            {
+                if (texto.ToLower() == "voltar")
+                {
+                    return await MenuPrincipal();
+                }
+
+                await EnviarOpcaoInvalida();
+                return await MenuPrincipal();
+            }
 
             else
             {
@@ -188,20 +342,10 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
         public async Task<Tuple<bool, string>> MenuCadastro()
         {
             var clientId = ObterClientId();
-            //Obter cliente
-            //var usuario = _ongHttp.ObterUsuarioPorTelegramId(clientId);
+            _atendimento.Usuario = await _ongHttp.ObterUsuarioPorTelegramId(clientId.ToString());
 
             if (_atendimento.Usuario == null)
             {
-                //_atendimento.Usuario = new()
-                //{
-                //    Endereco = new(),
-                //    EventosSeguidos = new(),
-                //    Geolocalizacao = new(),
-                //    ONGsSeguidas = new(),
-                //    Telefone = new(),
-                //};
-
                 var mensagem = "Hmmmmm não encontrei seus dados aqui! Quer se juntar ao nosso grupo para saber mais como ajudar os nosso amiguinhos?";
                 var opcoes = new Dictionary<string, string>()
                 {
@@ -217,6 +361,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 return await MenuPrincipal();
             }
         }
+
         public async Task<Tuple<bool, string>> MenuPrincipal()
         {
             var mensagem = string.Empty;
@@ -244,12 +389,12 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
 
         private async Task<Tuple<bool, string>> MenuEvento()
         {
-            var mensagem = "Selecione uma das opções:";
+            var mensagem = "Certo! Aqui está algumas opções referentes ao menu *Eventos*.:";
             var opcoes = new Dictionary<string, string>()
             {
-                { "1", "1. Eventos" },
-                { "2", "2. Ongs" },
-                { "3", "3. Seja um voluntário" }
+                { "1", "1. Saber mais de Eventos em minha região" },
+                { "2", "2. Saber quais Eventos estou seguindo" },
+                { "3", "3. Voltar" }
             };
 
             _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem, opcoes);
@@ -270,6 +415,21 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem, opcoes);
 
             return Tuple.Create(true, "MenuONG");
+        }
+
+        private async Task<Tuple<bool, string>> MenuVolutario()
+        {
+            var mensagem = "Certo! Aqui está algumas opções referentes ao menu *Seja um Voluntário*.:";
+            var opcoes = new Dictionary<string, string>()
+            {
+                { "1", "1. Saber mais informações de ONGs em minha região" },
+                { "2", "2. Saber mais informações de Eventos em minha região" },
+                { "3", "3. Voltar" }
+            };
+
+            _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem, opcoes);
+
+            return Tuple.Create(true, "MenuVolutario");
         }
 
         private async Task<Tuple<bool, string>> MenuONGRegiao()
@@ -295,6 +455,80 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             return Tuple.Create(true, "MenuONGRegiao");
         }
 
+        private async Task<Tuple<bool, string>> MenuEventoRegiao()
+        {
+            var usuario = _atendimento.Usuario;
+            if (usuario != null)
+            {
+                var geolocalizacao = usuario.Geolocalizacao;
+
+                if (geolocalizacao != null && (geolocalizacao.Latidude > 0 && geolocalizacao.Longitude > 0))
+                    return await MenuEventoRegiaoCompartilhada();
+            }
+
+            var mensagem = "Como deseja pesquisar *Eventos* em sua região.:";
+            var opcoes = new Dictionary<string, string>()
+                {
+                    { "1", "1. Compartilhar minha localização" },
+                    { "2", "2. Informar minha cidade e estado(UF)" },
+                    { "3", "3. Voltar" }
+                };
+
+            _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem, opcoes);
+            return Tuple.Create(true, "MenuEventoRegiao");
+        }
+
+        private async Task<Tuple<bool, string>> MenuONGSeguirDesseguir(int paginacao = 0)
+        {
+            await MenuCadastro();
+            var usuario = _atendimento.Usuario;
+            var ongsSeguidas = usuario.ONGsSeguidas.ToList();
+
+            if (ongsSeguidas.Any())
+            {
+                var mensagem = "Legal! Vi aqui que você já segue alguns de nossos ajudantes 🐈.:";
+                var ongsOpcoes = new Dictionary<string, string>(ongsSeguidas
+                    .Select(o => new KeyValuePair<string, string>(o.Id.ToString(), $"{ongsSeguidas.IndexOf(o) + 1}. {o.Nome}")))
+                {
+                    { "ver-mais", "Ver Mais" },
+                    { "voltar", "Voltar" }
+                };
+
+                _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem, ongsOpcoes);
+                return Tuple.Create(true, "MenuONGSeguirDesseguir");
+            }
+            else
+            {
+                return await InformacoesNaoEncontradas();
+            }
+        }
+
+        private async Task<Tuple<bool, string>> MenuEventoSeguirDesseguir(int paginacao = 0)
+        {
+            await MenuCadastro();
+            var usuario = _atendimento.Usuario;
+            var eventosSeguidos = usuario.EventosSeguidos.ToList();
+
+            if (eventosSeguidos.Any())
+            {
+                var mensagem = "Legal! Vi aqui que você já segue alguns eventos de nossos ajudantes 🐩.:";
+                var eventosOpcoes = new Dictionary<string, string>(eventosSeguidos
+                    .Select(e => new KeyValuePair<string, string>(e.OngId.ToString() + ";" + e.Id.ToString(), 
+                    $"{eventosSeguidos.IndexOf(e) + 1}. {e.Nome}")))
+                {
+                    { "ver-mais", "Ver Mais" },
+                    { "voltar", "Voltar" }
+                };
+
+                _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem, eventosOpcoes);
+                return Tuple.Create(true, "MenuEventoSeguirDesseguir");
+            }
+            else
+            {
+                return await InformacoesNaoEncontradas();
+            }
+        }
+
         private async Task<Tuple<bool, string>> MenuONGRegiaoCompartilhada()
         {
             var usuario = _atendimento.Usuario;
@@ -311,17 +545,33 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             return Tuple.Create(true, "MenuONGRegiaoCompartilhada");
         }
 
+        private async Task<Tuple<bool, string>> MenuEventoRegiaoCompartilhada()
+        {
+            var usuario = _atendimento.Usuario;
+
+            var mensagem = $"Legal, estou vendo que você está localizado.: {Environment.NewLine}{usuario.Endereco.Cidade}-{usuario.Endereco.UF}";
+            var opcoes = new Dictionary<string, string>()
+                {
+                    { "1", "1. Buscar por essa localização" },
+                    { "2", "2. Alterar minha localização" },
+                    { "3", "3. Voltar" }
+                };
+
+            _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem, opcoes);
+            return Tuple.Create(true, "MenuEventoRegiaoCompartilhada");
+        }
+
         private async Task<Tuple<bool, string>> MenuListaONGsRegiao(int paginacao = 0)
         {
             var usuario = _atendimento.Usuario;
-            //var ongs = (await _ongHttp.ObterOngsCidade(usuario.Endereco.Cidade, usuario.Endereco.UF, paginacao)).ToList();
-            var ongs = new List<ONG>();
+            var ongs = await _ongHttp.ObterOngsCidade(_atendimento.Usuario.Endereco.Cidade, _atendimento.Usuario.Endereco.UF, paginacao);
 
-            if (ongs.Any())
+            if (ongs != null && ongs.Any())
             {
+                var ongsLista = ongs.ToList();
                 var mensagem = "Encontramos algumas opções para você.:";
-                var ongsOpcoes = new Dictionary<string, string>(ongs
-                    .Select(o => new KeyValuePair<string, string>(o.Id.ToString(), $"{ongs.IndexOf(o) + 1}. {o.Nome}")));
+                var ongsOpcoes = new Dictionary<string, string>(ongsLista
+                    .Select(o => new KeyValuePair<string, string>(o.Id.ToString(), $"{ongsLista.IndexOf(o) + 1}. {o.Nome}")));
                 ongsOpcoes.Add("ver-mais", "Ver Mais");
                 ongsOpcoes.Add("voltar", "Voltar");
 
@@ -334,10 +584,32 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             }
         }
 
+        private async Task<Tuple<bool, string>> MenuListaEventosRegiao(int paginacao = 0)
+        {
+            var usuario = _atendimento.Usuario;
+            var eventos = await _ongHttp.ObterEventosCidade(_atendimento.Usuario.Endereco.Cidade, _atendimento.Usuario.Endereco.UF, paginacao);
+
+            if (eventos!= null && eventos.Any())
+            {
+                var eventosLista = eventos.ToList();
+                var mensagem = "Encontramos algumas opções para você.:";
+                var eventosOpcoes = new Dictionary<string, string>(eventosLista
+                    .Select(e => new KeyValuePair<string, string>(e.Id.ToString(), $"{eventosLista.IndexOf(e) + 1}. {e.Nome}")));
+                eventosOpcoes.Add("ver-mais", "Ver Mais");
+                eventosOpcoes.Add("voltar", "Voltar");
+
+                _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem, eventosOpcoes);
+                return Tuple.Create(true, "MenuListaEventosRegiao");
+            }
+            else
+            {
+                return await InformacoesNaoEncontradas();
+            }
+        }
+
         private async Task<Tuple<bool, string>> MenuListaONGsGeolocalizacao(int paginacao = 0)
         {
             var usuario = _atendimento.Usuario;
-            //var ongs = (await _ongHttp.ObterOngsCidade(usuario.Endereco.Cidade, usuario.Endereco.UF, paginacao)).ToList();
             var ongs = new List<ONG>();
 
             if (ongs.Any())
@@ -359,12 +631,44 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             }
         }
 
-        private async Task<Tuple<bool, string>> SolicitarLocalizacao()
+        private async Task<Tuple<bool, string>> MenuListaEventosGeolocalizacao(int paginacao = 0)
+        {
+            var usuario = _atendimento.Usuario;
+            var eventos = new List<Evento>();
+
+            if (eventos.Any())
+            {
+                var mensagem = "Encontramos algumas opções para você.:";
+                var eventosOpcoes = new Dictionary<string, string>(eventos
+                    .Select(e => new KeyValuePair<string, string>(e.Id.ToString(), $"{eventos.IndexOf(e) + 1}. {e.Nome}")))
+                {
+                    { "ver-mais", "Ver Mais" },
+                    { "voltar", "Voltar" }
+                };
+
+                _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem, eventosOpcoes);
+                return Tuple.Create(true, "MenuListaEventosGeolocalizacao");
+            }
+            else
+            {
+                return await InformacoesNaoEncontradas();
+            }
+        }
+
+        private async Task<Tuple<bool, string>> SolicitarLocalizacaoONG()
         {
             var mensagem = "Clique no botão abaixo para compartilhar sua localização.:";
 
             _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarPedidoLocalizacao(_atendimento.SessaoId, mensagem);
-            return Tuple.Create(true, "SolicitarLocalizacao");
+            return Tuple.Create(true, "SolicitarLocalizacaoONG");
+        }
+
+        private async Task<Tuple<bool, string>> SolicitarLocalizacaoEvento()
+        {
+            var mensagem = "Clique no botão abaixo para compartilhar sua localização.:";
+
+            _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarPedidoLocalizacao(_atendimento.SessaoId, mensagem);
+            return Tuple.Create(true, "SolicitarLocalizacaoEvento");
         }
 
         private async Task<Tuple<bool, string>> MenuInformacoesONG(int id)
@@ -375,7 +679,8 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             {
                 { "1", "1. Infos básicas" },
                 { "2", "2. Eventos" },
-                { "3", "3. Seguir/Dessguir essa ONG" }
+                { "3", "3. Seguir/Desseguir essa ONG" },
+                { "4", "4. Voltar" }
             };
 
             _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem, opcoes);
@@ -383,38 +688,55 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             return Tuple.Create(true, "MenuInformacoesONG");
         }
 
-        private async Task<Tuple<bool, string>> MenuUsuario()
+        private async Task<Tuple<bool, string>> MenuInformacoesEvento(int ongId, int id)
         {
-            var mensagem = "Selecione uma das opc:";
+            var evento = await _ongHttp.ObterEvento(ongId, id);
+            var ong = await _ongHttp.ObterOng(ongId);
+            var mensagem = $"*{ong.Nome}-\"{evento.Nome}\"*{Environment.NewLine}" +
+                $"Data.: {evento.Data.Date} às {evento.Data.TimeOfDay}";
             var opcoes = new Dictionary<string, string>()
             {
-                { "1", "1. Eventos" },
-                { "2", "2. Ongs" },
-                { "3", "3. Seja um voluntário" }
+                { "1", "1. ONG responsável" },
+                { "2", "2. Seguir/Desseguir essa Evento" },
+                { "3", "3. Voltar" }
             };
 
             _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem, opcoes);
 
-            return Tuple.Create(true, "MenuUsuario");
+            return Tuple.Create(true, "MenuInformacoesEvento");
         }
 
-        private async Task<Tuple<bool, string>> InformarCidade()
+        private async Task<Tuple<bool, string>> InformarCidadeONG()
         {
             var mensagem = "Por favor informe o nome da cidade que deseja procurar.:";
             _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem);
-            return Tuple.Create(true, "InformarCidade");
+            return Tuple.Create(true, "InformarCidadeONG");
         }
 
-        private async Task<Tuple<bool, string>> InformarEstadoUF()
+        private async Task<Tuple<bool, string>> InformarCidadeEvento()
+        {
+            var mensagem = "Por favor informe o nome da cidade que deseja procurar.:";
+            _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem);
+            return Tuple.Create(true, "InformarCidadeEvento");
+        }
+
+        private async Task<Tuple<bool, string>> InformarEstadoUFONG()
         {
             var mensagem = "Por favor agora informe o estado (UF).:";
             _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem);
-            return Tuple.Create(true, "InformarEstadoUF");
+            return Tuple.Create(true, "InformarEstadoUFONG");
+        }
+
+        private async Task<Tuple<bool, string>> InformarEstadoUFEvento()
+        {
+            var mensagem = "Por favor agora informe o estado (UF).:";
+            _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem);
+            return Tuple.Create(true, "InformarEstadoUFEvento");
         }
 
         private async Task<Tuple<bool, string>> InformacoesNaoEncontradas()
         {
-            var mensagem = "Que pena! Não encontramos nenhuma opção para você.:";
+            var mensagem = "Que pena! 😿 Não encontramos nenhuma opção para você!";
             var opcoes = new Dictionary<string, string>()
                 {
                     { "voltar", "Voltar" },
@@ -436,9 +758,27 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem);
         }
 
-        private async Task CadastrarNovoUsuario()
+        private async Task CadastrarNovoUsuario(Message mensagem)
         {
-            _atendimento.Usuario = await _ongHttp.InserirUsuario(new());
+            var nome = mensagem.From.FirstName + mensagem.From.LastName;
+            var telefone = mensagem.Contact?.PhoneNumber;
+            var telegramId = mensagem.From.Id;
+
+            Usuario usuarioNovo = new Usuario();
+            usuarioNovo.Nome = nome;
+            if(telefone != null)
+            {
+                //logica de separar ddd do telefone
+            }
+            //usuarioNovo.Telefone = new Telefone();
+            //usuarioNovo.Telefone.DDD = "11";
+            //usuarioNovo.Telefone.Numero = "988885555";
+            //usuarioNovo.Telefone.Tipo = Infra.Vendors.Entities.Enums.TipoTelefone.Celular;
+
+            usuarioNovo.TelegramId = telegramId.ToString();
+
+            await _ongHttp.InserirUsuario(usuarioNovo);
+            _atendimento.Usuario = await _ongHttp.ObterUsuarioPorTelegramId(usuarioNovo.TelegramId);
         }
 
         public async Task<Tuple<bool, string>> Notificar(string mensagem, bool encerrar)

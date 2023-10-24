@@ -13,11 +13,14 @@
         public string TokenEndpoint { get; set; }
         public string ObterONGEndpoint { get; set; }
         public string ObterONGsPorCidadeEndpoint { get; set; }
+        public string ObterONGsPorCidadeGeoEndpoint { get; set; }
         public string ObterONGEventosEndpoint { get; set; }
         public string ObterEventoEndpoint { get; set; }
         public string ObterEventosPorCidadeEndpoint { get; set; }
         public string ObterUsuarioEndpoint { get; set; }
+        public string ObterUsuarioPorTelegramIdEndpoint { get; set; }
         public string ObterUsuarioEventosEndpoint { get; set; }
+        public string ObterEventosPorCidadeGeoEndpoint { get; set; }
         public string ObterUsuarioONGsEndpoint { get; set; }
         public string InserirUsuarioEndpoint { get; set; }
         public string AtualizarUsuarioEndpoint { get; set; }

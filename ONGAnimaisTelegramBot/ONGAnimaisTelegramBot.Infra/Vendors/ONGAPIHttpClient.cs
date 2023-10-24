@@ -116,6 +116,34 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors
             }
         }
 
+        public async Task<ICollection<ONG>> ObterOngsCidadeGeo(string cidade, string uf, int paginacao = 0)
+        {
+            try
+            {
+                await VerificaVidaToken();
+
+                _logger.LogInformation($"{ClassName}:ObterOngsCidadeGeo => Request => {new { cidade, uf, paginacao }}");
+                string url = string.Format(_apiConfig.Endpoints.BaseUri + _apiConfig.Endpoints.ObterONGsPorCidadeGeoEndpoint, cidade, uf, paginacao);
+
+                var result = await _httpHelp.Send(url, null, VerboHttp.Get, AddHeaders());
+                if (result.Code == CodeHttp.Sucess)
+                {
+                    var ongs = JsonSerializer.Deserialize<ICollection<ONG>>(result.Received);
+                    return ongs;
+                }
+                else
+                {
+                    _logger.LogWarning($"{ClassName}:ObterOngsCidadeGeo => Erro na obtenção de ONGs por Cidade e UF. Response => {result}");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{ClassName}:ObterOngsCidadeGeo => Exception => {ex.Message}");
+                return null;
+            }
+        }
+
         public async Task<ONG> ObterONGEventos(int id)
         {
             try
@@ -172,6 +200,34 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors
             }
         }
 
+        public async Task<ICollection<Evento>> ObterEventosCidadeGeo(string cidade, string uf, int paginacao = 0)
+        {
+            try
+            {
+                await VerificaVidaToken();
+
+                _logger.LogInformation($"{ClassName}:ObterEventosCidadeGeo => Request => {new { cidade, uf, paginacao }}");
+                string url = string.Format(_apiConfig.Endpoints.BaseUri + _apiConfig.Endpoints.ObterEventosPorCidadeGeoEndpoint, cidade, uf, paginacao);
+
+                var result = await _httpHelp.Send(url, null, VerboHttp.Get, AddHeaders());
+                if (result.Code == CodeHttp.Sucess)
+                {
+                    var eventos = JsonSerializer.Deserialize<ICollection<Evento>>(result.Received);
+                    return eventos;
+                }
+                else
+                {
+                    _logger.LogWarning($"{ClassName}:ObterEventosCidadeGeo => Erro na obtenção de Eventos por Cidade e UF. Response => {result}");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{ClassName}:ObterEventosCidadeGeo => Exception => {ex.Message}");
+                return null;
+            }
+        }
+
         public async Task<Evento> ObterEvento(int ongId, int id)
         {
             try
@@ -224,6 +280,34 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors
             catch (Exception ex)
             {
                 _logger.LogError($"{ClassName}:ObterUsuario => Exception => {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<Usuario> ObterUsuarioPorTelegramId(string telegramId)
+        {
+            try
+            {
+                await VerificaVidaToken();
+
+                _logger.LogInformation($"{ClassName}:ObterUsuarioPorTelegramId => Request => {new { telegramId }}");
+                string url = string.Format(_apiConfig.Endpoints.BaseUri + _apiConfig.Endpoints.ObterUsuarioPorTelegramIdEndpoint, telegramId);
+
+                var result = await _httpHelp.Send(url, null, VerboHttp.Get, AddHeaders());
+                if (result.Code == CodeHttp.Sucess)
+                {
+                    var usuario = JsonSerializer.Deserialize<Usuario>(result.Received);
+                    return usuario;
+                }
+                else
+                {
+                    _logger.LogWarning($"{ClassName}:ObterUsuarioPorTelegramId => Erro na obtenção de Usuário. Response => {result}");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{ClassName}:ObterUsuarioPorTelegramId => Exception => {ex.Message}");
                 return null;
             }
         }
