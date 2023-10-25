@@ -301,7 +301,7 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors
                 }
                 else
                 {
-                    _logger.LogWarning($"{ClassName}:ObterUsuarioPorTelegramId => Erro na obtenção de Usuário. Response => {result}");
+                    _logger.LogWarning($"{ClassName}:ObterUsuarioPorTelegramId => Erro na obtenção de Usuário. Response => {JsonSerializer.Serialize(result)}");
                     return null;
                 }
             }

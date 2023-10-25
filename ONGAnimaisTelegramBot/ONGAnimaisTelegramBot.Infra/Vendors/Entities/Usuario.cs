@@ -15,7 +15,7 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors.Entities
         public string Nome { get; set; }
 
         [JsonPropertyName("telefone")]
-        public Telefone Telefone { get; set; }
+        public Telefone Telefone { get; set; } = new Telefone();
 
         [JsonPropertyName("endereco")]
         public Endereco Endereco { get; set; } = new Endereco();

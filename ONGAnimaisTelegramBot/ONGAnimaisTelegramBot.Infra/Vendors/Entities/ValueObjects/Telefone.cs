@@ -13,6 +13,6 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors.Entities.ValueObjects
 
         [JsonPropertyName("tipo")]
         [JsonConverter(typeof(JsonStringEnumConverter))]
-        public TipoTelefone Tipo { get; set; }
+        public TipoTelefone Tipo { get; set; } = TipoTelefone.Celular;
     }
 }

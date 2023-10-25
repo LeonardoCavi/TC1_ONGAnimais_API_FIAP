@@ -17,6 +17,7 @@ namespace ONGAnimaisTelegramBot.Domain.Entities
         public DateTime InstanteUltimaMensagem { get; set; }
         public string MenuAnterior { get; set; }
         public Usuario Usuario { get; set; }
+        public ONG OngEscolhida { get; set; }
         public Message UltimaMensagemBot { get; set; }
     }
 }
