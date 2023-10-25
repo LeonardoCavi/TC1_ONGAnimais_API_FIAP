@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ONGAnimaisAPI.Domain.Entities;
+using ONGAnimaisAPI.Domain.Entities.ValueObjects;
 using ONGAnimaisAPI.Domain.Interfaces.Repository;
 
 namespace ONGAnimaisAPI.Infra.Repositories
@@ -12,8 +13,9 @@ namespace ONGAnimaisAPI.Infra.Repositories
 
         public async Task<ONG> ObterONGEventos(int id)
         {
-            return await _dBSet.Include(o => o.Eventos)
-                .Where(o => o.Id == id && o.Eventos.Any(e => e.Data >= DateTime.Now))
+            return await _dBSet
+                .Include(o => o.Eventos.Where(e => e.Data >= DateTime.Now))
+                .Where(o => o.Id == id)
                 .FirstOrDefaultAsync();
         }
 

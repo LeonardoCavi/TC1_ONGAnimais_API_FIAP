@@ -14,7 +14,8 @@ namespace ONGAnimaisAPI.Infra.Repositories
 
         public async Task<Usuario> ObterUsuarioEventos(int id)
         {
-            return await _dBSet.Include(u => u.EventosSeguidos)
+            return await _dBSet
+                .Include(u => u.EventosSeguidos.Where(e => e.Data >= DateTime.Now))
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
 
