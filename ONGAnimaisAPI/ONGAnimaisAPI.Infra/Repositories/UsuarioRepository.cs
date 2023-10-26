@@ -28,6 +28,9 @@ namespace ONGAnimaisAPI.Infra.Repositories
         public async Task<Usuario> ObterUsuarioPorTelegramId(string telegramId)
         {
             return await _dBSet
+                .Include(u => u.ONGsSeguidas)
+                .Include(u => u.EventosSeguidos
+                    .Where(e => e.Data >= DateTime.Now))
                 .FirstOrDefaultAsync(u => u.TelegramId == telegramId);
         }
 

@@ -109,7 +109,7 @@ namespace ONGAnimaisAPI.Application.Services
             return null;
         }
 
-        public async Task<ObtemUsuarioViewModel> ObterUsuarioPorTelegramId(string telegramId)
+        public async Task<ObtemUsuarioTelegramViewModel> ObterUsuarioPorTelegramId(string telegramId)
         {
             ExecutarValidacao(new TelegramIdValidation(), telegramId);
 
@@ -118,7 +118,7 @@ namespace ONGAnimaisAPI.Application.Services
                 var usuario = await _service.ObterUsuarioPorTelegramId(telegramId);
 
                 if (!_notificador.TemNotificacao())
-                    return _mapper.Map<ObtemUsuarioViewModel>(usuario);
+                    return _mapper.Map<ObtemUsuarioTelegramViewModel>(usuario);
             }
 
             return null;
