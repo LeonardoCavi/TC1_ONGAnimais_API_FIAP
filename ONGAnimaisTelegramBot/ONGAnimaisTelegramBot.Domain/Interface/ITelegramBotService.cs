@@ -9,6 +9,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service
         Task<Message> EnviarMensagem(string sessaoId, string texto);
         Task<Message> EnviarMensagem(string sessaoId, string texto, IDictionary<string, string> opcoes);
         Task<Message> EnviarPedidoLocalizacao(string sessaoId, string texto);
+        Task<Message> CompartilharBot(string sessaoId, string texto, string mensagemCompartilhamento);
         Task<Message> EnviarArquivo( string sessaoId, byte[] buffer, string nomeArquivo);
         Task<byte[]> ObterArquivo(string fileId);
         Task RemoverOpcoes(string sessaoId, Message mensagem, string texto);

@@ -55,7 +55,6 @@ namespace ONGAnimaisTelegramBot.Worker.TelegramClient
 
             await Task.CompletedTask;
         }
-
         public async Task<Message> EnviarMensagem(string sessaoId, string texto)
         {
             try
@@ -76,7 +75,6 @@ namespace ONGAnimaisTelegramBot.Worker.TelegramClient
                 return null;
             }
         }
-
         public async Task<Message> EnviarMensagem(string sessaoId, string texto, IDictionary<string, string> opcoes)
         {
             try
@@ -118,6 +116,32 @@ namespace ONGAnimaisTelegramBot.Worker.TelegramClient
                     text: texto,
                     parseMode: ParseMode.Markdown,
                     replyMarkup: replyKeyboardMarkup);
+
+                _logger.LogInformation($"{ClassName}:EnviarPedidoLocalizacao => ClientId: {clientId}; Texto: {texto}; MessageId: {message.MessageId}");
+                return message;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"{ClassName}:EnviarPedidoLocalizacao => {ex.Message}");
+                return null;
+            }
+        }
+        public async Task<Message> CompartilharBot(string sessaoId, string texto, string mensagemCompartilhamento)
+        {
+            try
+            {
+                var clientId = ObterClientId(sessaoId);
+
+                InlineKeyboardMarkup inlineKeyboard = new(new[]
+                {
+                    InlineKeyboardButton.WithSwitchInlineQuery(text: mensagemCompartilhamento),
+                });
+
+                var message = await telegramBotClient.SendTextMessageAsync(
+                    chatId: clientId,
+                    text: texto,
+                    parseMode: ParseMode.Markdown,
+                    replyMarkup: inlineKeyboard);
 
                 _logger.LogInformation($"{ClassName}:EnviarPedidoLocalizacao => ClientId: {clientId}; Texto: {texto}; MessageId: {message.MessageId}");
                 return message;

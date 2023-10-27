@@ -17,7 +17,7 @@ namespace ONGAnimaisAPI.Infra.Repositories
             e.Endereco.UF == uf && e.Data >= DateTime.Now)
                 .OrderBy(e => e.Data)
                 .Skip(paginacao * 5)
-                .Take(5)
+                .Take(6)
                 .ToListAsync();
         }
 

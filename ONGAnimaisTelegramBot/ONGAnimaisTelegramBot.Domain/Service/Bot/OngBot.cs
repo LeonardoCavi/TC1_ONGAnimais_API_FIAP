@@ -1,6 +1,7 @@
 ﻿using ONGAnimaisTelegramBot.Domain.Entities;
 using ONGAnimaisTelegramBot.Infra.Vendors.Entities;
 using ONGAnimaisTelegramBot.Infra.Vendors.Interface;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Telegram.Bot.Types;
 
@@ -35,9 +36,9 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 {
                     return await MenuONG();
                 }
-                else if (texto == "3" || texto.ToLower().Contains("voluntario") || texto.ToLower().Contains("voluntário"))
+                else if (texto == "3" || texto.ToLower().Contains("ajudar"))
                 {
-                    return await MenuVolutario();
+                    return await MenuComoAjudar();
                 }
                 else if (texto == "4" || texto.ToLower().Contains("sair"))
                 {
@@ -74,6 +75,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 }
                 else if (texto == "2" || texto.ToLower().Contains("seguindo") || texto.ToLower().Contains("seguir"))
                 {
+                    _atendimento.Paginacao = 0;
                     return await MenuONGSeguirDesseguir();
                 }
                 else if (texto == "3" || texto.ToLower().Contains("voltar"))
@@ -93,6 +95,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 }
                 else if (texto == "2" || texto.ToLower().Contains("seguindo") || texto.ToLower().Contains("seguir"))
                 {
+                    _atendimento.Paginacao = 0;
                     return await MenuEventoSeguirDesseguir();
                 }
                 else if (texto == "3" || texto.ToLower().Contains("voltar"))
@@ -104,23 +107,31 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 return await MenuEvento();
             }
 
-            if (menuAnterior == "MenuVolutario")
+            if (menuAnterior == "MenuComoAjudar")
             {
-                if (texto == "1" || texto.ToLower().Contains("ong"))
+                if (texto == "1" || texto.ToLower().Contains("adotar"))
                 {
-                    return await MenuONGRegiao();
+                    return await InformacaoAdotar();
                 }
-                else if (texto == "2" || texto.ToLower().Contains("evento"))
+                else if (texto == "2" || texto.ToLower().Contains("vacinacao") || texto.ToLower().Contains("vacinação"))
                 {
-                    return await MenuEventoRegiao();
+                    return await InformacaoVacinacao();
                 }
-                else if (texto == "3" || texto.ToLower().Contains("voltar"))
+                else if (texto == "3" || texto.ToLower().Contains("doacao") || texto.ToLower().Contains("doação"))
+                {
+                    return await InformacaoDoacao();
+                }
+                else if (texto == "4" || texto.ToLower().Contains("ajudar"))
+                {
+                    return await InformacaoAjudar();
+                }
+                else if (texto == "5" || texto.ToLower().Contains("voltar"))
                 {
                     return await MenuPrincipal();
                 }
 
                 await EnviarOpcaoInvalida();
-                return await MenuEvento();
+                return await MenuComoAjudar();
             }
 
             if (menuAnterior == "MenuONGRegiao")
@@ -173,11 +184,11 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 }
                 else if (texto.ToLower() == "ver-mais" || texto.ToLower() == "ver mais")
                 {
-                    return await MenuONGSeguirDesseguir(1);
+                    return await MenuONGSeguirDesseguir(++_atendimento.Paginacao);
                 }
 
                 await EnviarOpcaoInvalida();
-                return await MenuONGSeguirDesseguir();
+                return await MenuONGSeguirDesseguir(_atendimento.Paginacao);
             }
 
             if (menuAnterior == "MenuEventoSeguirDesseguir")
@@ -193,11 +204,11 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 }
                 else if (texto.ToLower() == "ver-mais" || texto.ToLower() == "ver mais")
                 {
-                    return await MenuEventoSeguirDesseguir(1);
+                    return await MenuEventoSeguirDesseguir(++_atendimento.Paginacao);
                 }
 
                 await EnviarOpcaoInvalida();
-                return await MenuEventoSeguirDesseguir();
+                return await MenuEventoSeguirDesseguir(_atendimento.Paginacao);
             }
 
             if (menuAnterior == "MenuONGRegiaoCompartilhada")
@@ -250,11 +261,11 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 }
                 else if (texto.ToLower() == "ver-mais" || texto.ToLower() == "ver mais")
                 {
-                    return await MenuListaONGsRegiao(1);
+                    return await MenuListaONGsRegiao(++_atendimento.Paginacao);
                 }
 
                 await EnviarOpcaoInvalida();
-                return await MenuListaONGsRegiao();
+                return await MenuListaONGsRegiao(_atendimento.Paginacao);
             }
 
             if (menuAnterior == "MenuListaEventosRegiao")
@@ -270,11 +281,11 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 }
                 else if (texto.ToLower() == "ver-mais" || texto.ToLower() == "ver mais")
                 {
-                    return await MenuListaONGsRegiao(1);
+                    return await MenuListaEventosRegiao(++_atendimento.Paginacao);
                 }
 
                 await EnviarOpcaoInvalida();
-                return await MenuListaEventosRegiao();
+                return await MenuListaEventosRegiao(_atendimento.Paginacao);
             }
 
             if (menuAnterior == "MenuListaEventos")
@@ -290,17 +301,18 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 }
                 else if (texto.ToLower() == "ver-mais" || texto.ToLower() == "ver mais")
                 {
-                    return await MenuListaEventos(_atendimento.Paginacao++);
+                    return await MenuListaEventos(++_atendimento.Paginacao);
                 }
 
                 await EnviarOpcaoInvalida();
-                return await MenuListaEventos();
+                return await MenuListaEventos(_atendimento.Paginacao);
             }
 
             if (menuAnterior == "MenuInformacoesONG")
             {
                 if (texto == "1" || texto.ToLower().Contains("evento"))
                 {
+                    _atendimento.Paginacao = 0;
                     return await MenuListaEventos();
                 }
                 else if (texto == "2" || texto.ToLower().Contains("seguir") || texto.ToLower().Contains("desseguir"))
@@ -386,12 +398,14 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             if (menuAnterior == "InformarEstadoUFONG")
             {
                 _atendimento.Usuario.Endereco.UF = texto;
+                _atendimento.Paginacao = 0;
                 return await MenuListaONGsRegiao();
             }
 
             if (menuAnterior == "InformarEstadoUFEvento")
             {
                 _atendimento.Usuario.Endereco.UF = texto;
+                _atendimento.Paginacao = 0;
                 return await MenuListaEventosRegiao();
             }
 
@@ -425,11 +439,12 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             {
                 if (texto == "1" || texto.ToLower().Contains("sim"))
                 {
-                    return await MenuPrincipal();
+                    return await SimDesseguirONG(_atendimento.OngEscolhida.Id);
+
                 }
                 else if (texto == "2" || texto.ToLower().Contains("não") || texto.ToLower().Contains("nao"))
                 {
-                    return await SimDesseguirONG(_atendimento.OngEscolhida.Id);
+                    return await MenuPrincipal();
                 }
 
                 await EnviarOpcaoInvalida();
@@ -455,11 +470,11 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             {
                 if (texto == "1" || texto.ToLower().Contains("sim"))
                 {
-                    return await MenuPrincipal();
+                    return await SimDesseguirEvento(_atendimento.EventoEscolhido.Id);
                 }
                 else if (texto == "2" || texto.ToLower().Contains("não") || texto.ToLower().Contains("nao"))
                 {
-                    return await SimDesseguirEvento(_atendimento.EventoEscolhido.Id);
+                    return await MenuPrincipal();
                 }
 
                 await EnviarOpcaoInvalida();
@@ -498,21 +513,18 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
 
         public async Task<Tuple<bool, string>> MenuPrincipal()
         {
-            var mensagem = string.Empty;
             var usuario = _atendimento.Usuario;
+
+            var mensagem = "Olá, seja bem-vindo ao 🐾*ONG Animais Bot*🐾. Selecione uma das opções abaixo.:";
+
             if (_atendimento.Usuario != null)
-            {
                 mensagem = $"Olá {usuario.Nome}, seja bem-vindo ao 🐾*ONG Animais Bot*🐾. Selecione uma das opções abaixo.:";
-            }
-            else
-            {
-                mensagem = "Olá, seja bem-vindo ao 🐾*ONG Animais Bot*🐾. Selecione uma das opções abaixo.:";
-            }
+
             var opcoes = new Dictionary<string, string>()
             {
                 { "1", "1. Eventos" },
                 { "2", "2. Ongs" },
-                { "3", "3. Seja um voluntário" },
+                { "3", "3. Saiba mais como ajudar" },
                 { "4", "4. Sair" }
             };
 
@@ -521,19 +533,65 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             return Tuple.Create(true, "MenuPrincipal");
         }
 
-        private async Task<Tuple<bool, string>> MenuVolutario()
+        private async Task<Tuple<bool, string>> MenuComoAjudar(string mensagem = "")
         {
-            var mensagem = "Certo! Aqui está algumas opções referentes ao menu *Seja um Voluntário*.:";
+            if(string.IsNullOrEmpty(mensagem))
+                mensagem = "Uau! Estou vendo que você está querendo saber mais como ajudar nossos amiguinhos e fico muito feliz!\r\n" +
+                    "Aqui no ONG Animais Bot posso te ajudar achar informações de ONGs e Eventos e suas informações básicas\r\n" +
+                    "para que você entre em contato com a mesma para que você possa ajudar de alguma maneira.\r\n" +
+                    "Segue algumas informações importantes.:";
             var opcoes = new Dictionary<string, string>()
             {
-                { "1", "1. Saber mais informações de ONGs em minha região" },
-                { "2", "2. Saber mais informações de Eventos em minha região" },
-                { "3", "3. Voltar" }
+                { "1", "1. Por que adotar?" },
+                { "2", "2. Importância das feiras de vacinação?" },
+                { "3", "3. Quero saber como me voluntariar a uma ONG ou realizar doações?" },
+                { "4", "4. Como posso ajudar organizações não governamentais?" },
+                { "5", "5. Voltar ao menu" }
             };
 
             _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem, opcoes);
 
-            return Tuple.Create(true, "MenuVolutario");
+            return Tuple.Create(true, "MenuComoAjudar");
+        }
+
+        private async Task<Tuple<bool, string>> InformacaoAdotar()
+        {
+            var mensagem = "Se trata de uma escolha responsável e muito gratificando onde você pode salvar vidas, reduzir o nº\r\n" +
+                "de amiguinhos sem um lar, contibuir com a sociedade, criar um vínculo mega especial e claramente\r\n" +
+                "dar uma segunda chance.";
+            await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem);
+
+            return await MenuComoAjudar("Deseja saber algo mais.:");
+        }
+
+        private async Task<Tuple<bool, string>> InformacaoVacinacao()
+        {
+            var mensagem = "A vacinação para cães e gatos tem um papel importante na promoção da saúde animal e na prevenção de doenças.\r\n" +
+                "Verifique sempre a carteirinha de vacinação do seu amigo e busque ajuda profissional.";
+            await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem);
+
+            return await MenuComoAjudar("Deseja saber algo mais.:");
+        }
+
+        private async Task<Tuple<bool, string>> InformacaoDoacao()
+        {
+            var mensagem = "Oba!! Aqui no ONG Animais Bot você consegue achar informações de contato da ONG e caso você tenha o perfil, \r\n" +
+                "você pode pesquisar pelas informações de contato e buscar meios de se voluntariar ou doar.";
+            await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem);
+
+            return await MenuComoAjudar("Deseja saber algo mais.:");
+        }
+
+        private async Task<Tuple<bool, string>> InformacaoAjudar()
+        {
+            var mensagem = "Existem algumas maneiras de contribuir, como doações financeiras ou de suprimentos necessários para os animais, \r\n" +
+                "ser um voluntariado, adotar e promover a adoção animal, denunciar vendas não legalizadas de animais, buscar e se\r\n" +
+                "educar com manteriais divulgados pelas ongs e campanhas de proteção animal, apoiar a legislação de proteção animale\r\n" +
+                "e se um defensor ativo em sua comunidade incentivando outras pessoas a fazerem o mesmo.";
+            var mensagemCompartilhamento = "Divulgar! 🦮😍🐈";
+            await _telegramBotService.CompartilharBot(_atendimento.SessaoId, mensagem, mensagemCompartilhamento);
+
+            return await MenuComoAjudar("Deseja saber algo mais.:");
         }
 
         #region[ONG]
@@ -581,17 +639,24 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             if(_atendimento.Usuario.Id > 0)
             {
                 var usuario = _atendimento.Usuario;
-                var ongsSeguidas = usuario.ONGsSeguidas.ToList();
+                var ongsSeguidas = usuario.ONGsSeguidas
+                    .Skip(paginacao * 5)
+                    .Take(6)
+                    .ToList();
 
                 if (ongsSeguidas.Any())
                 {
                     var mensagem = "Legal! Vi aqui que você já segue alguns de nossos ajudantes 🐈.:";
                     var ongsOpcoes = new Dictionary<string, string>(ongsSeguidas
-                        .Select(o => new KeyValuePair<string, string>(o.Id.ToString(), $"{ongsSeguidas.IndexOf(o) + 1}. {o.Nome}")))
-                {
-                    { "ver-mais", "Ver Mais" },
-                    { "voltar", "Voltar" }
-                };
+                        .Select(o => new KeyValuePair<string, string>(o.Id.ToString(), $"{ongsSeguidas.IndexOf(o) + 1}. {o.Nome}")));
+
+                    if (ongsOpcoes.Count > 5)
+                    {
+                        ongsOpcoes.Remove(ongsOpcoes.Last().Key);
+                        ongsOpcoes.Add("ver-mais", "Ver mais");
+                    }
+
+                    ongsOpcoes.Add("voltar", "Voltar ao menu");
 
                     _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem, ongsOpcoes);
                     return Tuple.Create(true, "MenuONGSeguirDesseguir");
@@ -625,7 +690,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 return Tuple.Create(true, "SeguirONG");
             }
 
-            return await MenuPrincipal();
+            return await MenuCadastro();
         }
 
         private async Task<Tuple<bool, string>> SimSeguirONG(int id)
@@ -642,7 +707,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
 
         private async Task<Tuple<bool, string>> DesseguirONG(int id)
         {
-            var mensagem = "Verificamos que você já segue esta ONG! Deseja continuar seguindo?";
+            var mensagem = "Verificamos que você já segue esta ONG! Deseja para de seguir?";
             var opcoes = new Dictionary<string, string>()
                 {
                     { "1", "1. Sim" },
@@ -689,11 +754,18 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             if (ongs != null && ongs.Any())
             {
                 var ongsLista = ongs.ToList();
+
                 var mensagem = "Encontramos algumas opções para você.:";
                 var ongsOpcoes = new Dictionary<string, string>(ongsLista
                     .Select(o => new KeyValuePair<string, string>(o.Id.ToString(), $"{ongsLista.IndexOf(o) + 1}. {o.Nome}")));
-                ongsOpcoes.Add("ver-mais", "Ver Mais");
-                ongsOpcoes.Add("voltar", "Voltar");
+
+                if (ongsOpcoes.Count > 5)
+                {
+                    ongsOpcoes.Remove(ongsOpcoes.Last().Key);
+                    ongsOpcoes.Add("ver-mais", "Ver mais");
+                }
+
+                ongsOpcoes.Add("voltar", "Voltar ao menu");
 
                 _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem, ongsOpcoes);
                 return Tuple.Create(true, "MenuListaONGsRegiao");
@@ -749,7 +821,9 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 $"\n{ong.Endereco.Bairro}" +
                 $"\n{ong.Endereco.Cidade} - {ong.Endereco.UF}" +
                 $"\n{ong.Endereco.CEP.Substring(0, 5)}-{ong.Endereco.CEP.Substring(5, 3)}\n\n";
-            mensagem += $"*Links.:*\n {string.Join($"\n", ong.Contatos.Select(c => $"[{c.Descricao}]({c.URL})"))}";
+
+            if(ong.Contatos.Any())
+                mensagem += $"*Links.:*\n{string.Join($"\n", ong.Contatos.Select(c => $"[{c.Descricao}]({c.URL})"))}";
 
             var opcoes = new Dictionary<string, string>()
             {
@@ -841,7 +915,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 return Tuple.Create(true, "SeguirEvento");
             }
 
-            return await MenuPrincipal();
+            return await MenuCadastro();
         }
 
         private async Task<Tuple<bool, string>> SimSeguirEvento(int id)
@@ -858,7 +932,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
 
         private async Task<Tuple<bool, string>> DesseguirEvento(int id)
         {
-            var mensagem = "Verificamos que você já segue este Evento! Deseja continuar seguindo?";
+            var mensagem = "Verificamos que você já segue este Evento! Deseja parar de seguir?";
             var opcoes = new Dictionary<string, string>()
                 {
                     { "1", "1. Sim" },
@@ -886,18 +960,25 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             if(_atendimento.Usuario.Id > 0)
             {
                 var usuario = _atendimento.Usuario;
-                var eventosSeguidos = usuario.EventosSeguidos.ToList();
+                var eventosSeguidos = usuario.EventosSeguidos
+                    .Skip(paginacao * 5)
+                    .Take(6)
+                    .ToList();
 
                 if (eventosSeguidos.Any())
                 {
                     var mensagem = "Legal! Vi aqui que você já segue alguns eventos de nossos ajudantes 🐩.:";
                     var eventosOpcoes = new Dictionary<string, string>(eventosSeguidos
                         .Select(e => new KeyValuePair<string, string>(e.OngId.ToString() + ";" + e.Id.ToString(),
-                        $"{eventosSeguidos.IndexOf(e) + 1}. {e.Nome}")))
-                {
-                    { "ver-mais", "Ver Mais" },
-                    { "voltar", "Voltar" }
-                };
+                        $"{eventosSeguidos.IndexOf(e) + 1}. {e.Nome}")));
+
+                    if(eventosSeguidos.Count > 5)
+                    {
+                        eventosOpcoes.Remove(eventosOpcoes.Last().Key);
+                        eventosOpcoes.Add("ver-mais", "Ver Mais");
+                    }
+
+                    eventosOpcoes.Add("voltar", "Voltar ao menu");
 
                     _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem, eventosOpcoes);
                     return Tuple.Create(true, "MenuEventoSeguirDesseguir");
@@ -933,18 +1014,25 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
         private async Task<Tuple<bool, string>> MenuListaEventos(int paginacao = 0)
         {
             var usuario = _atendimento.Usuario;
-            var eventos = _atendimento.OngEscolhida.Eventos.Skip(paginacao * 5)
-                .Take(5);
+            var eventos = _atendimento.OngEscolhida.Eventos
+                .Skip(paginacao * 5)
+                .Take(6)
+                .ToList();
 
             if (eventos != null && eventos.Any())
             {
-                var eventosLista = eventos.ToList();
                 var mensagem = "Encontramos algumas opções para você.:";
-                var eventosOpcoes = new Dictionary<string, string>(eventosLista
+                var eventosOpcoes = new Dictionary<string, string>(eventos
                     .Select(e => new KeyValuePair<string, string>(e.OngId.ToString() + ";" + e.Id.ToString(),
-                    $"{eventosLista.IndexOf(e) + 1}. {e.Nome}")));
-                eventosOpcoes.Add("ver-mais", "Ver Mais");
-                eventosOpcoes.Add("voltar", "Voltar");
+                    $"{eventos.IndexOf(e) + 1}. {e.Nome}")));
+
+                if (eventosOpcoes.Count > 5)
+                {
+                    eventosOpcoes.Remove(eventosOpcoes.Last().Key);
+                    eventosOpcoes.Add("ver-mais", "Ver mais");
+                }
+
+                eventosOpcoes.Add("voltar", "Voltar ao menu");
 
                 _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem, eventosOpcoes);
                 return Tuple.Create(true, "MenuListaEventos");
@@ -967,8 +1055,14 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 var eventosOpcoes = new Dictionary<string, string>(eventosLista
                     .Select(e => new KeyValuePair<string, string>(e.OngId.ToString() + ";" + e.Id.ToString(),
                     $"{eventosLista.IndexOf(e) + 1}. {e.Nome}")));
-                eventosOpcoes.Add("ver-mais", "Ver Mais");
-                eventosOpcoes.Add("voltar", "Voltar");
+
+                if (eventosOpcoes.Count > 5)
+                {
+                    eventosOpcoes.Remove(eventosOpcoes.Last().Key);
+                    eventosOpcoes.Add("ver-mais", "Ver mais");
+                }
+
+                eventosOpcoes.Add("voltar", "Voltar ao menu");
 
                 _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem, eventosOpcoes);
                 return Tuple.Create(true, "MenuListaEventosRegiao");
@@ -1075,7 +1169,6 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
         private async Task CadastrarNovoUsuario(Message mensagem)
         {
             var nome = mensagem.From.FirstName + mensagem.From.LastName;
-            var telefone = mensagem.Contact?.PhoneNumber;
             var telegramId = mensagem.From.Id;
 
             Usuario usuarioNovo = new Usuario();

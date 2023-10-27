@@ -1,29 +1,174 @@
-{
+[
+  {
     "nome": "ONG Petzinhos",
     "descricao": "ONG de ajuda a animais abandonado acharem um lar",
     "responsavel": "Petshop PetVet",
     "email": "petzinhos@mail.com.br",
     "endereco": {
-        "cep": "01202001",
-        "logradouro": "Alameda Barão de Limeira",
-        "numero": "400",
-        "complemento": "",
-        "bairro": "Campos Elíseos",
-        "cidade": "São Paulo",
-        "uf": "SP"
+      "cep": "01226000",
+      "logradouro": "Rua Martim Francisco",
+      "numero": "140",
+      "complemento": "",
+      "bairro": "Vila Buarque",
+      "cidade": "São Paulo",
+      "uf": "SP"
     },
-    "telefones": [{
-            "ddd": "11",
-            "numero": "21200730",
-            "tipo": "Fixo"
-        }
+    "telefones": [
+      {
+        "ddd": "11",
+        "numero": "21200730",
+        "tipo": "Fixo"
+      }
     ],
-    "contatos": [{
-            "descricao": "Site",
-            "url": "https://www.petzinhos.com.br"
-        }, {
-            "descricao": "Instagram",
-            "url": "https://www.instagram.com/petzinhos"
-        }
+    "contatos": [
+      {
+        "descricao": "Site",
+        "url": "https://www.petzinhos.com.br"
+      },
+      {
+        "descricao": "Instagram",
+        "url": "https://www.instagram.com/petzinhos"
+      }
     ]
-}
+  },
+  {
+    "nome": "Gatinhos manhosos",
+    "descricao": "ONG de doação de gatinhos pristinos",
+    "responsavel": "Malenia da Silva",
+    "email": "malenia.silva@manhosos.com.br",
+    "endereco": {
+      "cep": "04719917",
+      "logradouro": "Rua Professor Manoelito de Ornellas",
+      "numero": "303",
+      "complemento": "",
+      "bairro": "Chácara Santo Antônio (Zona Sul)",
+      "cidade": "São Paulo",
+      "uf": "SP"
+    },
+    "telefones": [
+      {
+        "ddd": "11",
+        "numero": "21200731",
+        "tipo": "Fixo"
+      }
+    ],
+    "contatos": [
+      {
+        "descricao": "Site",
+        "url": "https://www.gatinhosmanhosos.com.br"
+      },
+      {
+        "descricao": "Instagram",
+        "url": "https://www.instagram.com/catmanhosos"
+      }
+    ]
+  },
+  {
+    "nome": "Roedores felizes",
+    "descricao": "ONG ajuda aos dentucinhos",
+    "responsavel": "João Pedro",
+    "email": "joao.pedro@detuncinhos-felizes.com.br",
+    "endereco": {
+      "cep": "02250100",
+      "logradouro": "Travessa Nossa Senhora da Luz",
+      "numero": "16",
+      "complemento": "",
+      "bairro": "Vila Gustavo",
+      "cidade": "São Paulo",
+      "uf": "SP"
+    },
+    "telefones": [
+      {
+        "ddd": "11",
+        "numero": "21200738",
+        "tipo": "Fixo"
+      }
+    ],
+    "contatos": [
+      {
+        "descricao": "Facebook",
+        "url": "https://www.facebook.com/detuncinhos-felizes"
+      }
+    ]
+  },
+  {
+    "nome": "ChompChomp Cachorritos",
+    "descricao": "ONG de doação de Gumbas, ChompChomps e Bullets Bills",
+    "responsavel": "Toad",
+    "email": "cp.toad@cachorritoschomp.com.br",
+    "endereco": {
+      "cep": "05772030",
+      "logradouro": "Rua Franklin Dória",
+      "numero": "316",
+      "complemento": "",
+      "bairro": "Parque Regina",
+      "cidade": "São Paulo",
+      "uf": "SP"
+    },
+    "telefones": [
+      {
+        "ddd": "11",
+        "numero": "21200734",
+        "tipo": "Fixo"
+      }
+    ],
+    "contatos": [
+      {
+        "descricao": "Twitter",
+        "url": "https://twitter.com/NintendoBrasil"
+      }
+    ]
+  },
+  {
+    "nome": "Ritos de Hyrule",
+    "descricao": "Ajude os ritos a cuidarem da fauna da Cidade",
+    "responsavel": "Kass",
+    "email": "kass@rityle.com.br",
+    "endereco": {
+      "cep": "05109010",
+      "logradouro": "Rua Ênio Gomes da Silva",
+      "numero": "94",
+      "complemento": "",
+      "bairro": "Chácara São João",
+      "cidade": "São Paulo",
+      "uf": "SP"
+    },
+    "telefones": [
+      {
+        "ddd": "11",
+        "numero": "21200744",
+        "tipo": "Fixo"
+      }
+    ],
+    "contatos": [
+    ]
+  },
+  {
+    "nome": "Caninos Bondosos",
+    "descricao": "ONG de ajuda e doação de cachorrinhos",
+    "responsavel": "Regina",
+    "email": "regina@caninosbondosos.com.br",
+    "endereco": {
+      "cep": "08370305",
+      "logradouro": "Avenida João da Costa Viana",
+      "numero": "207",
+      "complemento": "",
+      "bairro": "Jardim São João (São Rafael)",
+      "cidade": "São Paulo",
+      "uf": "SP"
+    },
+    "telefones": [
+      {
+        "ddd": "11",
+        "numero": "21200534",
+        "tipo": "Fixo"
+      }
+    ],
+    "contatos": [
+      {
+        "descricao": "Site",
+        "url": "https://caninos.bondosos.com/home"
+      }
+    ]
+  }
+]

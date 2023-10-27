@@ -1,5 +1,6 @@
 using ONGAnimaisTelegramBot.Worker;
 using ONGAnimaisTelegramBot.Worker.Configurations;
+using Serilog;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
@@ -10,6 +11,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddVendorConfiguration(hostContext.Configuration);
         services.AddHostedService<Worker>();
     })
+    .UseSerilog()
     .Build();
 
 host.Run();

@@ -25,7 +25,7 @@ namespace ONGAnimaisAPI.Infra.Repositories
                 .Where(o => o.Endereco.Cidade == cidade &&
             o.Endereco.UF == uf)
                 .Skip(paginacao * 5)
-                .Take(5)
+                .Take(6)
                 .ToListAsync();
         }
 
