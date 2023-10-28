@@ -52,3 +52,7 @@ Com isso já temos o necessário para desfrutar do projeto.
 <h4 align="left">Vídeo demonstrativo</h4>
 
 https://youtu.be/3wT1G2_3DQI
+
+<h4 align="left">Diagrama do banco de dados</h4>
+
+<img height="700" src="https://github.com/LeonardoCavi/TC1_ONGAnimais_API_FIAP/blob/develop/Prints/Diagrama%20Banco%20de%20Dados.png"></img>
