@@ -19,7 +19,7 @@
 <h3 align="left">Instruções do projeto - Preparação</h3>
 
 <h4 align="left">1. ONGAnimaisAPI</h4>
-  Existem alguns passos iniciais antes de começar utilizar o projeto, primeiramente é importante verificar o arquivo de configuração da API (appsettings.json) e lá tem algumas informações importantes que devemos prestar atenção.:
+  Existem alguns passos iniciais antes de começar utilizar o projeto, primeiramente é importante verificar o arquivo de configuração da API (appsettings.json) e lá tem algumas informações importantes que devemos prestar atenção.: </br>
 - 🐾 <i>APICredencials</i>.: Antes de rodar a API pela primeira vez, é importante verificar o usuário e senha que será utilizado na API. Esse usuário e senha servirá para que as aplicações consumam a API. Por padrão, colocamos "admin"/"admin", esse usuário se trata de credenciais padrão para caso não exista nenhum usuário cadastrado.</br>
 - 🐾 <i>Secret</i>.: Chave para geração do Token de acesso da API, podendo ficar ao critério do utilizador alterar a mesma.</br>
 - 🐾 <i>ConnectionString:ApplicationConnectionString</i>.: String de conexção do banco de dados que a aplicação irá criar o database e as respectivas tabelas.</br>
@@ -50,3 +50,5 @@ Com isso já temos o necessário para desfrutar do projeto.
 <img height="500" src="https://github.com/LeonardoCavi/TC1_ONGAnimais_API_FIAP/blob/develop/Prints/Screenshot_20231028_185928_Video%20Player.jpg"></img>
 
 <h4 align="left">Vídeo demonstrativo</h4>
+
+https://youtu.be/3wT1G2_3DQI
