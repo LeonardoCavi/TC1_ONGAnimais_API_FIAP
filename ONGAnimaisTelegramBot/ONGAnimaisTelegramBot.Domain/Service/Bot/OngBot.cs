@@ -556,7 +556,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
 
             if (_atendimento.Usuario == null)
             {
-                var mensagem = "Hmmmmm não encontrei seus dados aqui! Quer se juntar ao nosso grupo para saber mais como ajudar os nosso amiguinhos?";
+                var mensagem = "Hmmmmm 🦘 não encontrei seus dados aqui! Quer se juntar ao nosso grupo para saber mais como ajudar os nosso 🐶amiguinhos🐱?";
                 var opcoes = new Dictionary<string, string>()
                 {
                     { "1", "1. Sim" },
@@ -576,10 +576,10 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
         {
             var usuario = _atendimento.Usuario;
 
-            var mensagem = "Olá, seja bem-vindo ao 🐾*ONG Animais Bot*🐾. Selecione uma das opções abaixo.:";
+            var mensagem = "Olá, seja bem-vindo ao 🐕*ONG Animais Bot*🐈. Selecione uma das opções abaixo.:";
 
             if (_atendimento.Usuario != null)
-                mensagem = $"Olá {usuario.Nome}, seja bem-vindo ao 🐾*ONG Animais Bot*🐾. Selecione uma das opções abaixo.:";
+                mensagem = $"Olá {usuario.Nome}, seja bem-vindo ao 🐕*ONG Animais Bot*🐈. Selecione uma das opções abaixo.:";
 
             var opcoes = new Dictionary<string, string>()
             {
@@ -597,8 +597,8 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
         private async Task<Tuple<bool, string>> MenuComoAjudar(string mensagem = "")
         {
             if(string.IsNullOrEmpty(mensagem))
-                mensagem = "Uau! Estou vendo que você está querendo saber mais como ajudar nossos amiguinhos e fico muito feliz!\r\n" +
-                    "Aqui no ONG Animais Bot posso te ajudar achar informações de ONGs e Eventos e suas informações básicas" +
+                mensagem = "🙀 Uau! Estou vendo que você está querendo saber mais como ajudar nossos amiguinhos e fico muito feliz!\r\n" +
+                    "Aqui no ONG Animais Bot posso te ajudar achar informações de *ONGs* e *Eventos* e suas informações básicas" +
                     "para que você entre em contato com a mesma para que você possa ajudar de alguma maneira.\r\n" +
                     "Segue algumas informações importantes.:";
             var opcoes = new Dictionary<string, string>()
@@ -619,7 +619,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
         {
             var mensagem = "Se trata de uma escolha responsável e muito gratificando onde você pode salvar vidas, reduzir o nº\r\n" +
                 "de amiguinhos sem um lar, contibuir com a sociedade, criar um vínculo mega especial e claramente\r\n" +
-                "dar uma segunda chance.";
+                "dar uma segunda chance 😸.";
             await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem);
 
             return await MenuComoAjudar("Deseja saber algo mais.:");
@@ -627,7 +627,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
 
         private async Task<Tuple<bool, string>> InformacaoVacinacao()
         {
-            var mensagem = "A vacinação para cães e gatos tem um papel importante na promoção da saúde animal e na prevenção de doenças.\r\n" +
+            var mensagem = "A vacinação 💉😾 para cães e gatos tem um papel importante na promoção da saúde animal e na prevenção de doenças.\r\n" +
                 "Verifique sempre a carteirinha de vacinação do seu amigo e busque ajuda profissional.";
             await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem);
 
@@ -636,7 +636,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
 
         private async Task<Tuple<bool, string>> InformacaoDoacao()
         {
-            var mensagem = "Oba!! Aqui no ONG Animais Bot você consegue achar informações de contato da ONG e caso você tenha o perfil, \r\n" +
+            var mensagem = "Oba 😻!! Aqui no ONG Animais Bot você consegue achar informações de contato da ONG e caso você tenha o perfil, \r\n" +
                 "você pode pesquisar pelas informações de contato e buscar meios de se voluntariar ou doar.";
             await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem);
 
@@ -663,7 +663,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
 
         private async Task<Tuple<bool, string>> MenuONG()
         {
-            var mensagem = "Certo! Aqui está algumas opções referentes ao menu *ONGs*.:";
+            var mensagem = "Certo! Aqui está algumas opções referentes ao menu 🐺*ONGs*🐶.:";
             var opcoes = new Dictionary<string, string>()
             {
                 { "1", "1. Saber mais de ONGs em minha região" },
@@ -688,7 +688,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                     return await MenuONGRegiaoCompartilhada();
             }
 
-            var mensagem = "Como deseja pesquisar *ONGs* em sua região.:";
+            var mensagem = "Como deseja pesquisar 🐺*ONGs*🐶 em sua região.:";
             var opcoes = new Dictionary<string, string>()
                 {
                     { "1", "1. Compartilhar minha localização" },
@@ -745,7 +745,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 if (ongsSeguidas.Any(o => o.Id == id))
                     return await DesseguirONG(id);
 
-                var mensagem = "Deseja seguir esta ONG?";
+                var mensagem = "Deseja seguir esta 🐺*ONG*🐶?";
                 var opcoes = new Dictionary<string, string>()
                 {
                     { "1", "1. Sim" },
@@ -764,16 +764,16 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             var usuario = _atendimento.Usuario;
 
             if (await _ongHttp.SeguirONG(usuario.Id, id))
-                await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, "Você está seguindo a ONG");
+                await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, "Você está seguindo a *ONG* 🙀");
             else
-                await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, "Falha ao seguir a ONG");
+                await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, "Falha ao seguir a *ONG* 🙀");
 
             return await MenuCadastro();
         }
 
         private async Task<Tuple<bool, string>> DesseguirONG(int id)
         {
-            var mensagem = "Verificamos que você já segue esta ONG! Deseja para de seguir?";
+            var mensagem = "Verificamos que você já segue esta 🐺*ONG*🐶! Deseja para de seguir?";
             var opcoes = new Dictionary<string, string>()
                 {
                     { "1", "1. Sim" },
@@ -789,9 +789,9 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             var usuario = _atendimento.Usuario;
 
             if (await _ongHttp.DesseguirONG(usuario.Id, id))
-                await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, "Você parou de seguir a ONG");
+                await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, "Você parou de seguir a *ONG* 🙀");
             else
-                await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, "Falha ao desseguir a ONG ");
+                await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, "Falha ao desseguir a *ONG* 🙀");
 
             return await MenuCadastro();
         }
@@ -933,7 +933,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
 
         private async Task<Tuple<bool, string>> MenuEvento()
         {
-            var mensagem = "Certo! Aqui está algumas opções referentes ao menu *Eventos*.:";
+            var mensagem = "Certo! Aqui está algumas opções referentes ao menu 🐱*Eventos*🐯.:";
             var opcoes = new Dictionary<string, string>()
             {
                 { "1", "1. Saber mais de Eventos em minha região" },
@@ -958,7 +958,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                     return await MenuEventoRegiaoCompartilhada();
             }
 
-            var mensagem = "Como deseja pesquisar *Eventos* em sua região.:";
+            var mensagem = "Como deseja pesquisar 🐱*Eventos*🐯 em sua região.:";
             var opcoes = new Dictionary<string, string>()
                 {
                     { "1", "1. Compartilhar minha localização" },
@@ -980,7 +980,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 if (eventosSeguidos.Any(e => e.Id == id))
                     return await DesseguirEvento(id);
 
-                var mensagem = "Deseja seguir este Evento?";
+                var mensagem = "Deseja seguir este 🐱*Eventos*🐯?";
                 var opcoes = new Dictionary<string, string>()
                 {
                     { "1", "1. Sim" },
@@ -999,16 +999,16 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             var usuario = _atendimento.Usuario;
 
             if (await _ongHttp.SeguirEvento(usuario.Id, id))
-                await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, "Você está seguindo o Evento");
+                await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, "Você está seguindo o *Evento* 🙀");
             else
-                await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, "Falha ao seguir o Evento");
+                await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, "Falha ao seguir o *Evento* 🙀");
 
             return await MenuCadastro();
         }
 
         private async Task<Tuple<bool, string>> DesseguirEvento(int id)
         {
-            var mensagem = "Verificamos que você já segue este Evento! Deseja parar de seguir?";
+            var mensagem = "Verificamos que você já segue este 🐱*Eventos*🐯! Deseja parar de seguir?";
             var opcoes = new Dictionary<string, string>()
                 {
                     { "1", "1. Sim" },
@@ -1024,9 +1024,9 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             var usuario = _atendimento.Usuario;
 
             if (await _ongHttp.DesseguirEvento(usuario.Id, id))
-                await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, "Você parou de seguir o Evento");
+                await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, "Você parou de seguir o *Evento* 🙀");
             else
-                await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, "Falha ao desseguir o Evento");
+                await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, "Falha ao desseguir o *Evento* 🙀");
 
             return await MenuCadastro();
         }
@@ -1251,7 +1251,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
 
         private async Task EnviarOpcaoInvalida()
         {
-            var mensagem = "Opção inválida, tente novamente...";
+            var mensagem = "Opção inválida 😹, tente novamente...";
             await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem);
         }
 
