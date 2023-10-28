@@ -31,7 +31,7 @@ Da mesma maneira, existem alguns passos importantes a serem feitos no arquivo de
 - 🐾 <i>Endpoints:BaseUri</i>.: Alterar o URi e porta que está rodando a API em seu equipamento local. Exemplo.:https://localhost:7282</br>
 
 <h4 align="left">Iniciando o projeto</h4>
-  Realizado todas as configurações, ambos projetos devem ser iniciados. Após esse processo, é possível realizar testes via documentação da API (Swagger), porém o importante é ter uma conta no Telegram e ingressar no seguinte grupo de bot.: <link aqui>.
+  Realizado todas as configurações, ambos projetos devem ser iniciados. Após esse processo, é possível realizar testes via documentação da API (Swagger), porém o importante é ter uma conta no Telegram e ingressar no seguinte grupo de bot.: https://t.me/ONGAnimaisBot.
 Com isso já temos o necessário para desfrutar do projeto.
 
 <h4 align="left">Prints</h4>
