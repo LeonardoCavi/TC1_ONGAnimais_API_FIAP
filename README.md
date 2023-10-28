@@ -26,7 +26,7 @@
 - 🐾 Dentro do projeto preparamos alguns arquivos .json para faciliar a inclusão de ONGs e Eventos na base de dados da API. No caso de usuários, não é necessário inserir via .json, visto que eles serão incluidos de acordo com a utilização de novas pessoas no bot.</br>
 
 <h4 align="left">2. ONGAnimaisTelegramBot</h4>
-Da mesma maneira, existem alguns passos importantes a serem feitos no arquivo de configuração do projeto TelegramBot(appsettings.json) .:
+Da mesma maneira, existem alguns passos importantes a serem feitos no arquivo de configuração do projeto TelegramBot(appsettings.json) .:</br>
 - 🐾 <i>ONGApi</i>.: O mesmo usuário e senha configurado no ONGAnimaisAPI, vai ser cadastrado no banco e ele servirá para que o TelegramBot crie os Tokens de acesso e se autentique na API.</br>
 - 🐾 <i>Endpoints:BaseUri</i>.: Alterar o URi e porta que está rodando a API em seu equipamento local. Exemplo.:https://localhost:7282</br>
 
