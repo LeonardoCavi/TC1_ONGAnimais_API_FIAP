@@ -34,7 +34,7 @@ Da mesma maneira, existem alguns passos importantes a serem feitos no arquivo de
   Realizado todas as configurações, ambos projetos devem ser iniciados. Após esse processo, é possível realizar testes via documentação da API (Swagger), porém o importante é ter uma conta no Telegram e ingressar no seguinte grupo de bot.: <link aqui>.
 Com isso já temos o necessário para desfrutar do projeto.
 
-<h4 align="left">Prints demonstrando a navegação  no Bot da direita para esquerda</h4>
+<h4 align="left">Prints</h4>
 
 <img height="500" src="https://github.com/LeonardoCavi/TC1_ONGAnimais_API_FIAP/blob/develop/Prints/Screenshot_20231028_185609_Video%20Player.jpg"></img>
 <img height="500" src="https://github.com/LeonardoCavi/TC1_ONGAnimais_API_FIAP/blob/develop/Prints/Screenshot_20231028_185618_Video%20Player.jpg"></img>
