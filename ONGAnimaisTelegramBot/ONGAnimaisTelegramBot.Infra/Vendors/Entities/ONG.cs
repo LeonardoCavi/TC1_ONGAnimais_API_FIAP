@@ -23,7 +23,7 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors.Entities
         [JsonPropertyName("endereco")]
         public Endereco Endereco { get; set; }
 
-        [JsonPropertyName("geolocalizacao")]
+        [JsonPropertyName("geoLocalizacao")]
         public Geolocalizacao Geolocalizacao { get; set; }
 
         [JsonPropertyName("telefones")]

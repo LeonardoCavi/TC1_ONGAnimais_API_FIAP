@@ -9,8 +9,8 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors.Entities.ValueObjects
 {
     public class Geolocalizacao
     {
-        [JsonPropertyName("latidude")]
-        public decimal Latidude { get; set; }
+        [JsonPropertyName("latitude")]
+        public decimal Latitude { get; set; }
 
         [JsonPropertyName("longitude")]
         public decimal Longitude { get; set; }

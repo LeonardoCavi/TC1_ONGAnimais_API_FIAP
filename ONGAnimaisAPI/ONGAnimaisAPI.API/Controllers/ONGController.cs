@@ -131,17 +131,18 @@ namespace ONGAnimaisAPI.API.Controllers
         /// <summary>
         /// Obter/Consultar uma lista de ONGs e sua Geo Localização(Latitude+Longitude) por Cidade e UF 
         /// </summary>
-        /// <param name="ongcidade"></param>
+        /// <param name="latitude"></param>
+        /// <param name="longitude"></param>
         /// <param name="paginacao"></param>
         /// <returns></returns>
-        [Route("obter-ongs-por-cidade-geo")]
+        [Route("obter-ongs-por-geo")]
         [HttpGet]
-        public async Task<IActionResult> ObterONGsPorCidadeGeo([FromQuery] BuscaONGCidadeViewModel ongcidade, int paginacao = 0)
+        public async Task<IActionResult> ObterONGsPorCidadeGeo(decimal latitude, decimal longitude, int paginacao = 0)
         {
             try
             {
-                _logger.LogInformation($"[{_className}] - [ObterONGsPorCidadeGeo] => Request.: {JsonSerializer.Serialize(ongcidade)}");
-                var ongs = await _application.ObterONGsPorCidadeGeo(ongcidade, paginacao);
+                _logger.LogInformation($"[{_className}] - [ObterONGsPorCidadeGeo] => Request.: {new { latitude , longitude }}");
+                var ongs = await _application.ObterONGsPorCidadeGeo(latitude, longitude, paginacao);
 
                 if (_notificador.TemNotificacao())
                 {
@@ -360,17 +361,18 @@ namespace ONGAnimaisAPI.API.Controllers
         /// <summary>
         /// Obter/Consultar uma lista de Eventos e sua Geo Localização(Latitude+Longitude) por Cidade e UF 
         /// </summary>
-        /// <param name="eventocidade"></param>
+        /// <param name="latitude"></param>
+        /// <param name="longitude"></param>
         /// <param name="paginacao"></param>
         /// <returns></returns>
-        [Route("obter-eventos-por-cidade-geo")]
+        [Route("obter-eventos-por-geo")]
         [HttpGet]
-        public async Task<IActionResult> ObterEventosPorCidadeGeo([FromQuery] BuscaEventoCidadeViewModel eventocidade, int paginacao = 0)
+        public async Task<IActionResult> ObterEventosPorCidadeGeo(decimal latitude, decimal longitude, int paginacao = 0)
         {
             try
             {
-                _logger.LogInformation($"[{_className}] - [ObterEventosPorCidadeGeo] => Request.: {JsonSerializer.Serialize(eventocidade)}");
-                var eventos = await _application.ObterEventosPorCidadeGeo(eventocidade, paginacao);
+                _logger.LogInformation($"[{_className}] - [ObterEventosPorCidadeGeo] => Request.: {new { latitude, longitude }}");
+                var eventos = await _application.ObterEventosPorCidadeGeo(latitude, longitude, paginacao);
 
                 if (_notificador.TemNotificacao())
                 {

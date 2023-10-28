@@ -11,7 +11,7 @@ namespace ONGAnimaisAPI.Domain.Interfaces.Services
 
         Task<ICollection<ONG>> ObterONGsPorCidade(string cidade, string uf, int paginacao = 0);
 
-        Task<ICollection<ONG>> ObterONGsPorCidadeGeo(string cidade, string uf, int paginacao = 0);
+        Task<ICollection<ONG>> ObterONGsPorCidadeGeo(decimal latitude, decimal longitude, int paginacao = 0);
 
         Task<ONG> ObterONGEventos(int id);
 
@@ -30,7 +30,7 @@ namespace ONGAnimaisAPI.Domain.Interfaces.Services
 
         Task<ICollection<Evento>> ObterEventosPorCidade(string cidade, string uf, int paginacao = 0);
 
-        Task<ICollection<Evento>> ObterEventosPorCidadeGeo(string cidade, string uf, int paginacao = 0);
+        Task<ICollection<Evento>> ObterEventosPorCidadeGeo(decimal latitude, decimal longitude, int paginacao = 0);
 
         Task<ICollection<Evento>> ObterTodosEventos();
 

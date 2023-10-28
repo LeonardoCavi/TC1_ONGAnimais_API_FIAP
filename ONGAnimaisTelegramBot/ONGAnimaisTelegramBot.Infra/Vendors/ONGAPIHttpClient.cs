@@ -116,14 +116,14 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors
             }
         }
 
-        public async Task<ICollection<ONG>> ObterOngsCidadeGeo(string cidade, string uf, int paginacao = 0)
+        public async Task<ICollection<ONG>> ObterOngsGeo(decimal latitude, decimal longitude, int paginacao = 0)
         {
             try
             {
                 await VerificaVidaToken();
 
-                _logger.LogInformation($"{ClassName}:ObterOngsCidadeGeo => Request => {new { cidade, uf, paginacao }}");
-                string url = string.Format(_apiConfig.Endpoints.BaseUri + _apiConfig.Endpoints.ObterONGsPorCidadeGeoEndpoint, cidade, uf, paginacao);
+                _logger.LogInformation($"{ClassName}:ObterOngsCidadeGeo => Request => {new { latitude, longitude, paginacao }}");
+                string url = string.Format(_apiConfig.Endpoints.BaseUri + _apiConfig.Endpoints.ObterONGsPorGeoEndpoint, latitude.ToString().Replace(",","."), longitude.ToString().Replace(",", "."), paginacao);
 
                 var result = await _httpHelp.Send(url, null, VerboHttp.Get, AddHeaders());
                 if (result.Code == CodeHttp.Sucess)
@@ -133,7 +133,7 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors
                 }
                 else
                 {
-                    _logger.LogWarning($"{ClassName}:ObterOngsCidadeGeo => Erro na obtenção de ONGs por Cidade e UF. Response => {result}");
+                    _logger.LogWarning($"{ClassName}:ObterOngsCidadeGeo => Erro na obtenção de ONGs por Geolocalização. Response => {result}");
                     return null;
                 }
             }
@@ -200,14 +200,14 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors
             }
         }
 
-        public async Task<ICollection<Evento>> ObterEventosCidadeGeo(string cidade, string uf, int paginacao = 0)
+        public async Task<ICollection<Evento>> ObterEventosGeo(decimal latitude, decimal longitude, int paginacao = 0)
         {
             try
             {
                 await VerificaVidaToken();
 
-                _logger.LogInformation($"{ClassName}:ObterEventosCidadeGeo => Request => {new { cidade, uf, paginacao }}");
-                string url = string.Format(_apiConfig.Endpoints.BaseUri + _apiConfig.Endpoints.ObterEventosPorCidadeGeoEndpoint, cidade, uf, paginacao);
+                _logger.LogInformation($"{ClassName}:ObterEventosCidadeGeo => Request => {new { latitude, longitude, paginacao }}");
+                string url = string.Format(_apiConfig.Endpoints.BaseUri + _apiConfig.Endpoints.ObterEventosPorGeoEndpoint, latitude, longitude, paginacao);
 
                 var result = await _httpHelp.Send(url, null, VerboHttp.Get, AddHeaders());
                 if (result.Code == CodeHttp.Sucess)
@@ -217,7 +217,7 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors
                 }
                 else
                 {
-                    _logger.LogWarning($"{ClassName}:ObterEventosCidadeGeo => Erro na obtenção de Eventos por Cidade e UF. Response => {result}");
+                    _logger.LogWarning($"{ClassName}:ObterEventosCidadeGeo => Erro na obtenção de Eventos por Geolocalização. Response => {result}");
                     return null;
                 }
             }

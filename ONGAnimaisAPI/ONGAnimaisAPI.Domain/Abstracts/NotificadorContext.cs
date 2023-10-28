@@ -49,5 +49,12 @@ namespace ONGAnimaisAPI.Domain.Abstracts
 
             Notificar(validator);
         }
+
+        protected void ExecutarValidacao<TV>(TV validacao, (decimal, decimal) geoLocalizacao) where TV : AbstractValidator<(decimal, decimal)>
+        {
+            var validator = validacao.Validate(geoLocalizacao);
+
+            Notificar(validator);
+        }
     }
 }

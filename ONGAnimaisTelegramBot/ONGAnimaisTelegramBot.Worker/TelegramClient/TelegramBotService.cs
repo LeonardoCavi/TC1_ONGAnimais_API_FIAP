@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using ONGAnimaisTelegramBot.Domain.Service;
+using System.Linq;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -126,22 +127,27 @@ namespace ONGAnimaisTelegramBot.Worker.TelegramClient
                 return null;
             }
         }
-        public async Task<Message> CompartilharBot(string sessaoId, string texto, string mensagemCompartilhamento)
+        public async Task<Message> CompartilharBot(string sessaoId, string texto, string mensagemCompartilhamento, IDictionary<string, string> opcoes)
         {
             try
             {
                 var clientId = ObterClientId(sessaoId);
 
-                InlineKeyboardMarkup inlineKeyboard = new(new[]
+                //InlineKeyboardMarkup inlineKeyboard = new(new[]{ InlineKeyboardButton.WithSwitchInlineQuery(text: mensagemCompartilhamento));
+
+                var buttons = new List<IEnumerable<InlineKeyboardButton>>()
                 {
-                    InlineKeyboardButton.WithSwitchInlineQuery(text: mensagemCompartilhamento),
-                });
+                    new[]{ InlineKeyboardButton.WithSwitchInlineQuery(text: mensagemCompartilhamento) },
+                    opcoes.Select(x => InlineKeyboardButton.WithCallbackData(x.Value, x.Key))
+                };
+
+                var keyboardMarkup = new InlineKeyboardMarkup(buttons);
 
                 var message = await telegramBotClient.SendTextMessageAsync(
                     chatId: clientId,
                     text: texto,
                     parseMode: ParseMode.Markdown,
-                    replyMarkup: inlineKeyboard);
+                    replyMarkup: keyboardMarkup);
 
                 _logger.LogInformation($"{ClassName}:EnviarPedidoLocalizacao => ClientId: {clientId}; Texto: {texto}; MessageId: {message.MessageId}");
                 return message;
@@ -219,7 +225,7 @@ namespace ONGAnimaisTelegramBot.Worker.TelegramClient
                     {
                         foreach (var button in row)
                         {
-                            if (button.CallbackData.Contains(texto.ToLower()) && !negritouOpcao  && !string.IsNullOrEmpty(texto))
+                            if (button.CallbackData != null && button.CallbackData.Contains(texto.ToLower()) && !negritouOpcao  && !string.IsNullOrEmpty(texto))
                             {
                                 textoOpcoes.Add($"*{button.Text} ✅*");
                                 negritouOpcao = true;

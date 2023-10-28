@@ -1,5 +1,6 @@
 ﻿using ONGAnimaisAPI.Domain.Abstracts;
 using ONGAnimaisAPI.Domain.Entities;
+using ONGAnimaisAPI.Domain.Entities.ValueObjects;
 using ONGAnimaisAPI.Domain.Interfaces.Notifications;
 using ONGAnimaisAPI.Domain.Interfaces.Repository;
 using ONGAnimaisAPI.Domain.Interfaces.Services;
@@ -152,13 +153,21 @@ namespace ONGAnimaisAPI.Domain.Services
             return eventos;
         }
 
-        public async Task<ICollection<Evento>> ObterEventosPorCidadeGeo(string cidade, string uf, int paginacao = 0)
+        public async Task<ICollection<Evento>> ObterEventosPorCidadeGeo(decimal latitude, decimal longitude, int paginacao = 0)
         {
-            var eventos = await _eRepository.ObterEventosPorCidadeGeo(cidade, uf, paginacao);
+            var endereco = await _geoHttp.BuscarEnderecoPorGeoLocalizacao(latitude, longitude);
+
+            if (endereco == null)
+            {
+                Notificar($"Evento: o endereço informado não foi encontrado ou é invalido", TipoNotificacao.NotFound);
+                return null;
+            }
+
+            var eventos = await _eRepository.ObterEventosPorCidadeGeo(endereco.Cidade, endereco.UF, paginacao);
 
             if (eventos.Count == 0 || eventos == null)
             {
-                Notificar($"Evento: não existem eventos cadastrados em sua cidade - {cidade}-{uf}", TipoNotificacao.NotFound);
+                Notificar($"Evento: não existem eventos cadastrados em sua cidade", TipoNotificacao.NotFound);
             }
 
             return eventos;
@@ -276,13 +285,22 @@ namespace ONGAnimaisAPI.Domain.Services
             return ongs;
         }
 
-        public async Task<ICollection<ONG>> ObterONGsPorCidadeGeo(string cidade, string uf, int paginacao = 0)
+        public async Task<ICollection<ONG>> ObterONGsPorCidadeGeo(decimal latitude, decimal longitude, int paginacao = 0)
         {
-            var ongs = await _oRepository.ObterONGsPorCidadeGeo(cidade, uf, paginacao);
+            var endereco = await  _geoHttp.BuscarEnderecoPorGeoLocalizacao(latitude, longitude);
+
+            if(endereco == null)
+            {
+                Notificar($"ONG: o endereço informado não foi encontrado ou é invalido", TipoNotificacao.NotFound);
+                return null;
+            }
+
+
+            var ongs = await _oRepository.ObterONGsPorCidadeGeo(endereco.Cidade, endereco.UF, paginacao);
 
             if (ongs.Count == 0 || ongs == null)
             {
-                Notificar($"ONG: não existem ongs cadastradas em sua cidade - {cidade}-{uf}", TipoNotificacao.NotFound);
+                Notificar($"ONG: não existem ongs cadastradas em sua cidade", TipoNotificacao.NotFound);
             }
 
             return ongs;

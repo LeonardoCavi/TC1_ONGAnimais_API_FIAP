@@ -114,13 +114,13 @@ namespace ONGAnimaisAPI.Application.Services
             return null;
         }
 
-        public async Task<ICollection<ObtemONGGeoViewModel>> ObterONGsPorCidadeGeo(BuscaONGCidadeViewModel ongcidade, int paginacao = 0)
+        public async Task<ICollection<ObtemONGGeoViewModel>> ObterONGsPorCidadeGeo(decimal latitude, decimal longitude, int paginacao = 0)
         {
-            ExecutarValidacao(new BuscaONGCidadeValidation(), ongcidade);
+            ExecutarValidacao(new LatitudeLongitudeValidation(), (latitude, longitude));
 
             if (!_notificador.TemNotificacao())
             {
-                var ongs = await _service.ObterONGsPorCidadeGeo(ongcidade.Cidade, ongcidade.UF, paginacao);
+                var ongs = await _service.ObterONGsPorCidadeGeo(latitude, longitude, paginacao);
 
                 return _mapper.Map<ICollection<ObtemONGGeoViewModel>>(ongs);
             }
@@ -208,13 +208,13 @@ namespace ONGAnimaisAPI.Application.Services
             return null;
         }
 
-        public async Task<ICollection<ObtemEventoGeoViewModel>> ObterEventosPorCidadeGeo(BuscaEventoCidadeViewModel eventocidade, int paginacao = 0)
+        public async Task<ICollection<ObtemEventoGeoViewModel>> ObterEventosPorCidadeGeo(decimal latitude, decimal longitude, int paginacao = 0)
         {
-            ExecutarValidacao(new BuscaEventoCidadeValidation(), eventocidade);
+            ExecutarValidacao(new LatitudeLongitudeValidation(), (latitude, longitude));
 
             if (!_notificador.TemNotificacao())
             {
-                var eventos = await _service.ObterEventosPorCidadeGeo(eventocidade.Cidade, eventocidade.UF, paginacao);
+                var eventos = await _service.ObterEventosPorCidadeGeo(latitude, longitude, paginacao);
 
                 return _mapper.Map<ICollection<ObtemEventoGeoViewModel>>(eventos);
             }

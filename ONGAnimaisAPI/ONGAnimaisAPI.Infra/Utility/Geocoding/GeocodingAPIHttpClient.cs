@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using ONGAnimaisAPI.Domain.Entities.ValueObjects;
 using ONGAnimaisAPI.Domain.Interfaces.Utility;
+using ONGAnimaisAPI.Infra.Utility.Geocoding.Entities;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -48,29 +50,95 @@ namespace ONGAnimaisAPI.Infra.Utility.Geocoding
                 return null;
             }
         }
-    }
 
-    public class BingMapsResponse
-    {
-        [JsonPropertyName("resourceSets")]
-        public ResourceSets[] ResourceSets { get; set; }
-    }
+        public async Task<Endereco> BuscarEnderecoPorGeoLocalizacao(decimal latitude, decimal longitude)
+        {
+            Token = _configuration.GetValue<string>("BingMapsAPI:APIKey");
+            BaseUri = _configuration.GetValue<string>("BingMapsAPI:BaseUri");
+            var localidade = $"/{latitude.ToString().Replace(",",".")},{longitude.ToString().Replace(",", ".")}";
+            var url = $"{BaseUri}{localidade}?key={Token}";
 
-    public class ResourceSets
-    {
-        [JsonPropertyName("resources")]
-        public Resources[] Resources { get; set; }
-    }
+            var result = await _httpHelp.Send(url, null, VerboHttp.Get, null);
+            if (result.Code == CodeHttp.Sucess)
+            {
+                var endResponse = JsonSerializer.Deserialize<BingMapsResponse>(result.Received);
+                var address = endResponse.ResourceSets[0].Resources[0].Address;
 
-    public class Resources
-    {
-        [JsonPropertyName("geocodePoints")]
-        public GeocodePoints[] GeocodePoints { get; set; }
-    }
+                var cidade = address.locality;
+                var UF = EstadoParaUF(address.adminDistrict);
+                return new()
+                {
+                    Cidade = cidade,
+                    UF = UF,
+                };
+            }
+            else
+            {
+                return null;
+            }
+        }
 
-    public class GeocodePoints
-    {
-        [JsonPropertyName("coordinates")]
-        public decimal[] Coordinates { get; set; }
+        private string EstadoParaUF(string estado)
+        {
+            switch (estado)
+            {
+                case "Rondônia":
+                    return "RO";
+                case "Acre":
+                    return "AC";
+                case "Amazonas":
+                    return "AM";
+                case "Roraima":
+                    return "RR";
+                case "Pará":
+                    return "PA";
+                case "Amapá":
+                    return "AP";
+                case "Tocantins":
+                    return "TO";
+                case "Maranhão":
+                    return "MA";
+                case "Piauí":
+                    return "PI";
+                case "Ceará":
+                    return "CE";
+                case "Rio Grande do Norte":
+                    return "RN";
+                case "Paraíba":
+                    return "PB";
+                case "Pernambuco":
+                    return "PE";
+                case "Alagoas":
+                    return "AL";
+                case "Sergipe":
+                    return "SE";
+                case "Bahia":
+                    return "BA";
+                case "Minas Gerais":
+                    return "MG";
+                case "Espírito Santo":
+                    return "ES";
+                case "Rio de Janeiro":
+                    return "RJ";
+                case "São Paulo":
+                    return "SP";
+                case "Paraná":
+                    return "PR";
+                case "Santa Catarina":
+                    return "SC";
+                case "Rio Grande do Sul":
+                    return "RS";
+                case "Mato Grosso do Sul":
+                    return "MS";
+                case "Mato Grosso":
+                    return "MT";
+                case "Goiás":
+                    return "GO";
+                case "Distrito Federal":
+                    return "DF";
+                default:
+                    return "";
+            }
+        }
     }
 }
