@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ONGAnimaisAPI.Application.Extensions;
 using ONGAnimaisAPI.Application.Interfaces;
 using ONGAnimaisAPI.Application.Validations;
 using ONGAnimaisAPI.Application.Validations.Evento;
@@ -8,6 +9,7 @@ using ONGAnimaisAPI.Application.ViewModels.Evento;
 using ONGAnimaisAPI.Application.ViewModels.ONG;
 using ONGAnimaisAPI.Domain.Abstracts;
 using ONGAnimaisAPI.Domain.Entities;
+using ONGAnimaisAPI.Domain.Entities.ValueObjects;
 using ONGAnimaisAPI.Domain.Interfaces.Notifications;
 using ONGAnimaisAPI.Domain.Interfaces.Services;
 
