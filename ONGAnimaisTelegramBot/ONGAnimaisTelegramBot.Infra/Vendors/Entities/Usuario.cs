@@ -26,7 +26,7 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors.Entities
         [JsonPropertyName("onGsSeguidas")]
         public List<ONG> ONGsSeguidas { get; set; } = new List<ONG> { };
 
-        [JsonPropertyName("geolocalizacao")]
+        [JsonPropertyName("geoLocalizacao")]
         public Geolocalizacao Geolocalizacao { get; set; } = new Geolocalizacao();
     }
 }

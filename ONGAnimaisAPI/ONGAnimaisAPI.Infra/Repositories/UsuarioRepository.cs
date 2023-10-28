@@ -32,6 +32,7 @@ namespace ONGAnimaisAPI.Infra.Repositories
                 .Include(u => u.ONGsSeguidas)
                 .Include(u => u.EventosSeguidos
                     .Where(e => e.Data >= DateTime.Now))
+                .Include(u => u.GeoLocalizacao)
                 .FirstOrDefaultAsync(u => u.TelegramId == telegramId);
         }
 

@@ -101,6 +101,7 @@ namespace ONGAnimaisAPI.API.Controllers
         /// Obter/Consultar ONGs por Cidade e UF
         /// </summary>
         /// <param name="ongcidade"></param>
+        /// <param name="paginacao"></param>
         /// <returns></returns>
         [Route("obter-ongs-por-cidade")]
         [HttpGet]

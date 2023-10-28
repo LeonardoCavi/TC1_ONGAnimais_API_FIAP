@@ -11,6 +11,7 @@ namespace ONGAnimaisAPI.Application.ViewModels.Usuario
         public string TelegramId { get; set; }
         public Telefone Telefone { get; set; }
         public Endereco Endereco { get; set; }
+        public GeoLocalizacao GeoLocalizacao { get; set; }
         public List<ObtemONGViewModel> ONGsSeguidas { get; set; }
         public List<ObtemEventoViewModel> EventosSeguidos { get; set; }
     }

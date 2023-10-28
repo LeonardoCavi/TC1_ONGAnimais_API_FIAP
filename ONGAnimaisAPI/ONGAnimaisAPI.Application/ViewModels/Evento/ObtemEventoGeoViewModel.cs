@@ -7,5 +7,6 @@ namespace ONGAnimaisAPI.Application.ViewModels.Evento
         public int Id { get; set; }
         public string Nome { get; set; }
         public GeoLocalizacao GeoLocalizacao { get; set; }
+        public int OngId { get; set; }
     }
 }

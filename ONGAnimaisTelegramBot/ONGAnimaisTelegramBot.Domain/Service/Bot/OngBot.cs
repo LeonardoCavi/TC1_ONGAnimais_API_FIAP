@@ -1,7 +1,9 @@
 ﻿using ONGAnimaisTelegramBot.Domain.Entities;
 using ONGAnimaisTelegramBot.Infra.Vendors.Entities;
+using ONGAnimaisTelegramBot.Infra.Vendors.Entities.ValueObjects;
 using ONGAnimaisTelegramBot.Infra.Vendors.Interface;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using Telegram.Bot.Types;
 
@@ -220,11 +222,13 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             {
                 if (texto == "1" || texto.ToLower().Contains("buscar"))
                 {
-                    return await MenuONGRegiaoCompartilhada();
+                    return await MenuListaONGsGeolocalizacao();
                 }
-                else if (texto == "2" || texto.ToLower().Contains("alterar"))
+                else if (texto == "2" || texto.ToLower().Contains("outra"))
                 {
-                    return await MenuONGRegiaoCompartilhada();
+                    _atendimento.Usuario.Geolocalizacao = new Geolocalizacao();
+                    _atendimento.ONGsGeolocalizacao = null;
+                    return await MenuONGRegiao();
                 }
                 else if (texto == "3" || texto.ToLower().Contains("voltar"))
                 {
@@ -239,11 +243,13 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             {
                 if (texto == "1" || texto.ToLower().Contains("buscar"))
                 {
-                    return await MenuEventoRegiaoCompartilhada();
+                    return await MenuListaEventosGeolocalizacao();
                 }
-                else if (texto == "2" || texto.ToLower().Contains("alterar"))
+                else if (texto == "2" || texto.ToLower().Contains("outra"))
                 {
-                    return await MenuEventoRegiaoCompartilhada();
+                    _atendimento.Usuario.Geolocalizacao = new Geolocalizacao();
+                    _atendimento.EventosGeolocalizacao = null;
+                    return await MenuEventoRegiao();
                 }
                 else if (texto == "3" || texto.ToLower().Contains("voltar"))
                 {
@@ -673,11 +679,12 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
         private async Task<Tuple<bool, string>> MenuONGRegiao()
         {
             var usuario = _atendimento.Usuario;
-            if (usuario != null)
+
+            if (usuario.Id > 0)
             {
                 var geolocalizacao = usuario.Geolocalizacao;
 
-                if (geolocalizacao != null && (geolocalizacao.Latitude > 0 && geolocalizacao.Longitude > 0))
+                if (geolocalizacao != null && geolocalizacao.Latitude != 0 && geolocalizacao.Longitude != 0)
                     return await MenuONGRegiaoCompartilhada();
             }
 
@@ -793,11 +800,11 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
         {
             var usuario = _atendimento.Usuario;
 
-            var mensagem = $"Legal, estou vendo que você está localizado.: \n{usuario.Endereco.Cidade}-{usuario.Endereco.UF}";
+            var mensagem = $"Legal, estou vendo que a sua localização anterior era.: \n\n{usuario.Endereco.Logradouro}, {usuario.Endereco.Cidade} - {usuario.Endereco.UF}";
             var opcoes = new Dictionary<string, string>()
                 {
-                    { "1", "1. Buscar por essa localização" },
-                    { "2", "2. Alterar minha localização" },
+                    { "1", "1. Buscar por esta localização" },
+                    { "2", "2. Buscar de outra forma" },
                     { "3", "3. Voltar" }
                 };
 
@@ -812,11 +819,9 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
 
             if (ongs != null && ongs.Any())
             {
-                var ongsLista = ongs.ToList();
-
                 var mensagem = "Encontramos algumas opções para você.:";
-                var ongsOpcoes = new Dictionary<string, string>(ongsLista
-                    .Select(o => new KeyValuePair<string, string>(o.Id.ToString(), $"{ongsLista.IndexOf(o) + 1}. {o.Nome}")));
+                var ongsOpcoes = new Dictionary<string, string>(ongs
+                    .Select(o => new KeyValuePair<string, string>(o.Id.ToString(), $"{ongs.IndexOf(o) + 1}. {o.Nome}")));
 
                 if (ongsOpcoes.Count > 5)
                 {
@@ -840,11 +845,11 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             var latitude = _atendimento.Usuario.Geolocalizacao.Latitude;
             var longitude = _atendimento.Usuario.Geolocalizacao.Longitude;
 
-            var ongs = _atendimento.ONGsGeolocalizacao != null ? _atendimento.ONGsGeolocalizacao : await _ongHttp.ObterOngsGeo(latitude, longitude, paginacao);
+            var ongs = await ObterONGsGeolocalizacao(latitude, longitude, paginacao);
 
             if (ongs.Any())
             {
-                var ongsLista = CalculoDistancia.ObterOngsProximas(latitude, longitude, ongs.ToList())
+                var ongsLista = CalculoDistancia.ObterOngsProximas(latitude, longitude, ongs)
                     .Skip(paginacao * 5)
                     .Take(6)
                     .ToList();
@@ -862,7 +867,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 ongsOpcoes.Add("voltar", "Voltar ao menu");
 
                 _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem, ongsOpcoes);
-                _atendimento.ONGsGeolocalizacao = ongs.ToList();
+                _atendimento.ONGsGeolocalizacao = ongs;
                 return Tuple.Create(true, "MenuListaONGsGeolocalizacao");
             }
             else
@@ -883,7 +888,6 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
         {
             var ong = await _ongHttp.ObterONGEventos(id);
             var mensagem = $"*{ong.Nome}* - {ong.Descricao}\n\n";
-
             mensagem += $"*Responsável:*\n{ong.Responsavel}\n\n";
             mensagem += $"*E-Mail de contato:*\n{ong.Email}\n\n";
             mensagem += $"*Telefone de contato:*\n({ong.Telefones.First().DDD}) {ong.Telefones.First().Numero}\n\n";
@@ -899,7 +903,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             var opcoes = new Dictionary<string, string>()
             {
                 { "1", "1. Eventos" },
-                { "2", "2. Seguir/Desseguir essa ONG" },
+                { "2", "2. Seguir/Desseguir esta ONG" },
                 { "3", "3. Voltar" }
             };
 
@@ -945,11 +949,12 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
         private async Task<Tuple<bool, string>> MenuEventoRegiao()
         {
             var usuario = _atendimento.Usuario;
-            if (usuario != null)
+
+            if (usuario.Id > 0)
             {
                 var geolocalizacao = usuario.Geolocalizacao;
 
-                if (geolocalizacao != null && (geolocalizacao.Latitude > 0 && geolocalizacao.Longitude > 0))
+                if (geolocalizacao != null && geolocalizacao.Latitude != 0 && geolocalizacao.Longitude != 0)
                     return await MenuEventoRegiaoCompartilhada();
             }
 
@@ -1070,11 +1075,11 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
         {
             var usuario = _atendimento.Usuario;
 
-            var mensagem = $"Legal, estou vendo que você está localizado.: \n{usuario.Endereco.Cidade}-{usuario.Endereco.UF}";
+            var mensagem = $"Legal, estou vendo que a sua localização anterior era.: \n\n{usuario.Endereco.Logradouro}, {usuario.Endereco.Cidade} - {usuario.Endereco.UF}";
             var opcoes = new Dictionary<string, string>()
                 {
-                    { "1", "1. Buscar por essa localização" },
-                    { "2", "2. Alterar minha localização" },
+                    { "1", "1. Buscar por esta localização" },
+                    { "2", "2. Buscar de outra forma" },
                     { "3", "3. Voltar" }
                 };
 
@@ -1121,11 +1126,10 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
 
             if (eventos != null && eventos.Any())
             {
-                var eventosLista = eventos.ToList();
                 var mensagem = "Encontramos algumas opções para você.:";
-                var eventosOpcoes = new Dictionary<string, string>(eventosLista
+                var eventosOpcoes = new Dictionary<string, string>(eventos
                     .Select(e => new KeyValuePair<string, string>(e.OngId.ToString() + ";" + e.Id.ToString(),
-                    $"{eventosLista.IndexOf(e) + 1}. {e.Nome}")));
+                    $"{eventos.IndexOf(e) + 1}. {e.Nome}")));
 
                 if (eventosOpcoes.Count > 5)
                 {
@@ -1149,7 +1153,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             var latitude = _atendimento.Usuario.Geolocalizacao.Latitude;
             var longitude = _atendimento.Usuario.Geolocalizacao.Longitude;
 
-            var eventos = _atendimento.EventosGeolocalizacao != null ? _atendimento.EventosGeolocalizacao : await _ongHttp.ObterEventosGeo(latitude, longitude, paginacao);
+            var eventos = await ObterEventosGeolocalizacao(latitude, longitude, paginacao);
 
             if (eventos.Any())
             {
@@ -1172,7 +1176,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 eventosOpcoes.Add("voltar", "Voltar ao menu");
 
                 _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem, eventosOpcoes);
-                _atendimento.EventosGeolocalizacao = eventos.ToList();
+                _atendimento.EventosGeolocalizacao = eventos;
                 return Tuple.Create(true, "MenuListaEventosGeolocalizacao");
             }
             else
@@ -1193,13 +1197,20 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
         {
             var evento = await _ongHttp.ObterEvento(ongId, id);
             var ong = await _ongHttp.ObterOng(ongId);
-            var mensagem = $"*{ong.Nome} - \"{evento.Nome}\"*\n" +
-                $"Data.: {evento.Data.ToString("dd/MM/yyyy")} {Environment.NewLine}" +
-                $"Hora.: {evento.Data.ToString("HH:mm:ss")}";
+            var mensagem = $"*{evento.Nome}*\n\n";
+            mensagem += $"Descrição: \n{evento.Descricao}\n\n";
+            mensagem += $"ONG Responável: \n{ong.Nome}\n\n";
+            mensagem += $"*Local:*\n{ong.Endereco.Logradouro}" +
+                $"\n{evento.Endereco.Bairro}" +
+                $"\n{evento.Endereco.Cidade} - {evento.Endereco.UF}" +
+                $"\n{evento.Endereco.CEP.Substring(0, 5)}-{evento.Endereco.CEP.Substring(5, 3)}\n\n";
+            mensagem += $"Data: {evento.Data.ToString("dd 'de' MMMM 'de' yyyy", CultureInfo.GetCultureInfo("pt-BR"))}\n";
+            mensagem += $"Horário: {evento.Data:HH:mm}";
+
             var opcoes = new Dictionary<string, string>()
             {
-                { "1", "1. ONG responsável" },
-                { "2", "2. Seguir/Desseguir essa Evento" },
+                { "1", "1. Ver ONG" },
+                { "2", "2. Seguir/Desseguir este Evento" },
                 { "3", "3. Voltar" }
             };
 
@@ -1275,6 +1286,32 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             var clientId = long.Parse(_atendimento.SessaoId.Split(':')[0]);
 
             return clientId;
+        }
+
+        private async Task<List<ONG>> ObterONGsGeolocalizacao(decimal latitude, decimal longitude, int paginacao)
+        {
+            if (_atendimento.ONGsGeolocalizacao != null)
+                return _atendimento.ONGsGeolocalizacao;
+            else
+            {
+                if (_atendimento.Usuario.Id > 0)
+                    return await _ongHttp.ObterOngsGeo(_atendimento.Usuario.Id, latitude, longitude, paginacao);
+                else
+                    return await _ongHttp.ObterOngsGeo(latitude, longitude, paginacao);
+            }
+        }
+
+        private async Task<List<Evento>> ObterEventosGeolocalizacao(decimal latitude, decimal longitude, int paginacao)
+        {
+            if (_atendimento.EventosGeolocalizacao != null)
+                return _atendimento.EventosGeolocalizacao;
+            else
+            {
+                if (_atendimento.Usuario.Id > 0)
+                    return await _ongHttp.ObterEventosGeo(_atendimento.Usuario.Id, latitude, longitude, paginacao);
+                else
+                    return await _ongHttp.ObterEventosGeo(latitude, longitude, paginacao);
+            }
         }
     }
 }

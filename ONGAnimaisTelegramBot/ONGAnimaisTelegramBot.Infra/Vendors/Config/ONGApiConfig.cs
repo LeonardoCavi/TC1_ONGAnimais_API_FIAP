@@ -29,5 +29,7 @@
         public string DesseguirEventoEndpoint { get; set; }
         public string SeguirONGEndpoint { get; set; }
         public string DesseguirONGEndpoint { get; set; }
+        public string ObterONGsPorGeoUsuarioEndpoint { get; set; }
+        public string ObterEventosPorGeoUsuarioEndpoint { get; set; }
     }
 }

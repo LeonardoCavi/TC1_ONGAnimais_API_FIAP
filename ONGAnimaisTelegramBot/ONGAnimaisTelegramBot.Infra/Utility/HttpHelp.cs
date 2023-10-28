@@ -2,6 +2,7 @@
 using Polly;
 using System.Net;
 using System.Text;
+using System.Text.Json;
 
 namespace ONGAnimaisTelegramBot.Infra.Utility
 {
@@ -25,6 +26,11 @@ namespace ONGAnimaisTelegramBot.Infra.Utility
     {
         public CodeHttp Code { get; set; }
         public string Received { get; set; }
+
+        public override string ToString()
+        {
+            return JsonSerializer.Serialize(this);
+        }
     }
 
     public class HttpHelp
