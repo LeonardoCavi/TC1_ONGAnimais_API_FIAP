@@ -1,4 +1,5 @@
 ﻿using ONGAnimaisAPI.Domain.Entities;
+using ONGAnimaisAPI.Domain.Entities.ValueObjects;
 
 namespace ONGAnimaisAPI.Domain.Interfaces.Repository
 {

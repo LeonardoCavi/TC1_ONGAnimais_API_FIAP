@@ -21,12 +21,12 @@ namespace ONGAnimaisAPI.Infra.Repositories
                 .ToListAsync();
         }
 
-        public async Task<ICollection<Evento>> ObterEventosPorCidadeGeo(string cidade, string uf, int paginacao = 0)
+        public async Task<ICollection<Evento>> ObterEventosPorGeo(string cidade, string uf, int paginacao = 0)
         {
             return await _dBSet
                 .Where(e => e.Endereco.Cidade == cidade &&
             e.Endereco.UF == uf && e.Data >= DateTime.Now)
-                .Skip(paginacao * 5)
+                .Skip(paginacao * 50)
                 .Take(50)
                 .ToListAsync();
         }

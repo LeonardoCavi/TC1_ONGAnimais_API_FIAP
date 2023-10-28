@@ -29,12 +29,12 @@ namespace ONGAnimaisAPI.Infra.Repositories
                 .ToListAsync();
         }
 
-        public async Task<ICollection<ONG>> ObterONGsPorCidadeGeo(string cidade, string uf, int paginacao = 0)
+        public async Task<ICollection<ONG>> ObterONGsPorGeo(string cidade, string uf, int paginacao = 0)
         {
             return await _dBSet
                 .Where(o => o.Endereco.Cidade == cidade &&
             o.Endereco.UF == uf)
-                .Skip(paginacao * 5)
+                .Skip(paginacao * 50)
                 .Take(50)
                 .ToListAsync();
         }

@@ -25,14 +25,14 @@ namespace ONGAnimaisAPI.Domain.Interfaces.Services
         #endregion
 
         #region [ONG]
-
+        Task<ICollection<ONG>> ObterONGsPorGeo(int usuarioId, decimal latitude, decimal longitude, int paginacao = 0);
         Task SeguirONG(int usuarioId, int id);
         Task DesseguirONG(int usuarioId, int id);
 
         #endregion
 
         #region [Evento]
-
+        Task<ICollection<Evento>> ObterEventosPorGeo(int usuarioId, decimal latitude, decimal longitude, int paginacao = 0);
         Task SeguirEvento(int usuarioId, int id);
         Task DesseguirEvento(int usuarioId, int id);
 

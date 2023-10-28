@@ -153,7 +153,7 @@ namespace ONGAnimaisAPI.Domain.Services
             return eventos;
         }
 
-        public async Task<ICollection<Evento>> ObterEventosPorCidadeGeo(decimal latitude, decimal longitude, int paginacao = 0)
+        public async Task<ICollection<Evento>> ObterEventosPorGeo(decimal latitude, decimal longitude, int paginacao = 0)
         {
             var endereco = await _geoHttp.BuscarEnderecoPorGeoLocalizacao(latitude, longitude);
 
@@ -163,7 +163,7 @@ namespace ONGAnimaisAPI.Domain.Services
                 return null;
             }
 
-            var eventos = await _eRepository.ObterEventosPorCidadeGeo(endereco.Cidade, endereco.UF, paginacao);
+            var eventos = await _eRepository.ObterEventosPorGeo(endereco.Cidade, endereco.UF, paginacao);
 
             if (eventos.Count == 0 || eventos == null)
             {
@@ -285,7 +285,7 @@ namespace ONGAnimaisAPI.Domain.Services
             return ongs;
         }
 
-        public async Task<ICollection<ONG>> ObterONGsPorCidadeGeo(decimal latitude, decimal longitude, int paginacao = 0)
+        public async Task<ICollection<ONG>> ObterONGsPorGeo(decimal latitude, decimal longitude, int paginacao = 0)
         {
             var endereco = await  _geoHttp.BuscarEnderecoPorGeoLocalizacao(latitude, longitude);
 
@@ -296,7 +296,7 @@ namespace ONGAnimaisAPI.Domain.Services
             }
 
 
-            var ongs = await _oRepository.ObterONGsPorCidadeGeo(endereco.Cidade, endereco.UF, paginacao);
+            var ongs = await _oRepository.ObterONGsPorGeo(endereco.Cidade, endereco.UF, paginacao);
 
             if (ongs.Count == 0 || ongs == null)
             {

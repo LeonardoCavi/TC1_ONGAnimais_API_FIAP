@@ -137,17 +137,17 @@ namespace ONGAnimaisAPI.API.Controllers
         /// <returns></returns>
         [Route("obter-ongs-por-geo")]
         [HttpGet]
-        public async Task<IActionResult> ObterONGsPorCidadeGeo(decimal latitude, decimal longitude, int paginacao = 0)
+        public async Task<IActionResult> ObterONGsPorGeo(decimal latitude, decimal longitude, int paginacao = 0)
         {
             try
             {
-                _logger.LogInformation($"[{_className}] - [ObterONGsPorCidadeGeo] => Request.: {new { latitude , longitude }}");
-                var ongs = await _application.ObterONGsPorCidadeGeo(latitude, longitude, paginacao);
+                _logger.LogInformation($"[{_className}] - [ObterONGsPorGeo] => Request.: {new { latitude , longitude }}");
+                var ongs = await _application.ObterONGsPorGeo(latitude, longitude, paginacao);
 
                 if (_notificador.TemNotificacao())
                 {
                     var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
-                    _logger.LogWarning($"[{_className}] - [ObterONGsPorCidadeGeo] => Notificações.: {JsonSerializer.Serialize(resposta)}");
+                    _logger.LogWarning($"[{_className}] - [ObterONGsPorGeo] => Notificações.: {JsonSerializer.Serialize(resposta)}");
                     return StatusCode(resposta.StatusCode, resposta);
                 }
 
@@ -156,7 +156,7 @@ namespace ONGAnimaisAPI.API.Controllers
             catch (Exception ex)
             {
                 var resposta = _mapper.Map<ErroViewModel>(ex);
-                _logger.LogError($"[{_className}] - [ObterONGsPorCidadeGeo] => Exception.: {ex.Message}");
+                _logger.LogError($"[{_className}] - [ObterONGsPorGeo] => Exception.: {ex.Message}");
                 return StatusCode(resposta.StatusCode, resposta);
             }
         }
@@ -367,17 +367,17 @@ namespace ONGAnimaisAPI.API.Controllers
         /// <returns></returns>
         [Route("obter-eventos-por-geo")]
         [HttpGet]
-        public async Task<IActionResult> ObterEventosPorCidadeGeo(decimal latitude, decimal longitude, int paginacao = 0)
+        public async Task<IActionResult> ObterEventosPorGeo(decimal latitude, decimal longitude, int paginacao = 0)
         {
             try
             {
-                _logger.LogInformation($"[{_className}] - [ObterEventosPorCidadeGeo] => Request.: {new { latitude, longitude }}");
-                var eventos = await _application.ObterEventosPorCidadeGeo(latitude, longitude, paginacao);
+                _logger.LogInformation($"[{_className}] - [ObterEventosPorGeo] => Request.: {new { latitude, longitude }}");
+                var eventos = await _application.ObterEventosPorGeo(latitude, longitude, paginacao);
 
                 if (_notificador.TemNotificacao())
                 {
                     var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
-                    _logger.LogWarning($"[{_className}] - [ObterEventosPorCidadeGeo] => Notificações.: {JsonSerializer.Serialize(resposta)}");
+                    _logger.LogWarning($"[{_className}] - [ObterEventosPorGeo] => Notificações.: {JsonSerializer.Serialize(resposta)}");
                     return StatusCode(resposta.StatusCode, resposta);
                 }
 
@@ -386,7 +386,7 @@ namespace ONGAnimaisAPI.API.Controllers
             catch (Exception ex)
             {
                 var resposta = _mapper.Map<ErroViewModel>(ex);
-                _logger.LogError($"[{_className}] - [ObterEventosPorCidadeGeo] => Exception.: {ex.Message}");
+                _logger.LogError($"[{_className}] - [ObterEventosPorGeo] => Exception.: {ex.Message}");
                 return StatusCode(resposta.StatusCode, resposta);
             }
         }

@@ -63,11 +63,17 @@ namespace ONGAnimaisAPI.Infra.Utility.Geocoding
             {
                 var endResponse = JsonSerializer.Deserialize<BingMapsResponse>(result.Received);
                 var address = endResponse.ResourceSets[0].Resources[0].Address;
-
+                var addressLineSplitted = address.addressLine.Split(',');
+                var logradouro = addressLineSplitted[0];
+                var numero = addressLineSplitted.Length > 1 ? addressLineSplitted[1].Trim() : "";
+                var cep = address.postalCode.Replace("-", "");
                 var cidade = address.locality;
                 var UF = EstadoParaUF(address.adminDistrict);
                 return new()
                 {
+                    Logradouro = logradouro,
+                    Numero = numero,
+                    CEP = cep,
                     Cidade = cidade,
                     UF = UF,
                 };

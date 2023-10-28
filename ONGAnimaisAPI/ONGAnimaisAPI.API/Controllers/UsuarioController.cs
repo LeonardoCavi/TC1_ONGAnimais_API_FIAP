@@ -292,6 +292,39 @@ namespace ONGAnimaisAPI.API.Controllers
         #endregion [Usuario]
 
         #region [Evento]
+        /// <summary>
+        /// Obter/Consultar uma lista de Eventos por Geo Localização(Latitude+Longitude) e atualiza o Endereço do Usuario caso obtenha retorno
+        /// </summary>
+        /// <param name="usuarioId"></param>
+        /// <param name="latitude"></param>
+        /// <param name="longitude"></param>
+        /// <param name="paginacao"></param>
+        /// <returns></returns>
+        [Route("{usuarioId}/obter-eventos-por-geo")]
+        [HttpPut]
+        public async Task<IActionResult> ObterEventosPorGeo(int usuarioId, decimal latitude, decimal longitude, int paginacao = 0)
+        {
+            try
+            {
+                _logger.LogInformation($"[{_className}] - [ObterEventosPorGeo] => Request.: {new { latitude, longitude }}");
+                var eventos = await _application.ObterEventosPorGeo(usuarioId, latitude, longitude, paginacao);
+
+                if (_notificador.TemNotificacao())
+                {
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
+                    _logger.LogWarning($"[{_className}] - [ObterEventosPorGeo] => Notificações.: {JsonSerializer.Serialize(resposta)}");
+                    return StatusCode(resposta.StatusCode, resposta);
+                }
+
+                return Ok(eventos);
+            }
+            catch (Exception ex)
+            {
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                _logger.LogError($"[{_className}] - [ObterEventosPorGeo] => Exception.: {ex.Message}");
+                return StatusCode(resposta.StatusCode, resposta);
+            }
+        }
 
         /// <summary>
         /// Seguir Evento por Usuário
@@ -362,6 +395,39 @@ namespace ONGAnimaisAPI.API.Controllers
         #endregion [Evento]
 
         #region [ONG]
+        /// <summary>
+        /// Obter/Consultar uma lista de ONGs por Geo Localização(Latitude+Longitude) e atualiza o Endereço do Usuario caso obtenha retorno
+        /// </summary>
+        /// <param name="usuarioId"></param>
+        /// <param name="latitude"></param>
+        /// <param name="longitude"></param>
+        /// <param name="paginacao"></param>
+        /// <returns></returns>
+        [Route("{usuarioId}/obter-ongs-por-geo")]
+        [HttpPut]
+        public async Task<IActionResult> ObterONGsPorGeo(int usuarioId, decimal latitude, decimal longitude, int paginacao = 0)
+        {
+            try
+            {
+                _logger.LogInformation($"[{_className}] - [ObterONGsPorGeo] => Request.: {new { latitude, longitude }}");
+                var ongs = await _application.ObterONGsPorGeo(usuarioId, latitude, longitude, paginacao);
+
+                if (_notificador.TemNotificacao())
+                {
+                    var resposta = _mapper.Map<ErroViewModel>(_notificador.ObterNotificacoes());
+                    _logger.LogWarning($"[{_className}] - [ObterONGsPorGeo] => Notificações.: {JsonSerializer.Serialize(resposta)}");
+                    return StatusCode(resposta.StatusCode, resposta);
+                }
+
+                return Ok(ongs);
+            }
+            catch (Exception ex)
+            {
+                var resposta = _mapper.Map<ErroViewModel>(ex);
+                _logger.LogError($"[{_className}] - [ObterONGsPorGeo] => Exception.: {ex.Message}");
+                return StatusCode(resposta.StatusCode, resposta);
+            }
+        }
 
         /// <summary>
         /// Seguir ONG por Usuário

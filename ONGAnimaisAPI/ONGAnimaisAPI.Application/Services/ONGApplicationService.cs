@@ -116,13 +116,13 @@ namespace ONGAnimaisAPI.Application.Services
             return null;
         }
 
-        public async Task<ICollection<ObtemONGGeoViewModel>> ObterONGsPorCidadeGeo(decimal latitude, decimal longitude, int paginacao = 0)
+        public async Task<ICollection<ObtemONGGeoViewModel>> ObterONGsPorGeo(decimal latitude, decimal longitude, int paginacao = 0)
         {
             ExecutarValidacao(new LatitudeLongitudeValidation(), (latitude, longitude));
 
             if (!_notificador.TemNotificacao())
             {
-                var ongs = await _service.ObterONGsPorCidadeGeo(latitude, longitude, paginacao);
+                var ongs = await _service.ObterONGsPorGeo(latitude, longitude, paginacao);
 
                 return _mapper.Map<ICollection<ObtemONGGeoViewModel>>(ongs);
             }
@@ -210,13 +210,13 @@ namespace ONGAnimaisAPI.Application.Services
             return null;
         }
 
-        public async Task<ICollection<ObtemEventoGeoViewModel>> ObterEventosPorCidadeGeo(decimal latitude, decimal longitude, int paginacao = 0)
+        public async Task<ICollection<ObtemEventoGeoViewModel>> ObterEventosPorGeo(decimal latitude, decimal longitude, int paginacao = 0)
         {
             ExecutarValidacao(new LatitudeLongitudeValidation(), (latitude, longitude));
 
             if (!_notificador.TemNotificacao())
             {
-                var eventos = await _service.ObterEventosPorCidadeGeo(latitude, longitude, paginacao);
+                var eventos = await _service.ObterEventosPorGeo(latitude, longitude, paginacao);
 
                 return _mapper.Map<ICollection<ObtemEventoGeoViewModel>>(eventos);
             }
