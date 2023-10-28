@@ -106,8 +106,15 @@ namespace ONGAnimaisTelegramBot.Domain.Service
             NotificarDesconexao = action;
         }
 
-        public void AdicionarSessao(Sessao sessao)
+        public void AdicionarSessao(string sessaoId)
         {
+            var sessao = new Sessao()
+            {
+                SessaoId = sessaoId,
+                InstanteUltimaMensagem = DateTime.Now,
+                NotificacaoPreOciosidadeEnviada = false
+            };
+
             Sessoes[sessao.SessaoId] = sessao;
         }
 

@@ -17,6 +17,8 @@ namespace ONGAnimaisAPI.API.Mappings
             CreateMap<Usuario, ObtemUsuarioEventosViewModel>();
 
             CreateMap<Usuario, ObtemUsuarioONGsViewModel>();
+
+            CreateMap<Usuario, ObtemUsuarioTelegramViewModel>();
         }
     }
 }

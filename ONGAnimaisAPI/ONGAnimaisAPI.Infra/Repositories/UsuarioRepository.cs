@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ONGAnimaisAPI.Domain.Entities;
+using ONGAnimaisAPI.Domain.Entities.ValueObjects;
 using ONGAnimaisAPI.Domain.Interfaces.Repository;
 
 namespace ONGAnimaisAPI.Infra.Repositories
@@ -14,7 +15,8 @@ namespace ONGAnimaisAPI.Infra.Repositories
 
         public async Task<Usuario> ObterUsuarioEventos(int id)
         {
-            return await _dBSet.Include(u => u.EventosSeguidos)
+            return await _dBSet
+                .Include(u => u.EventosSeguidos.Where(e => e.Data >= DateTime.Now))
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
 
@@ -22,6 +24,16 @@ namespace ONGAnimaisAPI.Infra.Repositories
         {
            return await _dBSet.Include(u => u.ONGsSeguidas)
                 .FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+        public async Task<Usuario> ObterUsuarioPorTelegramId(string telegramId)
+        {
+            return await _dBSet
+                .Include(u => u.ONGsSeguidas)
+                .Include(u => u.EventosSeguidos
+                    .Where(e => e.Data >= DateTime.Now))
+                .Include(u => u.GeoLocalizacao)
+                .FirstOrDefaultAsync(u => u.TelegramId == telegramId);
         }
 
         #endregion

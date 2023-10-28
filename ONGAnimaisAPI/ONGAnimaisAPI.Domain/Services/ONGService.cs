@@ -1,8 +1,10 @@
 ﻿using ONGAnimaisAPI.Domain.Abstracts;
 using ONGAnimaisAPI.Domain.Entities;
+using ONGAnimaisAPI.Domain.Entities.ValueObjects;
 using ONGAnimaisAPI.Domain.Interfaces.Notifications;
 using ONGAnimaisAPI.Domain.Interfaces.Repository;
 using ONGAnimaisAPI.Domain.Interfaces.Services;
+using ONGAnimaisAPI.Domain.Interfaces.Utility;
 using ONGAnimaisAPI.Domain.Notifications;
 
 namespace ONGAnimaisAPI.Domain.Services
@@ -11,14 +13,17 @@ namespace ONGAnimaisAPI.Domain.Services
     {
         private readonly IONGRepository _oRepository;
         private readonly IEventoRepository _eRepository;
+        private readonly IGeocodingAPIHttpClient _geoHttp;
 
         public ONGService(
             IONGRepository oRepository,
             IEventoRepository eRepository,
+            IGeocodingAPIHttpClient geoHttp,
             INotificador notificador) : base(notificador)
         {
             this._oRepository = oRepository;
             this._eRepository = eRepository;
+            this._geoHttp = geoHttp;
         }
 
         #region [Evento]
@@ -30,6 +35,21 @@ namespace ONGAnimaisAPI.Domain.Services
                 var eventoDB = await _eRepository.Obter(evento.Id);
                 if (eventoDB != null)
                 {
+                    if (eventoDB.Endereco != evento.Endereco)
+                    {
+                        var geoLocalizacao = _geoHttp.BuscarLatLongPorEndereco(evento.Endereco);
+                        if (geoLocalizacao == null)
+                        {
+                            Notificar($"Evento: o endereço informado não foi encontrado ou é invalido", TipoNotificacao.NotFound);
+                        }
+                        else
+                        {
+                            evento.GeoLocalizacao.Latitude = geoLocalizacao.Result.Latitude;
+                            evento.GeoLocalizacao.Longitude = geoLocalizacao.Result.Longitude;  
+                        }
+
+                    }
+
                     eventoDB.Nome = evento.Nome;
                     eventoDB.Descricao = evento.Descricao;
                     eventoDB.Endereco = evento.Endereco;
@@ -69,8 +89,19 @@ namespace ONGAnimaisAPI.Domain.Services
 
             if (ongDB != null)
             {
-                await _eRepository.Inserir(evento);
-            }
+                var geoLocalizacao = _geoHttp.BuscarLatLongPorEndereco(evento.Endereco);
+                if (geoLocalizacao == null)
+                {
+                    Notificar($"Evento: o endereço informado não foi encontrado ou é invalido", TipoNotificacao.NotFound);
+                }
+                else
+                {
+                    evento.GeoLocalizacao.Latitude = geoLocalizacao.Result.Latitude;
+                    evento.GeoLocalizacao.Longitude = geoLocalizacao.Result.Longitude;
+
+                    await _eRepository.Inserir(evento);
+                }
+            }  
         }
 
         public async Task<Evento> ObterEvento(int ongId, int id)
@@ -122,6 +153,26 @@ namespace ONGAnimaisAPI.Domain.Services
             return eventos;
         }
 
+        public async Task<ICollection<Evento>> ObterEventosPorGeo(decimal latitude, decimal longitude, int paginacao = 0)
+        {
+            var endereco = await _geoHttp.BuscarEnderecoPorGeoLocalizacao(latitude, longitude);
+
+            if (endereco == null)
+            {
+                Notificar($"Evento: o endereço informado não foi encontrado ou é invalido", TipoNotificacao.NotFound);
+                return null;
+            }
+
+            var eventos = await _eRepository.ObterEventosPorGeo(endereco.Cidade, endereco.UF, paginacao);
+
+            if (eventos.Count == 0 || eventos == null)
+            {
+                Notificar($"Evento: não existem eventos cadastrados em sua cidade", TipoNotificacao.NotFound);
+            }
+
+            return eventos;
+        }
+
         #endregion
 
         #region [ONG]
@@ -131,6 +182,20 @@ namespace ONGAnimaisAPI.Domain.Services
             var ongDB = await _oRepository.Obter(ong.Id);
             if (ongDB != null)
             {
+                if(ongDB.Endereco != ong.Endereco)
+                {
+                    var geoLocalizacao = _geoHttp.BuscarLatLongPorEndereco(ong.Endereco);
+                    if (geoLocalizacao == null)
+                    {
+                        Notificar($"ONG: o endereço informado não foi encontrado ou é invalido", TipoNotificacao.NotFound);
+                    }
+                    else
+                    {
+                        ongDB.GeoLocalizacao.Latitude = geoLocalizacao.Result.Latitude;
+                        ongDB.GeoLocalizacao.Longitude = geoLocalizacao.Result.Longitude;
+                    } 
+                }
+
                 ongDB.Nome = ong.Nome;
                 ongDB.Descricao = ong.Descricao;
                 ongDB.Responsavel = ong.Responsavel;
@@ -159,7 +224,17 @@ namespace ONGAnimaisAPI.Domain.Services
 
         public async Task InserirONG(ONG ong)
         {
-            await _oRepository.Inserir(ong);
+            var geoLocalizacao = _geoHttp.BuscarLatLongPorEndereco(ong.Endereco);
+            if (geoLocalizacao == null)
+            {
+                Notificar($"ONG: o endereço informado não foi encontrado ou é invalido", TipoNotificacao.NotFound);
+            }
+            else
+            {
+                ong.GeoLocalizacao.Latitude = geoLocalizacao.Result.Latitude;
+                ong.GeoLocalizacao.Longitude = geoLocalizacao.Result.Longitude;
+                await _oRepository.Inserir(ong);
+            }
         }
 
         public async Task<ONG> ObterONG(int id)
@@ -205,6 +280,27 @@ namespace ONGAnimaisAPI.Domain.Services
             if (ongs.Count == 0 || ongs == null)
             {
                 Notificar($"ONG: não existem ongs cadastradas em sua cidade - {cidade}-{uf}", TipoNotificacao.NotFound);
+            }
+
+            return ongs;
+        }
+
+        public async Task<ICollection<ONG>> ObterONGsPorGeo(decimal latitude, decimal longitude, int paginacao = 0)
+        {
+            var endereco = await  _geoHttp.BuscarEnderecoPorGeoLocalizacao(latitude, longitude);
+
+            if(endereco == null)
+            {
+                Notificar($"ONG: o endereço informado não foi encontrado ou é invalido", TipoNotificacao.NotFound);
+                return null;
+            }
+
+
+            var ongs = await _oRepository.ObterONGsPorGeo(endereco.Cidade, endereco.UF, paginacao);
+
+            if (ongs.Count == 0 || ongs == null)
+            {
+                Notificar($"ONG: não existem ongs cadastradas em sua cidade", TipoNotificacao.NotFound);
             }
 
             return ongs;

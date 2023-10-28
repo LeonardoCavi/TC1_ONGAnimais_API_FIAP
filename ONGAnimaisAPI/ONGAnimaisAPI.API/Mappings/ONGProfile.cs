@@ -9,19 +9,27 @@ namespace ONGAnimaisAPI.API.Mappings
     {
         public ONGProfile()
         {
-            CreateMap<InsereONGViewModel, ONG>();
+            CreateMap<InsereONGViewModel, ONG>()
+                .AfterMap((src, dest) => dest.GeoLocalizacao = new());
 
-            CreateMap<AtualizaONGViewModel, ONG>();
+            CreateMap<AtualizaONGViewModel, ONG>()
+                .AfterMap((src, dest) => dest.GeoLocalizacao = new()); ;
 
             CreateMap<ONG, ObtemONGViewModel>();
 
             CreateMap<ONG, ObtemONGEventosViewModel>();
 
-            CreateMap<InsereEventoViewModel, Evento>();
+            CreateMap<ONG, ObtemONGGeoViewModel>();
 
-            CreateMap<AtualizaEventoViewModel, Evento>();
+            CreateMap<InsereEventoViewModel, Evento>()
+                .AfterMap((src, dest) => dest.GeoLocalizacao = new()); ;
+
+            CreateMap<AtualizaEventoViewModel, Evento>()
+                .AfterMap((src, dest) => dest.GeoLocalizacao = new()); ;
 
             CreateMap<Evento, ObtemEventoViewModel>();
+
+            CreateMap<Evento, ObtemEventoGeoViewModel>();
         }
     }
 }

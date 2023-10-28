@@ -7,6 +7,7 @@ namespace ONGAnimaisAPI.Domain.Entities
         public string Nome { get; set; }
         public string Descricao { get; set; }
         public Endereco Endereco { get; set; }
+        public GeoLocalizacao GeoLocalizacao { get; set; }
         public DateTime Data { get; set; }
         public int OngId { get; set; }
     }

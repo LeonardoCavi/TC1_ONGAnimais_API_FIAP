@@ -8,15 +8,25 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors.Interface
 
         Task<ONG> ObterOng(int id);
 
-        Task<ICollection<ONG>> ObterOngsCidade(string cidade, string uf, int paginacao = 0);
+        Task<List<ONG>> ObterOngsCidade(string cidade, string uf, int paginacao = 0);
+
+        Task<List<ONG>> ObterOngsGeo(decimal latitude, decimal longitude, int paginacao = 0);
+
+        Task<List<ONG>> ObterOngsGeo(int id, decimal latitude, decimal longitude, int paginacao = 0);
 
         Task<ONG> ObterONGEventos(int id);
 
-        Task<ICollection<Evento>> ObterEventosCidade(string cidade, string uf, int paginacao = 0);
+        Task<List<Evento>> ObterEventosCidade(string cidade, string uf, int paginacao = 0);
+
+        Task<List<Evento>> ObterEventosGeo(decimal latitude, decimal longitude, int paginacao = 0);
+
+        Task<List<Evento>> ObterEventosGeo(int id, decimal latitude, decimal longitude, int paginacao = 0);
 
         Task<Evento> ObterEvento(int ongId, int id);
 
         Task<Usuario> ObterUsuario(int id);
+
+        Task<Usuario> ObterUsuarioPorTelegramId(string telegramId);
 
         Task<Usuario> ObterUsuarioEventos(int id);
 

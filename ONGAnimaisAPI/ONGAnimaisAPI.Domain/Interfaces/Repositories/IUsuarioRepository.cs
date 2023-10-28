@@ -1,4 +1,5 @@
 ﻿using ONGAnimaisAPI.Domain.Entities;
+using ONGAnimaisAPI.Domain.Entities.ValueObjects;
 
 namespace ONGAnimaisAPI.Domain.Interfaces.Repository
 {
@@ -6,5 +7,6 @@ namespace ONGAnimaisAPI.Domain.Interfaces.Repository
     {
         Task<Usuario> ObterUsuarioEventos(int id);
         Task<Usuario> ObterUsuarioONGs(int id);
+        Task<Usuario> ObterUsuarioPorTelegramId(string telegramId);
     }
 }

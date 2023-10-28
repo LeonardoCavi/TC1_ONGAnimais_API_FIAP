@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ONGAnimaisAPI.Domain.Entities;
+using ONGAnimaisAPI.Domain.Entities.ValueObjects;
 using ONGAnimaisAPI.Domain.Interfaces.Repository;
 
 namespace ONGAnimaisAPI.Infra.Repositories
@@ -12,8 +13,10 @@ namespace ONGAnimaisAPI.Infra.Repositories
 
         public async Task<ONG> ObterONGEventos(int id)
         {
-            return await _dBSet.Include(o => o.Eventos)
-                .FirstOrDefaultAsync(o => o.Id == id);
+            return await _dBSet
+                .Include(o => o.Eventos.Where(e => e.Data >= DateTime.Now))
+                .Where(o => o.Id == id)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<ICollection<ONG>> ObterONGsPorCidade(string cidade, string uf, int paginacao = 0)
@@ -22,7 +25,17 @@ namespace ONGAnimaisAPI.Infra.Repositories
                 .Where(o => o.Endereco.Cidade == cidade &&
             o.Endereco.UF == uf)
                 .Skip(paginacao * 5)
-                .Take(5)
+                .Take(6)
+                .ToListAsync();
+        }
+
+        public async Task<ICollection<ONG>> ObterONGsPorGeo(string cidade, string uf, int paginacao = 0)
+        {
+            return await _dBSet
+                .Where(o => o.Endereco.Cidade == cidade &&
+            o.Endereco.UF == uf)
+                .Skip(paginacao * 50)
+                .Take(50)
                 .ToListAsync();
         }
     }

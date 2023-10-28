@@ -6,5 +6,6 @@ namespace ONGAnimaisAPI.Domain.Interfaces.Repository
     {
         Task<ONG> ObterONGEventos(int id);
         Task<ICollection<ONG>> ObterONGsPorCidade(string cidade, string uf, int paginacao = 0);
+        Task<ICollection<ONG>> ObterONGsPorGeo(string cidade, string uf, int paginacao = 0);
     }
 }

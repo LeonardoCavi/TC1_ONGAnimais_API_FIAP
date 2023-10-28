@@ -25,6 +25,13 @@ namespace ONGAnimaisAPI.Infra.Configurations
                 enderecoBuilder.Property(e => e.Bairro).HasColumnType("VARCHAR(150)").IsRequired();
                 enderecoBuilder.Property(e => e.Cidade).HasColumnType("VARCHAR(150)").IsRequired();
                 enderecoBuilder.Property(e => e.UF).HasColumnType("VARCHAR(2)").IsRequired();
+                
+            });
+            builder.OwnsOne(o => o.GeoLocalizacao, geoBuilder =>
+            {
+                geoBuilder.ToTable("OngGeoLocalizacao");
+                geoBuilder.Property(g => g.Latitude).HasColumnType("DECIMAL(10,8)").IsRequired();
+                geoBuilder.Property(g => g.Longitude).HasColumnType("DECIMAL(10, 8)").IsRequired();
             });
             builder.OwnsMany(o => o.Telefones, telefoneBuilder =>
             {

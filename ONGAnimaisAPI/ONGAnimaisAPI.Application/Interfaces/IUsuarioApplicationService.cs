@@ -17,6 +17,8 @@ namespace ONGAnimaisAPI.Application.Interfaces
 
         Task<ObtemUsuarioONGsViewModel> ObterUsuarioONGs(int id);
 
+        Task<ObtemUsuarioTelegramViewModel> ObterUsuarioPorTelegramId(string telegramId);
+
         Task AtualizarUsuario(AtualizaUsuarioViewModel usuario);
 
         Task ExcluirUsuario(int id);
@@ -24,7 +26,7 @@ namespace ONGAnimaisAPI.Application.Interfaces
         #endregion
 
         #region [Evento]
-
+        Task<ICollection<ObtemEventoGeoViewModel>> ObterEventosPorGeo(int usuarioId, decimal latitude, decimal longitude, int paginacao = 0);
         Task SeguirEvento(int usuarioId, int id);
 
         Task DesseguirEvento(int usuarioId, int id);
@@ -32,7 +34,7 @@ namespace ONGAnimaisAPI.Application.Interfaces
         #endregion
 
         #region [ONG]
-
+        Task<ICollection<ObtemONGGeoViewModel>> ObterONGsPorGeo(int usuarioId, decimal latitude, decimal longitude, int paginacao = 0);
         Task SeguirONG(int usuarioId, int id);
 
         Task DesseguirONG(int usuarioId, int id);

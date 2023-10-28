@@ -1,8 +1,10 @@
 ﻿using ONGAnimaisAPI.Domain.Abstracts;
 using ONGAnimaisAPI.Domain.Entities;
+using ONGAnimaisAPI.Domain.Entities.ValueObjects;
 using ONGAnimaisAPI.Domain.Interfaces.Notifications;
 using ONGAnimaisAPI.Domain.Interfaces.Repository;
 using ONGAnimaisAPI.Domain.Interfaces.Services;
+using ONGAnimaisAPI.Domain.Interfaces.Utility;
 using ONGAnimaisAPI.Domain.Notifications;
 
 namespace ONGAnimaisAPI.Domain.Services
@@ -12,15 +14,18 @@ namespace ONGAnimaisAPI.Domain.Services
         private readonly IUsuarioRepository _uRepository;
         private readonly IONGRepository _oRepository;
         private readonly IEventoRepository _eRepository;
+        private readonly IGeocodingAPIHttpClient _geoHttp;
 
         public UsuarioService(IONGRepository oRepository,
                               IEventoRepository eRepository,
                               IUsuarioRepository uRepository,
+                              IGeocodingAPIHttpClient geoHttp,
                               INotificador notificador): base(notificador)
         {
             this._oRepository = oRepository;
             this._eRepository = eRepository;
             this._uRepository = uRepository;
+            this._geoHttp = geoHttp;
         }
 
         #region [Usuario]
@@ -92,9 +97,56 @@ namespace ONGAnimaisAPI.Domain.Services
             return usuarioOngs;
         }
 
+        public async Task<Usuario> ObterUsuarioPorTelegramId(string telegramId)
+        {
+            var usuario = await _uRepository.ObterUsuarioPorTelegramId(telegramId);
+
+            if (usuario is null)
+                Notificar($"Usuario: usuário com Telegram Id '{telegramId}' não existe", TipoNotificacao.NotFound);
+
+            return usuario;
+
+        }
+
+        private async Task AtualizarUsuarioEndereco(int id, Endereco endereco, GeoLocalizacao geoLocalizacao)
+        {
+            if (id > 0)
+            {
+                var usuario = await _uRepository.Obter(id);
+
+                if (usuario != null)
+                {
+                    usuario.Endereco = endereco;
+                    usuario.GeoLocalizacao = geoLocalizacao;
+
+                    await _uRepository.Atualizar(usuario);
+                }
+            }
+        }
+
         #endregion [Usuario]
 
         #region [Evento]
+
+        public async Task<ICollection<Evento>> ObterEventosPorGeo(int usuarioId, decimal latitude, decimal longitude, int paginacao = 0)
+        {
+            var endereco = await _geoHttp.BuscarEnderecoPorGeoLocalizacao(latitude, longitude);
+
+            if (endereco == null)
+            {
+                Notificar($"Evento: o endereço informado não foi encontrado ou é invalido", TipoNotificacao.NotFound);
+                return null;
+            }
+
+            var eventos = await _eRepository.ObterEventosPorGeo(endereco.Cidade, endereco.UF, paginacao);
+
+            if (eventos.Any())
+                await AtualizarUsuarioEndereco(usuarioId, endereco, new() { Latitude = latitude, Longitude = longitude });
+            else
+                Notificar($"Evento: não existem eventos cadastrados em sua cidade", TipoNotificacao.NotFound);
+
+            return eventos;
+        }
 
         public async Task SeguirEvento(int usuarioId, int id)
         {
@@ -140,6 +192,25 @@ namespace ONGAnimaisAPI.Domain.Services
         #endregion
 
         #region [ONG]
+        public async Task<ICollection<ONG>> ObterONGsPorGeo(int usuarioId, decimal latitude, decimal longitude, int paginacao = 0)
+        {
+            var endereco = await _geoHttp.BuscarEnderecoPorGeoLocalizacao(latitude, longitude);
+
+            if (endereco == null)
+            {
+                Notificar($"ONG: o endereço informado não foi encontrado ou é invalido", TipoNotificacao.NotFound);
+                return null;
+            }
+
+            var ongs = await _oRepository.ObterONGsPorGeo(endereco.Cidade, endereco.UF, paginacao);
+
+            if (ongs.Any())
+                await AtualizarUsuarioEndereco(usuarioId, endereco, new() { Latitude = latitude, Longitude = longitude });
+            else
+                Notificar($"ONG: não existem ongs cadastradas em sua cidade", TipoNotificacao.NotFound);
+
+            return ongs;
+        }
 
         public async Task SeguirONG(int usuarioId, int id)
         {

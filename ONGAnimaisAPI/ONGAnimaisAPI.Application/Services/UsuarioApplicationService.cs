@@ -2,6 +2,7 @@
 using ONGAnimaisAPI.Application.Interfaces;
 using ONGAnimaisAPI.Application.Validations;
 using ONGAnimaisAPI.Application.Validations.Usuario;
+using ONGAnimaisAPI.Application.ViewModels.Evento;
 using ONGAnimaisAPI.Application.ViewModels.ONG;
 using ONGAnimaisAPI.Application.ViewModels.Usuario;
 using ONGAnimaisAPI.Domain.Abstracts;
@@ -109,9 +110,39 @@ namespace ONGAnimaisAPI.Application.Services
             return null;
         }
 
+        public async Task<ObtemUsuarioTelegramViewModel> ObterUsuarioPorTelegramId(string telegramId)
+        {
+            ExecutarValidacao(new TelegramIdValidation(), telegramId);
+
+            if (!_notificador.TemNotificacao())
+            {
+                var usuario = await _service.ObterUsuarioPorTelegramId(telegramId);
+
+                if (!_notificador.TemNotificacao())
+                    return _mapper.Map<ObtemUsuarioTelegramViewModel>(usuario);
+            }
+
+            return null;
+        }
+
         #endregion
 
         #region [Evento]
+        public async Task<ICollection<ObtemEventoGeoViewModel>> ObterEventosPorGeo(int usuarioId, decimal latitude, decimal longitude, int paginacao = 0)
+        {
+            ExecutarValidacao(new IdValidation(), usuarioId);
+            ExecutarValidacao(new LatitudeLongitudeValidation(), (latitude, longitude));
+
+            if (!_notificador.TemNotificacao())
+            {
+                var eventos = await _service.ObterEventosPorGeo(usuarioId, latitude, longitude, paginacao);
+
+                return _mapper.Map<ICollection<ObtemEventoGeoViewModel>>(eventos);
+            }
+
+            return null;
+        }
+
 
         public async Task SeguirEvento(int usuarioId, int id)
         {
@@ -132,7 +163,20 @@ namespace ONGAnimaisAPI.Application.Services
         #endregion
 
         #region [ONG]
+        public async Task<ICollection<ObtemONGGeoViewModel>> ObterONGsPorGeo(int usuarioId, decimal latitude, decimal longitude, int paginacao = 0)
+        {
+            ExecutarValidacao(new IdValidation(), usuarioId);
+            ExecutarValidacao(new LatitudeLongitudeValidation(), (latitude, longitude));
 
+            if (!_notificador.TemNotificacao())
+            {
+                var ongs = await _service.ObterONGsPorGeo(usuarioId, latitude, longitude, paginacao);
+
+                return _mapper.Map<ICollection<ObtemONGGeoViewModel>>(ongs);
+            }
+
+            return null;
+        }
         public async Task SeguirONG(int usuarioId, int id)
         {
             ExecutarValidacao(new IdUsuarioValidation(), (usuarioId, id));

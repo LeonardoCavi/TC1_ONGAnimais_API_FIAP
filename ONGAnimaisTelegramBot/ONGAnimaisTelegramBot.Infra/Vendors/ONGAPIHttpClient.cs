@@ -88,7 +88,7 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors
             }
         }
 
-        public async Task<ICollection<ONG>> ObterOngsCidade(string cidade, string uf, int paginacao = 0)
+        public async Task<List<ONG>> ObterOngsCidade(string cidade, string uf, int paginacao = 0)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors
                 var result = await _httpHelp.Send(url, null, VerboHttp.Get, AddHeaders());
                 if (result.Code == CodeHttp.Sucess)
                 {
-                    var ongs = JsonSerializer.Deserialize<ICollection<ONG>>(result.Received);
+                    var ongs = JsonSerializer.Deserialize<List<ONG>>(result.Received);
                     return ongs;
                 }
                 else
@@ -112,6 +112,62 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors
             catch (Exception ex)
             {
                 _logger.LogError($"{ClassName}:ObterOngsCidade => Exception => {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<List<ONG>> ObterOngsGeo(decimal latitude, decimal longitude, int paginacao = 0)
+        {
+            try
+            {
+                await VerificaVidaToken();
+
+                _logger.LogInformation($"{ClassName}:ObterOngsCidadeGeo => Request => {new { latitude, longitude, paginacao }}");
+                string url = string.Format(_apiConfig.Endpoints.BaseUri + _apiConfig.Endpoints.ObterONGsPorGeoEndpoint, latitude.ToString().Replace(",","."), longitude.ToString().Replace(",", "."), paginacao);
+
+                var result = await _httpHelp.Send(url, null, VerboHttp.Get, AddHeaders());
+                if (result.Code == CodeHttp.Sucess)
+                {
+                    var ongs = JsonSerializer.Deserialize<List<ONG>>(result.Received);
+                    return ongs;
+                }
+                else
+                {
+                    _logger.LogWarning($"{ClassName}:ObterOngsCidadeGeo => Erro na obtenção de ONGs por Geolocalização. Response => {result}");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{ClassName}:ObterOngsCidadeGeo => Exception => {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<List<ONG>> ObterOngsGeo(int id, decimal latitude, decimal longitude, int paginacao = 0)
+        {
+            try
+            {
+                await VerificaVidaToken();
+
+                _logger.LogInformation($"{ClassName}:ObterOngsCidadeGeo => Request => {new { id, latitude, longitude, paginacao }}");
+                string url = string.Format(_apiConfig.Endpoints.BaseUri + _apiConfig.Endpoints.ObterONGsPorGeoUsuarioEndpoint, id, latitude.ToString().Replace(",", "."), longitude.ToString().Replace(",", "."), paginacao);
+
+                var result = await _httpHelp.Send(url, null, VerboHttp.Put, AddHeaders());
+                if (result.Code == CodeHttp.Sucess)
+                {
+                    var ongs = JsonSerializer.Deserialize<List<ONG>>(result.Received);
+                    return ongs;
+                }
+                else
+                {
+                    _logger.LogWarning($"{ClassName}:ObterOngsCidadeGeo => Erro na obtenção de ONGs por Geolocalização. Response => {result}");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{ClassName}:ObterOngsCidadeGeo => Exception => {ex.Message}");
                 return null;
             }
         }
@@ -144,7 +200,7 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors
             }
         }
 
-        public async Task<ICollection<Evento>> ObterEventosCidade(string cidade, string uf, int paginacao = 0)
+        public async Task<List<Evento>> ObterEventosCidade(string cidade, string uf, int paginacao = 0)
         {
             try
             {
@@ -156,7 +212,7 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors
                 var result = await _httpHelp.Send(url, null, VerboHttp.Get, AddHeaders());
                 if (result.Code == CodeHttp.Sucess)
                 {
-                    var eventos = JsonSerializer.Deserialize<ICollection<Evento>>(result.Received);
+                    var eventos = JsonSerializer.Deserialize<List<Evento>>(result.Received);
                     return eventos;
                 }
                 else
@@ -168,6 +224,62 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors
             catch (Exception ex)
             {
                 _logger.LogError($"{ClassName}:ObterEventosCidade => Exception => {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<List<Evento>> ObterEventosGeo(decimal latitude, decimal longitude, int paginacao = 0)
+        {
+            try
+            {
+                await VerificaVidaToken();
+
+                _logger.LogInformation($"{ClassName}:ObterEventosCidadeGeo => Request => {new { latitude, longitude, paginacao }}");
+                string url = string.Format(_apiConfig.Endpoints.BaseUri + _apiConfig.Endpoints.ObterEventosPorGeoEndpoint, latitude.ToString().Replace(",", "."), longitude.ToString().Replace(",", "."), paginacao);
+
+                var result = await _httpHelp.Send(url, null, VerboHttp.Get, AddHeaders());
+                if (result.Code == CodeHttp.Sucess)
+                {
+                    var eventos = JsonSerializer.Deserialize<List<Evento>>(result.Received);
+                    return eventos;
+                }
+                else
+                {
+                    _logger.LogWarning($"{ClassName}:ObterEventosCidadeGeo => Erro na obtenção de Eventos por Geolocalização. Response => {result}");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{ClassName}:ObterEventosCidadeGeo => Exception => {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<List<Evento>> ObterEventosGeo(int id, decimal latitude, decimal longitude, int paginacao = 0)
+        {
+            try
+            {
+                await VerificaVidaToken();
+
+                _logger.LogInformation($"{ClassName}:ObterEventosCidadeGeo => Request => {new { id, latitude, longitude, paginacao }}");
+                string url = string.Format(_apiConfig.Endpoints.BaseUri + _apiConfig.Endpoints.ObterEventosPorGeoUsuarioEndpoint, id, latitude.ToString().Replace(",", "."), longitude.ToString().Replace(",", "."), paginacao);
+
+                var result = await _httpHelp.Send(url, null, VerboHttp.Put, AddHeaders());
+                if (result.Code == CodeHttp.Sucess)
+                {
+                    var eventos = JsonSerializer.Deserialize<List<Evento>>(result.Received);
+                    return eventos;
+                }
+                else
+                {
+                    _logger.LogWarning($"{ClassName}:ObterEventosCidadeGeo => Erro na obtenção de Eventos por Geolocalização. Response => {result}");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{ClassName}:ObterEventosCidadeGeo => Exception => {ex.Message}");
                 return null;
             }
         }
@@ -224,6 +336,34 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors
             catch (Exception ex)
             {
                 _logger.LogError($"{ClassName}:ObterUsuario => Exception => {ex.Message}");
+                return null;
+            }
+        }
+
+        public async Task<Usuario> ObterUsuarioPorTelegramId(string telegramId)
+        {
+            try
+            {
+                await VerificaVidaToken();
+
+                _logger.LogInformation($"{ClassName}:ObterUsuarioPorTelegramId => Request => {new { telegramId }}");
+                string url = string.Format(_apiConfig.Endpoints.BaseUri + _apiConfig.Endpoints.ObterUsuarioPorTelegramIdEndpoint, telegramId);
+
+                var result = await _httpHelp.Send(url, null, VerboHttp.Get, AddHeaders());
+                if (result.Code == CodeHttp.Sucess)
+                {
+                    var usuario = JsonSerializer.Deserialize<Usuario>(result.Received);
+                    return usuario;
+                }
+                else
+                {
+                    _logger.LogWarning($"{ClassName}:ObterUsuarioPorTelegramId => Erro na obtenção de Usuário. Response => {result}");
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{ClassName}:ObterUsuarioPorTelegramId => Exception => {ex.Message}");
                 return null;
             }
         }

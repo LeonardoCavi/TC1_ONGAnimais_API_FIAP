@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using ONGAnimaisTelegramBot.Domain.Service;
+using System.Linq;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -55,8 +56,7 @@ namespace ONGAnimaisTelegramBot.Worker.TelegramClient
 
             await Task.CompletedTask;
         }
-
-        public async Task EnviarMensagem(string sessaoId, string texto)
+        public async Task<Message> EnviarMensagem(string sessaoId, string texto)
         {
             try
             {
@@ -64,17 +64,19 @@ namespace ONGAnimaisTelegramBot.Worker.TelegramClient
 
                 var message = await telegramBotClient.SendTextMessageAsync(
                     chatId: clientId,
-                    text: texto);
+                    text: texto,
+                    replyMarkup: new ReplyKeyboardRemove());
 
                 _logger.LogInformation($"{ClassName}:EnviarMensagemAsync => ClientId: {clientId}; Texto: {texto}; MessageId: {message.MessageId}");
+                return message;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"{ClassName}:EnviarMensagemAsync => {ex.Message}");
+                return null;
             }
         }
-
-        public async Task EnviarMensagem(string sessaoId, string texto, IDictionary<string, string> opcoes)
+        public async Task<Message> EnviarMensagem(string sessaoId, string texto, IDictionary<string, string> opcoes)
         {
             try
             {
@@ -90,14 +92,74 @@ namespace ONGAnimaisTelegramBot.Worker.TelegramClient
                     replyMarkup: keyboardMarkup);
 
                 _logger.LogInformation($"{ClassName}:EnviarMensagemAsync => ClientId: {clientId}; Texto: {texto}; MessageId: {message.MessageId}");
+                return message;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"{ClassName}:EnviarMensagemAsync => {ex.Message}");
+                return null;
+            }
+        }
+        public async Task<Message> EnviarPedidoLocalizacao(string sessaoId, string texto)
+        {
+            try
+            {
+                var clientId = ObterClientId(sessaoId);
+
+                ReplyKeyboardMarkup replyKeyboardMarkup = new(new[]{ KeyboardButton.WithRequestLocation("Minha localização")})
+                { 
+                    OneTimeKeyboard = true,
+                    ResizeKeyboard = true
+                };
+
+                var message = await telegramBotClient.SendTextMessageAsync(
+                    chatId: clientId,
+                    text: texto,
+                    parseMode: ParseMode.Markdown,
+                    replyMarkup: replyKeyboardMarkup);
+
+                _logger.LogInformation($"{ClassName}:EnviarPedidoLocalizacao => ClientId: {clientId}; Texto: {texto}; MessageId: {message.MessageId}");
+                return message;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"{ClassName}:EnviarPedidoLocalizacao => {ex.Message}");
+                return null;
+            }
+        }
+        public async Task<Message> CompartilharBot(string sessaoId, string texto, string mensagemCompartilhamento, IDictionary<string, string> opcoes)
+        {
+            try
+            {
+                var clientId = ObterClientId(sessaoId);
+
+                //InlineKeyboardMarkup inlineKeyboard = new(new[]{ InlineKeyboardButton.WithSwitchInlineQuery(text: mensagemCompartilhamento));
+
+                var buttons = new List<IEnumerable<InlineKeyboardButton>>()
+                {
+                    new[]{ InlineKeyboardButton.WithSwitchInlineQuery(text: mensagemCompartilhamento) },
+                    opcoes.Select(x => InlineKeyboardButton.WithCallbackData(x.Value, x.Key))
+                };
+
+                var keyboardMarkup = new InlineKeyboardMarkup(buttons);
+
+                var message = await telegramBotClient.SendTextMessageAsync(
+                    chatId: clientId,
+                    text: texto,
+                    parseMode: ParseMode.Markdown,
+                    replyMarkup: keyboardMarkup);
+
+                _logger.LogInformation($"{ClassName}:EnviarPedidoLocalizacao => ClientId: {clientId}; Texto: {texto}; MessageId: {message.MessageId}");
+                return message;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"{ClassName}:EnviarPedidoLocalizacao => {ex.Message}");
+                return null;
             }
         }
 
-        public async Task EnviarArquivo(string sessaoId, byte[] buffer, string nomeArquivo)
+        public async Task<Message> EnviarArquivo(string sessaoId, byte[] buffer, string nomeArquivo)
         {
             try
             {
@@ -110,10 +172,12 @@ namespace ONGAnimaisTelegramBot.Worker.TelegramClient
                     document: InputFile.FromStream(stream, nomeArquivo));
 
                 _logger.LogInformation($"{ClassName}:EnviarArquivoAsync => ClientId: {clientId}; NomeArquivo: {nomeArquivo}; MessageId {message.MessageId}");
+                return message;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"{ClassName}:EnviarArquivoAsync => {ex.Message}");
+                return null;
             }
         }
 
@@ -143,6 +207,43 @@ namespace ONGAnimaisTelegramBot.Worker.TelegramClient
             _logger.LogInformation($"{ClassName}:ObterClientId => Obtendo '{clientId}' de {sessaoId}");
 
             return clientId;
+        }
+
+        public async Task RemoverOpcoes(string sessaoId, Message mensagem, string texto)
+        {
+            try
+            {
+                var clientId = ObterClientId(sessaoId);
+
+                if (mensagem.ReplyMarkup != null)
+                {
+                    var mensagemEditada = mensagem.Text;
+
+                    var textoOpcoes = new List<string>();
+                    var negritouOpcao = false;
+                    foreach (var row in mensagem.ReplyMarkup.InlineKeyboard)
+                    {
+                        foreach (var button in row)
+                        {
+                            if (button.CallbackData != null && button.CallbackData.Contains(texto.ToLower()) && !negritouOpcao  && !string.IsNullOrEmpty(texto))
+                            {
+                                textoOpcoes.Add($"*{button.Text} ✅*");
+                                negritouOpcao = true;
+                            }
+                            else
+                                textoOpcoes.Add($"{button.Text}");
+                        }
+                    }
+
+                    var opcoes = string.Join(Environment.NewLine, textoOpcoes);
+                    mensagemEditada += $"{Environment.NewLine}{Environment.NewLine}{opcoes}";
+                    await telegramBotClient.EditMessageTextAsync(clientId, mensagem.MessageId, mensagemEditada, ParseMode.Markdown);
+                }
+            }
+            catch
+            {
+
+            }
         }
     }
 }

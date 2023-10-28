@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using ONGAnimaisAPI.Application.Extensions;
 using ONGAnimaisAPI.Application.ViewModels.ONG;
 
 namespace ONGAnimaisAPI.Application.Validations.ONG
@@ -64,6 +65,9 @@ namespace ONGAnimaisAPI.Application.Validations.ONG
                         .Length(8, 9).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
                 });
 
+            RuleFor(o => o.Telefones)
+                .Must(telefones => !telefones.AnyEquals()).WithMessage("{PropertyPath}: existem telefones duplicados");
+
             RuleForEach(o => o.Contatos)
                 .ChildRules(contato =>
                 {
@@ -75,6 +79,9 @@ namespace ONGAnimaisAPI.Application.Validations.ONG
                         .NotEmpty().WithMessage("{PropertyPath}: por favor, preencha o campo {PropertyName}")
                         .Length(3, 500).WithMessage("{PropertyPath}: o campo {PropertyName} precisa ter entre {MinLength} e {MaxLength} caracteres");
                 });
+
+            RuleFor(o => o.Contatos)
+                .Must(contatos => !contatos.AnyEquals()).WithMessage("{PropertyPath}: existem contatos duplicados");
         }
     }
 }

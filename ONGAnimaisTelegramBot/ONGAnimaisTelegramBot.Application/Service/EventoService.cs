@@ -25,12 +25,17 @@ namespace ONGAnimaisTelegramBot.Application.Service
 
         public async Task ReceberMensagem(Message mensagem, long? botId)
         {
-            var intervalo = DateTime.Now.Subtract(mensagem.Date);
+            _ = Task.Run(async () =>
+            {
+                var intervalo = DateTime.Now.Subtract(mensagem.Date);
 
-            if (mensagem != null && botId.HasValue && intervalo.TotalMinutes < 5)
-                await ProcessarMensagem(mensagem, botId.Value);
-            else
-                _logger.LogWarning($"{ClassName}:ReceberMensagem => Evento ignorado: Objeto ou botId é nulo");
+                if (mensagem != null && botId.HasValue && intervalo.TotalMinutes < 5)
+                    await ProcessarMensagem(mensagem, botId.Value);
+                else
+                    _logger.LogWarning($"{ClassName}:ReceberMensagem => Evento ignorado: Objeto ou botId é nulo");
+            });
+
+            await Task.CompletedTask;
         }
 
         public async Task ReceberCallBack(CallbackQuery callback, long? botId)

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ONGAnimaisAPI.Application.Extensions;
 using ONGAnimaisAPI.Application.Interfaces;
 using ONGAnimaisAPI.Application.Validations;
 using ONGAnimaisAPI.Application.Validations.Evento;
@@ -8,6 +9,7 @@ using ONGAnimaisAPI.Application.ViewModels.Evento;
 using ONGAnimaisAPI.Application.ViewModels.ONG;
 using ONGAnimaisAPI.Domain.Abstracts;
 using ONGAnimaisAPI.Domain.Entities;
+using ONGAnimaisAPI.Domain.Entities.ValueObjects;
 using ONGAnimaisAPI.Domain.Interfaces.Notifications;
 using ONGAnimaisAPI.Domain.Interfaces.Services;
 
@@ -114,6 +116,20 @@ namespace ONGAnimaisAPI.Application.Services
             return null;
         }
 
+        public async Task<ICollection<ObtemONGGeoViewModel>> ObterONGsPorGeo(decimal latitude, decimal longitude, int paginacao = 0)
+        {
+            ExecutarValidacao(new LatitudeLongitudeValidation(), (latitude, longitude));
+
+            if (!_notificador.TemNotificacao())
+            {
+                var ongs = await _service.ObterONGsPorGeo(latitude, longitude, paginacao);
+
+                return _mapper.Map<ICollection<ObtemONGGeoViewModel>>(ongs);
+            }
+
+            return null;
+        }
+
         #endregion [ONG]
 
         #region [Evento]
@@ -189,6 +205,20 @@ namespace ONGAnimaisAPI.Application.Services
                 var eventos = await _service.ObterEventosPorCidade(eventocidade.Cidade, eventocidade.UF, paginacao);
 
                 return _mapper.Map<ICollection<ObtemEventoViewModel>>(eventos);
+            }
+
+            return null;
+        }
+
+        public async Task<ICollection<ObtemEventoGeoViewModel>> ObterEventosPorGeo(decimal latitude, decimal longitude, int paginacao = 0)
+        {
+            ExecutarValidacao(new LatitudeLongitudeValidation(), (latitude, longitude));
+
+            if (!_notificador.TemNotificacao())
+            {
+                var eventos = await _service.ObterEventosPorGeo(latitude, longitude, paginacao);
+
+                return _mapper.Map<ICollection<ObtemEventoGeoViewModel>>(eventos);
             }
 
             return null;

@@ -132,6 +132,9 @@ namespace ONGAnimaisAPI.Infra.Migrations
                         .IsRequired()
                         .HasColumnType("VARCHAR(150)");
 
+                    b.Property<string>("TelegramId")
+                        .HasColumnType("VARCHAR(16)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Usuarios", (string)null);
@@ -214,7 +217,28 @@ namespace ONGAnimaisAPI.Infra.Migrations
                                 .HasForeignKey("EventoId");
                         });
 
+                    b.OwnsOne("ONGAnimaisAPI.Domain.Entities.ValueObjects.GeoLocalizacao", "GeoLocalizacao", b1 =>
+                        {
+                            b1.Property<int>("EventoId")
+                                .HasColumnType("int");
+
+                            b1.Property<decimal>("Latitude")
+                                .HasColumnType("DECIMAL(10, 8)");
+
+                            b1.Property<decimal>("Longitude")
+                                .HasColumnType("DECIMAL(10, 8)");
+
+                            b1.HasKey("EventoId");
+
+                            b1.ToTable("EventoGeoLocalizacao", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("EventoId");
+                        });
+
                     b.Navigation("Endereco");
+
+                    b.Navigation("GeoLocalizacao");
                 });
 
             modelBuilder.Entity("ONGAnimaisAPI.Domain.Entities.ONG", b =>
@@ -254,6 +278,25 @@ namespace ONGAnimaisAPI.Infra.Migrations
                             b1.HasKey("ONGId");
 
                             b1.ToTable("OngEndereco", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("ONGId");
+                        });
+
+                    b.OwnsOne("ONGAnimaisAPI.Domain.Entities.ValueObjects.GeoLocalizacao", "GeoLocalizacao", b1 =>
+                        {
+                            b1.Property<int>("ONGId")
+                                .HasColumnType("int");
+
+                            b1.Property<decimal>("Latitude")
+                                .HasColumnType("DECIMAL(10,8)");
+
+                            b1.Property<decimal>("Longitude")
+                                .HasColumnType("DECIMAL(10, 8)");
+
+                            b1.HasKey("ONGId");
+
+                            b1.ToTable("OngGeoLocalizacao", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("ONGId");
@@ -321,6 +364,8 @@ namespace ONGAnimaisAPI.Infra.Migrations
 
                     b.Navigation("Endereco");
 
+                    b.Navigation("GeoLocalizacao");
+
                     b.Navigation("Telefones");
                 });
 
@@ -332,34 +377,48 @@ namespace ONGAnimaisAPI.Infra.Migrations
                                 .HasColumnType("int");
 
                             b1.Property<string>("Bairro")
-                                .IsRequired()
                                 .HasColumnType("VARCHAR(150)");
 
                             b1.Property<string>("CEP")
-                                .IsRequired()
                                 .HasColumnType("VARCHAR(8)");
 
                             b1.Property<string>("Cidade")
-                                .IsRequired()
                                 .HasColumnType("VARCHAR(150)");
 
                             b1.Property<string>("Complemento")
                                 .HasColumnType("VARCHAR(150)");
 
                             b1.Property<string>("Logradouro")
-                                .IsRequired()
                                 .HasColumnType("VARCHAR(150)");
 
                             b1.Property<string>("Numero")
                                 .HasColumnType("VARCHAR(20)");
 
                             b1.Property<string>("UF")
-                                .IsRequired()
                                 .HasColumnType("VARCHAR(2)");
 
                             b1.HasKey("UsuarioId");
 
                             b1.ToTable("UsuarioEndereco", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("UsuarioId");
+                        });
+
+                    b.OwnsOne("ONGAnimaisAPI.Domain.Entities.ValueObjects.GeoLocalizacao", "GeoLocalizacao", b1 =>
+                        {
+                            b1.Property<int>("UsuarioId")
+                                .HasColumnType("int");
+
+                            b1.Property<decimal>("Latitude")
+                                .HasColumnType("DECIMAL(10, 8)");
+
+                            b1.Property<decimal>("Longitude")
+                                .HasColumnType("DECIMAL(10, 8)");
+
+                            b1.HasKey("UsuarioId");
+
+                            b1.ToTable("UsuarioGeoLocalizacao", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("UsuarioId");
@@ -371,11 +430,9 @@ namespace ONGAnimaisAPI.Infra.Migrations
                                 .HasColumnType("int");
 
                             b1.Property<string>("DDD")
-                                .IsRequired()
                                 .HasColumnType("VARCHAR(2)");
 
                             b1.Property<string>("Numero")
-                                .IsRequired()
                                 .HasColumnType("VARCHAR(9)");
 
                             b1.Property<string>("Tipo")
@@ -391,6 +448,8 @@ namespace ONGAnimaisAPI.Infra.Migrations
                         });
 
                     b.Navigation("Endereco");
+
+                    b.Navigation("GeoLocalizacao");
 
                     b.Navigation("Telefone");
                 });
