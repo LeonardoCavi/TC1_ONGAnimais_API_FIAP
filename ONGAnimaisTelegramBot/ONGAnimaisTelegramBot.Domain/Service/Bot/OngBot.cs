@@ -76,6 +76,9 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 else if (texto == "2" || texto.ToLower().Contains("seguindo") || texto.ToLower().Contains("seguir"))
                 {
                     _atendimento.Paginacao = 0;
+                    _atendimento.ONGsGeolocalizacao = null;
+                    _atendimento.EventosGeolocalizacao = null;
+
                     return await MenuONGSeguirDesseguir();
                 }
                 else if (texto == "3" || texto.ToLower().Contains("voltar"))
@@ -96,6 +99,8 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 else if (texto == "2" || texto.ToLower().Contains("seguindo") || texto.ToLower().Contains("seguir"))
                 {
                     _atendimento.Paginacao = 0;
+                    _atendimento.ONGsGeolocalizacao = null;
+                    _atendimento.EventosGeolocalizacao = null;
                     return await MenuEventoSeguirDesseguir();
                 }
                 else if (texto == "3" || texto.ToLower().Contains("voltar"))
@@ -390,6 +395,8 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             {
                 if (mensagem.Location != null)
                 {
+                    await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, "Localização recebida!");
+
                     _atendimento.Usuario.Geolocalizacao.Latitude = (decimal)mensagem.Location.Latitude;
                     _atendimento.Usuario.Geolocalizacao.Longitude = (decimal)mensagem.Location.Longitude;
 
@@ -397,6 +404,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 }
                 else if (texto.ToLower() == "voltar")
                 {
+                    _atendimento.ONGsGeolocalizacao = null;
                     return await MenuPrincipal();
                 }
 
@@ -408,6 +416,8 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             {
                 if (mensagem.Location != null)
                 {
+                    await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, "Localização recebida!");
+
                     _atendimento.Usuario.Geolocalizacao.Latitude = (decimal)mensagem.Location.Latitude;
                     _atendimento.Usuario.Geolocalizacao.Longitude = (decimal)mensagem.Location.Longitude;
 
@@ -415,6 +425,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 }
                 else if (texto.ToLower() == "voltar")
                 {
+                    _atendimento.EventosGeolocalizacao = null;
                     return await MenuPrincipal();
                 }
 
@@ -829,7 +840,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             var latitude = _atendimento.Usuario.Geolocalizacao.Latitude;
             var longitude = _atendimento.Usuario.Geolocalizacao.Longitude;
 
-            var ongs = await _ongHttp.ObterOngsGeo(latitude, longitude, paginacao);
+            var ongs = _atendimento.ONGsGeolocalizacao != null ? _atendimento.ONGsGeolocalizacao : await _ongHttp.ObterOngsGeo(latitude, longitude, paginacao);
 
             if (ongs.Any())
             {
@@ -851,6 +862,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 ongsOpcoes.Add("voltar", "Voltar ao menu");
 
                 _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem, ongsOpcoes);
+                _atendimento.ONGsGeolocalizacao = ongs.ToList();
                 return Tuple.Create(true, "MenuListaONGsGeolocalizacao");
             }
             else
@@ -1137,7 +1149,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             var latitude = _atendimento.Usuario.Geolocalizacao.Latitude;
             var longitude = _atendimento.Usuario.Geolocalizacao.Longitude;
 
-            var eventos = await _ongHttp.ObterEventosGeo(latitude, longitude, paginacao);
+            var eventos = _atendimento.EventosGeolocalizacao != null ? _atendimento.EventosGeolocalizacao : await _ongHttp.ObterEventosGeo(latitude, longitude, paginacao);
 
             if (eventos.Any())
             {
@@ -1160,6 +1172,7 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
                 eventosOpcoes.Add("voltar", "Voltar ao menu");
 
                 _atendimento.UltimaMensagemBot = await _telegramBotService.EnviarMensagem(_atendimento.SessaoId, mensagem, eventosOpcoes);
+                _atendimento.EventosGeolocalizacao = eventos.ToList();
                 return Tuple.Create(true, "MenuListaEventosGeolocalizacao");
             }
             else

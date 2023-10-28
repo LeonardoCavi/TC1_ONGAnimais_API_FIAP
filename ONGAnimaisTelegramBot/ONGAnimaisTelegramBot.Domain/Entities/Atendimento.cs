@@ -20,6 +20,8 @@ namespace ONGAnimaisTelegramBot.Domain.Entities
         public ONG OngEscolhida { get; set; }
         public Evento EventoEscolhido { get; set; }
         public Message UltimaMensagemBot { get; set; }
+        public List<ONG> ONGsGeolocalizacao { get; set; }
+        public List<Evento> EventosGeolocalizacao { get; set; }
         public int Paginacao { get; set; }
     }
 }

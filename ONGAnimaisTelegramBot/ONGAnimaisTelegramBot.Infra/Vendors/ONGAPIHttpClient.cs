@@ -207,7 +207,7 @@ namespace ONGAnimaisTelegramBot.Infra.Vendors
                 await VerificaVidaToken();
 
                 _logger.LogInformation($"{ClassName}:ObterEventosCidadeGeo => Request => {new { latitude, longitude, paginacao }}");
-                string url = string.Format(_apiConfig.Endpoints.BaseUri + _apiConfig.Endpoints.ObterEventosPorGeoEndpoint, latitude, longitude, paginacao);
+                string url = string.Format(_apiConfig.Endpoints.BaseUri + _apiConfig.Endpoints.ObterEventosPorGeoEndpoint, latitude.ToString().Replace(",", "."), longitude.ToString().Replace(",", "."), paginacao);
 
                 var result = await _httpHelp.Send(url, null, VerboHttp.Get, AddHeaders());
                 if (result.Code == CodeHttp.Sucess)
