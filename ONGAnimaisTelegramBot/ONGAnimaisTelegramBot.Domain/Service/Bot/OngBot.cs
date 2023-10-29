@@ -1199,8 +1199,8 @@ namespace ONGAnimaisTelegramBot.Domain.Service.Bot
             var ong = await _ongHttp.ObterOng(ongId);
             var mensagem = $"*{evento.Nome}*\n\n";
             mensagem += $"Descrição: \n{evento.Descricao}\n\n";
-            mensagem += $"ONG Responável: \n{ong.Nome}\n\n";
-            mensagem += $"*Local:*\n{ong.Endereco.Logradouro}" +
+            mensagem += $"ONG Responsável: \n{ong.Nome}\n\n";
+            mensagem += $"*Local:*\n{evento.Endereco.Logradouro}" +
                 $"\n{evento.Endereco.Bairro}" +
                 $"\n{evento.Endereco.Cidade} - {evento.Endereco.UF}" +
                 $"\n{evento.Endereco.CEP.Substring(0, 5)}-{evento.Endereco.CEP.Substring(5, 3)}\n\n";
