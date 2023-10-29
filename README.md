@@ -57,6 +57,8 @@ Com isso já temos o necessário para desfrutar do projeto.
 
 <img height="700" src="https://github.com/LeonardoCavi/TC1_ONGAnimais_API_FIAP/blob/develop/Documenta%C3%A7%C3%B5es/Diagrama%20Banco%20de%20Dados.png"></img>
 
-<h4 align="left">Descritivo das tabelas</h4>
+<h4 align="left">Documentações</h4>
 
 <a href="https://github.com/LeonardoCavi/TC1_ONGAnimais_API_FIAP/blob/develop/Documenta%C3%A7%C3%B5es/Descritivo%20das%20tabelas.txt">Tabelas</a></br>
+<a href="https://github.com/LeonardoCavi/TC1_ONGAnimais_API_FIAP/blob/develop/Documenta%C3%A7%C3%B5es/ONGAnimaisTelegramBot.png">Diagrama do Bot Telegram</a></br>
+
