@@ -1,0 +1,102 @@
+__EFMigrationsHistory: tabela de controle do EFCore
+	MigrationId:
+	ProductVersion
+
+------------------------
+Aplicacoes: tabela das aplicacoes que podem consumir a API
+	Id:
+	Usuario:
+	Senha:
+	NomeAplicacao:
+
+------------------------
+ONGs: tabela das ONGs
+	Id: 
+	Nome: nome da ONG
+	Descricao: descrição da atuação da ONG
+	Responsável: nome da pessoa responsável pela ONG
+	Email: e-mail da ong ou pessoa responsável para contato
+	
+OngContato: tabela de contatos da ONG (n:1)
+	ONGId:
+	Id:
+	Descricao: descrição do meio de contato
+		ex: Site, Instagram, Facebook
+	URL: link do meio de contato
+	
+OngEndereco: tabela de endereço da ONG (1:1)
+	ONGId:
+	CEP: cep sem hífen
+	Logradouro:
+	Complemento:
+	Bairro:
+	Cidade:
+	UF: estado com dois digitos
+	
+OngGeoLocalizacao: tabela com a localização da ONG, obtida no BingMaps a partir do endereço (1:1)
+	ONGId:
+	Latitude:
+	Longitude:
+	
+OngTelefone: tabela de telefones da ONG (n:1)
+	ONGId:
+	Id:
+	DDD:
+	Numero:
+	Tipo: Fixo ou Celular
+	
+ONGUsuario: tabela relacional das ONGs seguidas pelo Usuário (n:n)
+	ONGsSeguidasId: ONGId
+	UsuarioId
+
+------------------------
+Eventos: tabela dos eventos cadastrados pelas ONGs
+	Id: 
+	Nome: nome do Evento
+	Descricao: descrição do assunto tratado no evento
+	Data: data da ocorrência 
+	OngId:
+
+EventoEndereco: tabela de endereço do Evento (1:1)
+	EventoId: 
+	CEP: cep sem hífen
+	Logradouro:
+	Complemento:
+	Bairro:
+	Cidade:
+	UF: estado com dois digitos
+	
+EventoGeoLocalizacao: tabela com a localização do Evento, obtida no BingMaps a partir do endereço (1:1)
+	EventoId:
+	Latitude:
+	Longitude:
+
+EventoUsuario: tabela relacional dos Eventos seguidos pelo Usuário (n:n)
+	EventosSeguidosId: EventoId
+	UsuarioId
+
+------------------------
+Usuarios: tabela dos usuários que interagiram com a plataforma
+	Id:
+	Nome: nome do usuário
+	TelegramId: Id do usuário no telegram
+
+UsuarioEndereco: tabela do último endereço do Usuário, obtida no BingMaps a partir da Geolocalização (1:1)
+	UsuarioId: 
+	CEP: cep sem hífen
+	Logradouro:
+	Complemento:
+	Bairro:
+	Cidade:
+	UF: estado com dois digitos
+	
+UsuarioGeoLocalizacao: tabela com a localização do Usuário, obtida a partir do Telegram (1:1)
+	EventoId:
+	Latitude:
+	Longitude:
+
+UsuarioTelefone: tabela de telefone do Usuário (1:1) - NÃO UTILIZADO ATUALMENTE
+	ONGId:
+	DDD:
+	Numero:
+	Tipo: Fixo ou Celular
