@@ -23,15 +23,15 @@
 - 🐾 <i>APICredencials</i>.: Antes de rodar a API pela primeira vez, é importante verificar o usuário e senha que será utilizado na API. Esse usuário e senha servirá para que as aplicações consumam a API. Por padrão, colocamos "admin"/"admin", esse usuário se trata de credenciais padrão para caso não exista nenhum usuário cadastrado.</br>
 - 🐾 <i>Secret</i>.: Chave para geração do Token de acesso da API, podendo ficar ao critério do utilizador alterar a mesma.</br>
 - 🐾 <i>ConnectionString:ApplicationConnectionString</i>.: String de conexão do banco de dados (a aplicação irá gerar o database e aplicar as Migrations automaticamente, caso não existam).</br>
-- 🐾 Dentro do projeto preparamos alguns arquivos .json para faciliar a inclusão de ONGs e Eventos na base de dados da API. No caso de usuários, não é necessário inserir via .json, visto que eles serão incluidos de acordo com a utilização de novas pessoas no bot.</br>
+- 🐾 Dentro do projeto preparamos alguns arquivos <a href="https://github.com/LeonardoCavi/TC1_ONGAnimais_API_FIAP/tree/develop/ONGAnimaisAPI/ONGAnimaisAPI.API/jsons ">.json</a> para faciliar a inclusão de ONGs e Eventos na base de dados da API. No caso de usuários, não é necessário inserir via .json, visto que eles serão incluidos de acordo com a utilização de novas pessoas no bot.</br>
 
 <h4 align="left">2. ONGAnimaisTelegramBot</h4>
 Da mesma maneira, existem alguns passos importantes a serem feitos no arquivo de configuração do projeto TelegramBot(appsettings.json) .:</br>
 - 🐾 <i>ONGApi</i>.: O mesmo usuário e senha configurado no ONGAnimaisAPI, vai ser cadastrado no banco e ele servirá para que o TelegramBot crie os Tokens de acesso e se autentique na API.</br>
-- 🐾 <i>Endpoints:BaseUri</i>.: Alterar o URi e porta que está rodando a API em seu equipamento local. Exemplo.:https://localhost:7282</br>
+- 🐾 <i>Endpoints:BaseUri</i>.: Alterar o URi e porta que está rodando a API em seu equipamento local. Exemplo.: https://localhost:7282</br>
 
 <h4 align="left">Iniciando o projeto</h4>
-  Realizado todas as configurações, ambos projetos devem ser iniciados. Após esse processo, é possível realizar testes via documentação da API (Swagger), porém o uso real da API é realizada pelo chat do seguinte Bot.: https://t.me/ONGAnimaisBot.
+  Realizado todas as configurações, ambos projetos devem ser iniciados. Após esse processo, é possível realizar testes via documentação da API (Swagger), porém o uso real da API é realizada pelo chat do seguinte Bot.: <a href="https://t.me/ONGAnimaisBot">ONGAnimaisBot</a></br>.
 Com isso já temos o necessário para desfrutar do projeto.
 
 <h4 align="left">Prints</h4>
@@ -51,8 +51,12 @@ Com isso já temos o necessário para desfrutar do projeto.
 
 <h4 align="left">Vídeo demonstrativo</h4>
 
-https://youtu.be/3wT1G2_3DQI
+<a href="https://youtu.be/3wT1G2_3DQI">Navegação no Bot</a></br>
 
 <h4 align="left">Diagrama do banco de dados</h4>
 
 <img height="700" src="https://github.com/LeonardoCavi/TC1_ONGAnimais_API_FIAP/blob/develop/Documenta%C3%A7%C3%B5es/Diagrama%20Banco%20de%20Dados.png"></img>
+
+<h4 align="left">Descritivo das tabelas</h4>
+
+<a href="https://github.com/LeonardoCavi/TC1_ONGAnimais_API_FIAP/blob/develop/Documenta%C3%A7%C3%B5es/Descritivo%20das%20tabelas.txt">Tabelas</a></br>
