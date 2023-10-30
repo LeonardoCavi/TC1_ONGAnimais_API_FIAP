@@ -2,7 +2,7 @@
   O projeto do ONG Animais se trata de um bot no Telegram para que usuários interessados em conhecer ou procurar ONGs e Eventos de proteção animal consigam encontrar as informações necessárias  facilmente podendo compartilhar sua localização ou informar sua cidade/estado e poder seguir a mesmas. 
 
 <h3 align="left">Integrantes</h3>
-- 🐱 <a href="https://github.com/talles2512">Hebert Talles</a></br>
+- 🐱 <a href="https://github.com/talles2512">Hebert Talles de Jesus Silva</a></br>
 - 🐶 <a href="https://github.com/LeonardoCavi">Leonardo Cavichiolli de Oliveira</a>
 
 <h3 align="left">Integrantes</h3>
